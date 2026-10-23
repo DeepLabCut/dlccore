@@ -15,7 +15,7 @@
   exclude:
     - 'tools/update_license_headers.py'
 
-# Files ported from DeepLabCut keep its header
+# Files ported from DeepLabCut keep the old header
 - header: |
     DeepLabCut Toolbox (deeplabcut.org)
     © A. & M.W. Mathis Labs
