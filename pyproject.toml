@@ -7,7 +7,6 @@ requires = [
 
 [project]
 name = "dlccore"
-dynamic = ["version"]
 description = "Shared core of the DeepLabCut stack"
 readme = { file = "README.md", content-type = "text/markdown" }
 license = "LGPL-3.0-only"
@@ -23,15 +22,11 @@ classifiers = [
 ]
 dynamic = [ "version" ]
 dependencies = []
-urls.Homepage = "https://github.com/DeepLabCut/dlc-core"
-urls.Repository = "https://github.com/DeepLabCut/dlc-core"
+urls.Homepage = "https://github.com/DeepLabCut/dlccore"
+urls.Repository = "https://github.com/DeepLabCut/dlccore"
 
-[project.urls]
-Homepage = "https://github.com/DeepLabCut/dlccore"
-Repository = "https://github.com/DeepLabCut/dlccore"
-
-[tool.setuptools.packages.find]
-include = ["dlccore*"]
+[tool.setuptools]
+packages.find.include = [ "dlccore*" ]
 
 [tool.setuptools_scm]
 
