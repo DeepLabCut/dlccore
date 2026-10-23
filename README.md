@@ -1,4 +1,4 @@
-# dlc-core
+# dlccore
 
 Shared core of the DeepLabCut stack.
 

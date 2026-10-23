@@ -6,7 +6,7 @@ requires = [
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "dlc-core"
+name = "dlccore"
 dynamic = ["version"]
 description = "Shared core of the DeepLabCut stack"
 readme = { file = "README.md", content-type = "text/markdown" }
@@ -26,10 +26,10 @@ classifiers = [
 dependencies = []
 
 [project.urls]
-Homepage = "https://github.com/DeepLabCut/dlc-core"
-Repository = "https://github.com/DeepLabCut/dlc-core"
+Homepage = "https://github.com/DeepLabCut/dlccore"
+Repository = "https://github.com/DeepLabCut/dlccore"
 
 [tool.setuptools.packages.find]
-include = ["dlc_core*"]
+include = ["dlccore*"]
 
 [tool.setuptools_scm]

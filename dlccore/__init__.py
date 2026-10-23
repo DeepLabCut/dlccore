@@ -13,6 +13,6 @@
 from importlib.metadata import PackageNotFoundError, version
 
 try:
-    __version__ = version("dlc-core")
+    __version__ = version("dlccore")
 except PackageNotFoundError:  # pragma: no cover
     __version__ = "0+unknown"
