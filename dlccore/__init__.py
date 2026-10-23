@@ -1,13 +1,14 @@
 #
 # DeepLabCut Toolbox (deeplabcut.org)
 # © A. & M.W. Mathis Labs
-# https://github.com/DeepLabCut/DeepLabCut
+# https://github.com/DeepLabCut/dlc-core
 #
-# Please see AUTHORS for contributors.
-# https://github.com/DeepLabCut/DeepLabCut/blob/master/AUTHORS
+# Contributors:
+# https://github.com/DeepLabCut/dlc-core/graphs/contributors
 #
 # Licensed under GNU Lesser General Public License v3.0
 #
+
 """Shared core of the DeepLabCut stack."""
 
 from importlib.metadata import PackageNotFoundError, version
