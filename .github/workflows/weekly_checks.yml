@@ -34,7 +34,7 @@ jobs:
       # `-o filterwarnings`, not `-W`: `-W` matches the module name exactly and would miss every submodule
       - name: Test
         run: |
-          pytest tests -o $'filterwarnings=error::DeprecationWarning:dlc_core\nerror::FutureWarning:dlc_core'
+          pytest tests -o $'filterwarnings=error::DeprecationWarning:dlccore\nerror::FutureWarning:dlccore'
 
   build-release:
     if: ${{ !inputs.simulate_failure }}
