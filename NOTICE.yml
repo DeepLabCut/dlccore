@@ -1,0 +1,29 @@
+# Main repository license
+- header: |
+    DeepLabCut Toolbox (deeplabcut.org)
+    © A. & M.W. Mathis Labs
+    https://github.com/DeepLabCut/dlccore
+
+    Contributors:
+    https://github.com/DeepLabCut/dlccore/graphs/contributors
+
+    Licensed under GNU Lesser General Public License v3.0
+  include:
+    - 'dlccore/**/*.py'
+    - 'tests/**/*.py'
+    - 'tools/*.py'
+  exclude:
+    - 'tools/update_license_headers.py'
+
+# Files ported from DeepLabCut keep the old header
+- header: |
+    DeepLabCut Toolbox (deeplabcut.org)
+    © A. & M.W. Mathis Labs
+    https://github.com/DeepLabCut/DeepLabCut
+
+    Please see AUTHORS for contributors.
+    https://github.com/DeepLabCut/DeepLabCut/blob/main/AUTHORS
+
+    Licensed under GNU Lesser General Public License v3.0
+  include:
+    - 'tools/update_license_headers.py'
