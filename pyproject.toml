@@ -1,0 +1,35 @@
+[build-system]
+requires = [
+  "setuptools>=80",
+  "setuptools-scm>=8",
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dlccore"
+dynamic = ["version"]
+description = "Shared core of the DeepLabCut stack"
+readme = { file = "README.md", content-type = "text/markdown" }
+authors = [
+  { name = "The DeepLabCut team", email = "admin@deeplabcut.org" }
+]
+license = "LGPL-3.0-only"
+license-files = ["LICENSE"]
+requires-python = ">=3.10"
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Operating System :: OS Independent",
+]
+dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/DeepLabCut/dlccore"
+Repository = "https://github.com/DeepLabCut/dlccore"
+
+[tool.setuptools.packages.find]
+include = ["dlccore*"]
+
+[tool.setuptools_scm]
