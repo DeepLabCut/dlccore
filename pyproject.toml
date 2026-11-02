@@ -38,7 +38,7 @@ packages.find.include = [ "dlccore*" ]
 [tool.ruff]
 target-version = "py310"
 line-length = 120
-# Ported from DeepLabCut: kept as upstream so the two copies diff cleanly
+# Temporary: ported from DeepLabCut. Delete when lint is done
 extend-exclude = [ "dlccore/config/*.py", "dlccore/deprecation.py", "tests/config/*.py" ]
 # Pre-commit passes file names explicitly; without this, the exclusions above are ignored
 force-exclude = true
