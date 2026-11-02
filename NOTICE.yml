@@ -13,6 +13,9 @@
     - 'tests/**/*.py'
     - 'tools/*.py'
   exclude:
+    - 'dlccore/config/*.py'
+    - 'dlccore/deprecation.py'
+    - 'tests/config/*.py'
     - 'tools/update_license_headers.py'
 
 # Files ported from DeepLabCut keep the old header
@@ -26,4 +29,7 @@
 
     Licensed under GNU Lesser General Public License v3.0
   include:
+    - 'dlccore/config/*.py'
+    - 'dlccore/deprecation.py'
+    - 'tests/config/*.py'
     - 'tools/update_license_headers.py'
