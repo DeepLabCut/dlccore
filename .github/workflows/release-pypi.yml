@@ -1,0 +1,39 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    uses: ./.github/workflows/test_package.yml
+
+  build:
+    needs: [tests]
+    uses: ./.github/workflows/build_release.yml
+
+  # Trusted publishing: PyPI accepts this job only from this file and the `pypi` environment
+  publish:
+    needs: [build]
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/project/dlccore/
+    permissions:
+      id-token: write
+
+    concurrency:
+      group: pypi-deploy
+      cancel-in-progress: false
+
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+      - uses: pypa/gh-action-pypi-publish@v1.14.2
