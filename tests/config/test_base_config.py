@@ -454,6 +454,17 @@ def test_to_yaml_roundtrip(tmp_path):
     assert loaded.project_path == orig.project_path
 
 
+class _ExcludedFieldConfig(DLCBaseConfig):
+    kept: int = 1
+    hidden: int = Field(default=2, exclude=True)
+
+
+def test_to_yaml_skips_a_field_its_serializer_excludes(tmp_path):
+    path = tmp_path / "out.yaml"
+    _ExcludedFieldConfig().to_yaml(path)
+    assert path.read_text() == "kept: 1\n"
+
+
 def test_print_no_error(capsys):
     cfg = ToyConfig.from_dict({"Task": "p", "project_path": ""})
     cfg.print()

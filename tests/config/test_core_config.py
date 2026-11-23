@@ -93,6 +93,21 @@ def test_read_config_as_dict_accepts_config_with_misnamed_fields(tmp_path):
     assert "bodyparts" not in cfg
 
 
+@pytest.mark.parametrize("stored", ["project_path: /old/location\n", "Task: t\n", "project_path:\n"])
+def test_read_config_as_dict_repairs_project_path_in_memory(tmp_path, stored):
+    config_path = tmp_path / "config.yaml"
+    config_path.write_text(stored)
+    cfg = read_config_as_dict(config_path, repair_project_path=True)
+    assert Path(cfg["project_path"]) == tmp_path
+    assert config_path.read_text() == stored
+
+
+def test_read_config_as_dict_leaves_project_path_unless_asked(tmp_path):
+    config_path = tmp_path / "config.yaml"
+    config_path.write_text("project_path: /old/location\n")
+    assert read_config_as_dict(config_path)["project_path"] == "/old/location"
+
+
 # -----------------------------------------------------------------------------
 # write_config
 # -----------------------------------------------------------------------------
