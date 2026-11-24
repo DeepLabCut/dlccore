@@ -1,16 +1,27 @@
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
 from dataclasses import replace
 from pathlib import Path
 
 import pytest
 
-from dlc_octopus.io.labeled_data.model import BodypartScope
-from dlc_octopus.io.labeled_data.wide.h5 import read_labeled_data_h5
-from dlc_octopus.io.labeled_data.wide.header import (
+from dlccore.io.labeled_data.model import BodypartScope
+from dlccore.io.labeled_data.wide.h5 import read_labeled_data_h5
+from dlccore.io.labeled_data.wide.header import (
     LabeledDataHeader,
     LabeledDataHeaderShape,
     classify_labeled_data_header,
 )
-from dlc_octopus.io.labeled_data.wide.table import classify_labeled_data_read
+from dlccore.io.labeled_data.wide.table import classify_labeled_data_read
 
 FIXTURES_DIR = Path(__file__).parents[2] / "fixtures" / "labeled_data"
 FIXTURES = sorted(path.name for path in FIXTURES_DIR.glob("*.h5"))
@@ -38,12 +49,12 @@ def _multi_animal(columns: list[tuple[str, str, str, str]]) -> LabeledDataHeader
 
 @pytest.mark.parametrize("filename", FIXTURES)
 def test_every_fixture_header_is_rebuilt_from_its_keypoints(filename: str) -> None:
-    frame = read_labeled_data_h5(FIXTURES_DIR / filename).dataframe
+    df = read_labeled_data_h5(FIXTURES_DIR / filename).dataframe
 
     header, _row_index = classify_labeled_data_read(read_labeled_data_h5(FIXTURES_DIR / filename))
 
     assert header.shape is not LabeledDataHeaderShape.UNRECOGNISED
-    assert _rebuilt_columns(header) == list(frame.columns)
+    assert _rebuilt_columns(header) == list(df.columns)
 
 
 def test_the_rebuild_sees_a_tampered_keypoint() -> None:

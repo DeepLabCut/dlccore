@@ -1,3 +1,14 @@
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
 """The wide labeled-data table as any container returns it, and its classification.
 
 Containers (``h5``, ``csv``) only open files; everything about the table itself is decided here and in the modules
@@ -12,12 +23,12 @@ from typing import TYPE_CHECKING
 
 import pandas as pd
 
-from dlc_octopus.io.labeled_data.wide.header import LabeledDataHeader, classify_labeled_data_header
-from dlc_octopus.io.labeled_data.wide.row_index import LabeledDataRowIndex, classify_labeled_data_row_index
+from dlccore.io.labeled_data.wide.header import LabeledDataHeader, classify_labeled_data_header
+from dlccore.io.labeled_data.wide.row_index import LabeledDataRowIndex, classify_labeled_data_row_index
 
 if TYPE_CHECKING:
-    from dlc_octopus.io.labeled_data.wide.h5 import H5KeySelection
-    from dlc_octopus.io.stamp import WriterStamp
+    from dlccore.io.labeled_data.wide.h5 import H5KeySelection
+    from dlccore.io.stamp import WriterStamp
 
 
 @dataclass(frozen=True)
@@ -45,17 +56,15 @@ class LabeledDataRead:
 def classify_labeled_data_read(read: LabeledDataRead) -> tuple[LabeledDataHeader, LabeledDataRowIndex]:
     """Classify the header and row index of a raw read, leaving the DataFrame untouched."""
 
-    return classify_wide_frame(read.dataframe)
+    return classify_wide_df(read.dataframe)
 
 
-def classify_wide_frame(frame: pd.DataFrame) -> tuple[LabeledDataHeader, LabeledDataRowIndex]:
+def classify_wide_df(df: pd.DataFrame) -> tuple[LabeledDataHeader, LabeledDataRowIndex]:
     """Classify the header and row index of a wide table, whether read from a file or built in memory."""
 
-    columns = (column if isinstance(column, tuple) else (column,) for column in frame.columns)
+    columns = (column if isinstance(column, tuple) else (column,) for column in df.columns)
 
     return (
-        classify_labeled_data_header(frame.columns.names, columns),
-        classify_labeled_data_row_index(
-            frame.index.names, frame.index, is_multi_index=isinstance(frame.index, pd.MultiIndex)
-        ),
+        classify_labeled_data_header(df.columns.names, columns),
+        classify_labeled_data_row_index(df.index.names, df.index, is_multi_index=isinstance(df.index, pd.MultiIndex)),
     )

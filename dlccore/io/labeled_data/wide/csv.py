@@ -1,3 +1,14 @@
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
 """Labeled-data CSV files: which rows hold the header and which columns the row index, and the read itself.
 
 Returns the shared ``table.LabeledDataRead``; classification is the same for every container. Imported explicitly,
@@ -12,13 +23,13 @@ from pathlib import Path
 
 import pandas as pd
 
-from dlc_octopus.io.errors import UnreadableFileError
-from dlc_octopus.io.labeled_data.wide.header import HEADER_DEPTHS, LabeledDataHeaderShape, header_shape
-from dlc_octopus.io.labeled_data.wide.table import LabeledDataRead
+from dlccore.io.errors import UnreadableFileError
+from dlccore.io.labeled_data.wide.header import HEADER_DEPTHS, LabeledDataHeaderShape, header_shape
+from dlccore.io.labeled_data.wide.table import LabeledDataRead
 
 
 def _header_rows_and_index_columns(rows: list[list[str]]) -> tuple[int, int]:
-    """Return how many rows hold the header and columns the row index, as pandas writes a wide table.
+    """Return how many rows hold the header and how many columns hold the row index.
 
     Each header row starts with its level name, followed by one empty cell per further index column. The deepest
     recognised header wins; with none, both are ``0`` and the file is read without a header.
@@ -35,10 +46,10 @@ def _header_rows_and_index_columns(rows: list[list[str]]) -> tuple[int, int]:
     return 0, 0
 
 
-def _path_parts_as_text(path: Path, frame: pd.DataFrame, header_rows: int) -> pd.MultiIndex:
-    """Return a path-parts row index as stored: ``read_csv`` infers ``index_col`` types whatever ``dtype`` says."""
+def _path_parts_as_text(path: Path, df: pd.DataFrame, header_rows: int) -> pd.MultiIndex:
+    """Return a path-parts row index as stored."""
 
-    names = frame.index.names
+    names = df.index.names
     parts = pd.read_csv(
         path,
         header=None,
@@ -68,20 +79,20 @@ def read_labeled_data_csv(path: Path) -> LabeledDataRead:
                 list(islice(csv.reader(stream), max(HEADER_DEPTHS)))
             )
 
-        frame = pd.read_csv(path, header=list(range(header_rows)) or None, index_col=list(range(index_columns)) or None)
+        df = pd.read_csv(path, header=list(range(header_rows)) or None, index_col=list(range(index_columns)) or None)
         if index_columns > 1:
-            frame.index = _path_parts_as_text(path, frame, header_rows)
+            df.index = _path_parts_as_text(path, df, header_rows)
     except (OSError, ValueError, csv.Error) as error:
         raise UnreadableFileError(f"{path}: cannot be read as CSV: {error}") from error
 
-    return LabeledDataRead(path=path, dataframe=frame, key_selection=None)
+    return LabeledDataRead(path=path, dataframe=df, key_selection=None)
 
 
-def write_labeled_data_csv(frame: pd.DataFrame, path: Path) -> None:
-    """Write a wide table as DeepLabCut's human-readable CSV twin; the H5 stays authoritative.
+def write_labeled_data_csv(df: pd.DataFrame, path: Path) -> None:
+    """Write a wide table as DeepLabCut's human-readable CSV; the H5 stays authoritative.
 
     Values are written as pandas formats them, so a float can differ in its last digits after a round trip, and
     the frames ``checks.file.frames_lost_to_csv`` returns are written but read back as something else.
     """
 
-    frame.to_csv(path)
+    df.to_csv(path)

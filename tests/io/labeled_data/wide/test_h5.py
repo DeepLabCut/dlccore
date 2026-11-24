@@ -1,11 +1,22 @@
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
 from pathlib import Path
 
 import pandas as pd
 import pytest
 import tables
 
-from dlc_octopus.io.errors import UnreadableFileError
-from dlc_octopus.io.labeled_data.wide.h5 import (
+from dlccore.io.errors import UnreadableFileError
+from dlccore.io.labeled_data.wide.h5 import (
     H5_KEY_REGISTRY,
     H5KeySelection,
     H5KeySelectionOutcome,
@@ -25,8 +36,8 @@ def _wide_columns() -> pd.MultiIndex:
     )
 
 
-def _write(path: Path, key: str, frame: pd.DataFrame | None = None) -> Path:
-    (pd.DataFrame([[1.0, 2.0]]) if frame is None else frame).to_hdf(path, key=key, mode="w")
+def _write(path: Path, key: str, df: pd.DataFrame | None = None) -> Path:
+    (pd.DataFrame([[1.0, 2.0]]) if df is None else df).to_hdf(path, key=key, mode="w")
     return path
 
 
@@ -126,7 +137,7 @@ def test_the_fixtures_are_all_found() -> None:
 
 
 def test_the_equality_check_sees_a_modified_frame() -> None:
-    # Control: assert_frame_equal must fail on a frame differing in one value, or equality proves nothing.
+    # Control: assert_frame_equal must fail on a DataFrame differing in one value, or equality proves nothing.
     path = FIXTURES_DIR / "single_animal_human.h5"
     modified = read_labeled_data_h5(path).dataframe.copy()
     modified.iloc[0, 0] += 1
@@ -189,17 +200,17 @@ def test_a_single_unrecognised_key_is_read(tmp_path: Path) -> None:
 
 def test_missing_values_are_preserved(tmp_path: Path) -> None:
     index = pd.MultiIndex.from_tuples([("labeled-data", "session-01", "img001.png")])
-    frame = pd.DataFrame([[1.0, 2.0, float("nan"), float("nan")]], index=index, columns=_wide_columns())
+    df = pd.DataFrame([[1.0, 2.0, float("nan"), float("nan")]], index=index, columns=_wide_columns())
 
-    result = read_labeled_data_h5(_write(tmp_path / "CollectedData_Sc.h5", "df_with_missing", frame))
+    result = read_labeled_data_h5(_write(tmp_path / "CollectedData_Sc.h5", "df_with_missing", df))
 
     assert pd.isna(result.dataframe.loc[("labeled-data", "session-01", "img001.png"), ("Sc", "tail", "x")])
 
 
 def test_an_empty_dataframe_is_read(tmp_path: Path) -> None:
-    frame = pd.DataFrame(columns=_wide_columns())
+    df = pd.DataFrame(columns=_wide_columns())
 
-    result = read_labeled_data_h5(_write(tmp_path / "CollectedData_Sc.h5", "df_with_missing", frame))
+    result = read_labeled_data_h5(_write(tmp_path / "CollectedData_Sc.h5", "df_with_missing", df))
 
     assert result.dataframe.empty
 

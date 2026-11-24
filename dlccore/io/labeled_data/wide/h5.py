@@ -1,3 +1,14 @@
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
 """Labeled-data HDF5 files: which key to read, and the read itself.
 
 Returns the shared ``table.LabeledDataRead``; classification is the same for every container. Imported explicitly,
@@ -12,9 +23,9 @@ from pathlib import Path
 
 import pandas as pd
 
-from dlc_octopus.io.errors import UnreadableFileError
-from dlc_octopus.io.labeled_data.wide.table import LabeledDataRead
-from dlc_octopus.io.stamp import WRITER_KEY, WRITER_VERSION_KEY, WriterStamp
+from dlccore.io.errors import UnreadableFileError
+from dlccore.io.labeled_data.wide.table import LabeledDataRead
+from dlccore.io.stamp import WRITER_KEY, WRITER_VERSION_KEY, WriterStamp
 
 # Observed from a payload pandas cannot rebuild: TypeError (unknown storer), NoSuchNodeError
 # (LookupError, AttributeError) for a missing child node, HDF5ExtError (RuntimeError), OSError.
@@ -182,14 +193,14 @@ def read_labeled_data_h5(path: Path) -> LabeledDataRead:
     )
 
 
-def write_labeled_data_h5(frame: pd.DataFrame, path: Path, stamp: WriterStamp) -> None:
+def write_labeled_data_h5(df: pd.DataFrame, path: Path, stamp: WriterStamp) -> None:
     """Write a wide table whole under the current key, and stamp its node with who wrote it.
 
     The stamp is stored as plain string attributes, which HDF5 holds natively. Never appends: ``path`` is created
     or overwritten. Callers write to a temporary path and replace.
     """
 
-    frame.to_hdf(path, key=CURRENT_H5_KEY, mode="w")
+    df.to_hdf(path, key=CURRENT_H5_KEY, mode="w")
     with pd.HDFStore(str(path), mode="a") as store:
         attributes = store.get_storer(CURRENT_H5_KEY).attrs
         for name, value in stamp.as_metadata().items():

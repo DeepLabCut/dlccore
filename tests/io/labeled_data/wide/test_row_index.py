@@ -1,17 +1,28 @@
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
 from pathlib import Path
 
 import numpy as np
 import pandas as pd
 import pytest
 
-from dlc_octopus.io.labeled_data.wide.h5 import read_labeled_data_h5
-from dlc_octopus.io.labeled_data.wide.row_index import (
+from dlccore.io.labeled_data.wide.h5 import read_labeled_data_h5
+from dlccore.io.labeled_data.wide.row_index import (
     RowIndexShape,
     classify_labeled_data_row_index,
     frame_part_as_text,
     split_frame_path,
 )
-from dlc_octopus.io.labeled_data.wide.table import classify_labeled_data_read
+from dlccore.io.labeled_data.wide.table import classify_labeled_data_read
 
 FIXTURES_DIR = Path(__file__).parents[2] / "fixtures" / "labeled_data"
 FIXTURES = sorted(path.name for path in FIXTURES_DIR.glob("*.h5"))
@@ -19,13 +30,13 @@ FIXTURES = sorted(path.name for path in FIXTURES_DIR.glob("*.h5"))
 
 @pytest.mark.parametrize("filename", FIXTURES)
 def test_every_fixture_row_index_is_kept_and_split(filename: str) -> None:
-    frame = read_labeled_data_h5(FIXTURES_DIR / filename).dataframe
+    df = read_labeled_data_h5(FIXTURES_DIR / filename).dataframe
 
     _header, row_index = classify_labeled_data_read(read_labeled_data_h5(FIXTURES_DIR / filename))
 
-    assert (row_index.names, row_index.entries) == (tuple(frame.index.names), tuple(frame.index))
+    assert (row_index.names, row_index.entries) == (tuple(df.index.names), tuple(df.index))
     assert all(len(parts) == 3 for parts in row_index.frames)
-    assert len(row_index.frames) == len(frame.index)
+    assert len(row_index.frames) == len(df.index)
 
 
 def test_the_legacy_flat_index_is_flat_paths() -> None:

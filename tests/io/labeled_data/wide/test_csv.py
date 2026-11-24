@@ -1,13 +1,24 @@
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
 from pathlib import Path
 
 import pandas as pd
 import pytest
 
-from dlc_octopus.io.errors import UnreadableFileError
-from dlc_octopus.io.labeled_data.wide.csv import read_labeled_data_csv
-from dlc_octopus.io.labeled_data.wide.h5 import read_labeled_data_h5
-from dlc_octopus.io.labeled_data.wide.header import LabeledDataHeaderShape
-from dlc_octopus.io.labeled_data.wide.table import classify_labeled_data_read
+from dlccore.io.errors import UnreadableFileError
+from dlccore.io.labeled_data.wide.csv import read_labeled_data_csv
+from dlccore.io.labeled_data.wide.h5 import read_labeled_data_h5
+from dlccore.io.labeled_data.wide.header import LabeledDataHeaderShape
+from dlccore.io.labeled_data.wide.table import classify_labeled_data_read
 
 FIXTURES_DIR = Path(__file__).parents[2] / "fixtures" / "labeled_data"
 CSV_FIXTURES = sorted(path.name for path in FIXTURES_DIR.glob("*.csv"))
@@ -45,9 +56,9 @@ def test_the_parity_check_sees_a_changed_header(tmp_path: Path) -> None:
     ],
 )
 def test_the_layout_is_read_from_the_file(filename: str, header_rows: int, index_columns: int) -> None:
-    frame = read_labeled_data_csv(FIXTURES_DIR / filename).dataframe
+    df = read_labeled_data_csv(FIXTURES_DIR / filename).dataframe
 
-    assert (frame.columns.nlevels, frame.index.nlevels) == (header_rows, index_columns)
+    assert (df.columns.nlevels, df.index.nlevels) == (header_rows, index_columns)
 
 
 def test_an_unrecognised_header_is_read_without_one(tmp_path: Path) -> None:
@@ -87,9 +98,9 @@ def test_numeric_looking_path_parts_read_as_text_as_in_h5(tmp_path: Path, index_
     index = pd.MultiIndex.from_tuples(
         [("labeled-data", "2019", "img0.png"), ("labeled-data", "007", "img1.png")], names=index_names
     )
-    frame = pd.DataFrame([[1.0], [2.0]], index=index, columns=columns)
-    frame.to_hdf(tmp_path / "CollectedData_Sc.h5", key="df_with_missing", mode="w")
-    frame.to_csv(tmp_path / "CollectedData_Sc.csv")
+    df = pd.DataFrame([[1.0], [2.0]], index=index, columns=columns)
+    df.to_hdf(tmp_path / "CollectedData_Sc.h5", key="df_with_missing", mode="w")
+    df.to_csv(tmp_path / "CollectedData_Sc.csv")
 
     h5_read = read_labeled_data_h5(tmp_path / "CollectedData_Sc.h5")
     csv_read = read_labeled_data_csv(tmp_path / "CollectedData_Sc.csv")
