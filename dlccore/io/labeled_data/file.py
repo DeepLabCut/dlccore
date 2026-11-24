@@ -22,6 +22,7 @@ from dlccore.io.labeled_data.model import FramePath, Keypoint
 
 if TYPE_CHECKING:
     import pandas as pd
+
     from dlccore.io.labeled_data.long.model import LabeledData
     from dlccore.io.labeled_data.wide.h5 import H5KeySelection
     from dlccore.io.labeled_data.wide.header import LabeledDataHeader
@@ -107,7 +108,7 @@ class LabeledDataFile:
     def to_raw_wide_df(self) -> pd.DataFrame:
         """A copy of the table as read.
 
-        Raw, never normalised: legacy keys, a flat row index or a header in another order come back as found. 
+        Raw, never normalised: legacy keys, a flat row index or a header in another order come back as found.
         For DeepLabCut's current form, use ``labeled_data.to_wide_df()``.
         """
 
@@ -145,7 +146,8 @@ def write_labeled_data(labels: LabeledData, path: Path, *, replaces: FileStat | 
         labels: Data to write.
         path: H5 file to create or replace. Its suffix must equal ``.h5`` ignoring case. The CSV twin is
             written beside it, with suffix ``.CSV`` if ``path``'s suffix is upper case and ``.csv`` otherwise.
-        replaces: ``LabeledDataFile.stat`` of the file being replaced, or ``None`` to create a new file (must not already exist).
+        replaces: ``LabeledDataFile.stat`` of the file being replaced, or ``None`` to create a new file (must not
+            already exist).
 
     Returns:
         The stat of the written file, to pass as ``replaces`` to the next write.
