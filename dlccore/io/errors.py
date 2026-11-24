@@ -1,14 +1,27 @@
-"""The exceptions for a file that could not be read, and for one that was not replaced because it changed."""
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
+"""Shared custom I/O exceptions."""
 
 
 class UnreadableFileError(OSError):
     """A file could not be read.
 
-    Chained from the library's exception when one caused it; raised directly when a check of ours finds the file
-    unusable, such as not a regular file or changed while read. The message names the file and says what failed.
+    Chained from other libs exceptions if applicable; raised directly when a check here fails,
+    such as file changed while reading. The message should name the file and failure.
     """
 
 
 class FileChangedError(OSError):
-    # Please ensure the message names the file and explains that it changed since it was read.
-    """A file was not replaced, as the content changed since the previous read."""
+    """A file was not replaced, as the content changed since the previous read.
+
+    Should name the file and nature of change.
+    """

@@ -1,12 +1,23 @@
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
 from importlib.metadata import version
 
 import pytest
 
-from dlc_octopus.io.stamp import WRITER_KEY, WRITER_VERSION_KEY, WriterStamp
+from dlccore.io.stamp import WRITER_KEY, WRITER_VERSION_KEY, WriterStamp
 
 
 def test_the_current_stamp_records_the_installed_version() -> None:
-    assert WriterStamp.current("some.writer") == WriterStamp("some.writer", version("dlc-octopus"))
+    assert WriterStamp.current("some.writer") == WriterStamp("some.writer", version("dlccore"))
 
 
 def test_a_stamp_survives_its_metadata_form() -> None:

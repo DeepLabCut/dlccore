@@ -1,8 +1,19 @@
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
 from pathlib import Path
 
 import pytest
 
-from dlc_octopus.io.suffixes import LABELED_DATA_TABLE_SUFFIXES, VIDEO_SUFFIXES, suffix_in
+from dlccore.io.suffixes import LABELED_DATA_TABLE_SUFFIXES, VIDEO_SUFFIXES, suffix_in
 
 
 @pytest.mark.parametrize("name", ["labels.h5", "labels.H5", "labels.Csv"])

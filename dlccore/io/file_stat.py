@@ -1,4 +1,15 @@
-"""What a file looked like when it was read, so a later read or write can tell whether it changed since."""
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
+"""Info about a previously read file, so a later read or write can tell whether it changed since."""
 
 from __future__ import annotations
 
@@ -16,7 +27,7 @@ class FileStat:
     Risks :
     - A same-size rewrite in place within the file system's timestamp resolution (up to 2 s on FAT and some network
       shares), and a change another machine made while a network file system still serves cached attributes.
-    - An inode a server does not keep stable makes the stat differ, so a check refuses rather than misses.
+    - An inode a server does not keep stable makes the stat differ, so a check refuses.
 
     Attributes:
         size_bytes: Size.

@@ -81,3 +81,7 @@ lint.pydocstyle.convention = "google"
 
 [tool.pyproject-fmt]
 max_supported_python = "3.12"
+
+[tool.pytest]
+ini_options.addopts = "--strict-markers"
+ini_options.xfail_strict = true

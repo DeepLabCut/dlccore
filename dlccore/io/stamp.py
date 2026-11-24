@@ -1,4 +1,15 @@
-"""Who wrote a file: built once here, and stored by each container as plain strings in its own metadata."""
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
+"""Provenance stored by each container as plain strings in metadata."""
 
 from __future__ import annotations
 
@@ -6,8 +17,8 @@ from collections.abc import Mapping
 from dataclasses import dataclass
 from importlib.metadata import version
 
-# The distribution whose version every stamp records; the one line to change when this code moves.
-_DISTRIBUTION = "dlc-octopus"
+# The distribution recorded with the stamp
+_DISTRIBUTION = "dlccore"
 
 WRITER_KEY = "dlc_writer"
 WRITER_VERSION_KEY = "dlc_writer_version"
@@ -15,14 +26,13 @@ WRITER_VERSION_KEY = "dlc_writer_version"
 
 @dataclass(frozen=True)
 class WriterStamp:
-    """File provenance and the version of this package.
+    """File provenance and the package version.
 
-    Stored as plain strings only, never as a serialized object, so any tool reading the container can read it
-    and reading it can never run code.
+    Stored as plain strings only, never as a serialized object, for portability and safety.
 
     Attributes:
-        writer: Which writer, e.g. ``"dlc_octopus.io.labeled_data"``.
-        version: The version of this package that wrote it.
+        writer: Which writer, e.g. ``"dlccore.io.labeled_data"``
+        version: The version of this package used to write
     """
 
     writer: str
