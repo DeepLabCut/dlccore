@@ -84,10 +84,11 @@ def classify_labeled_data_header(
     columns: Iterable[tuple[str, ...]],
 ) -> LabeledDataHeader:
     """Group a wide header's columns into keypoints.
+
     Each column is read on its own and grouped by (scorer, individual, bodypart). The header is never expanded
     from its per-level values (a MultiIndex's ``levels``), which would add keypoints that have no column.
 
-    Reordered headers give the same keypoints at other positions, 
+    Reordered headers give the same keypoints at other positions,
     any missing pair is omitted rather than padded, and duplicated columns are kept.
 
     Args:
