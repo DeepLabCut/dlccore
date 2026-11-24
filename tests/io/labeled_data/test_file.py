@@ -1,11 +1,23 @@
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
 from pathlib import Path
 
-import dlc_octopus.io.labeled_data as labeled_data
 import pandas as pd
 import pytest
-from dlc_octopus.io.errors import UnreadableFileError
-from dlc_octopus.io.labeled_data import LabeledData, LabeledDataFile, read_labeled_data, write_labeled_data
-from dlc_octopus.io.labeled_data.wide.storage import WideLabeledDataStorage, read_wide_labeled_data
+
+import dlccore.io.labeled_data as labeled_data
+from dlccore.io.errors import UnreadableFileError
+from dlccore.io.labeled_data import LabeledData, LabeledDataFile, read_labeled_data, write_labeled_data
+from dlccore.io.labeled_data.wide.storage import WideLabeledDataStorage, read_wide_labeled_data
 
 FIXTURES_DIR = Path(__file__).parents[1] / "fixtures" / "labeled_data"
 FIXTURES = sorted(path.name for path in FIXTURES_DIR.glob("*") if path.suffix in {".h5", ".csv"})
@@ -34,16 +46,16 @@ def test_every_fixture_reads_as_its_wide_storage_interprets_it(filename: str) ->
     assert labels.frames is not None
 
 
-def _read_written(tmp_path: Path, frame: pd.DataFrame) -> LabeledDataFile:
+def _read_written(tmp_path: Path, df: pd.DataFrame) -> LabeledDataFile:
     path = tmp_path / "CollectedData_Sc.h5"
-    frame.to_hdf(path, key="df_with_missing", mode="w")
+    df.to_hdf(path, key="df_with_missing", mode="w")
     return read_labeled_data(path)
 
 
 def test_frames_are_kept_when_the_header_is_unrecognised(tmp_path: Path) -> None:
-    frame = pd.DataFrame([[1.0, 2.0]], columns=["nose_x", "nose_y"], index=["labeled-data/v1/img0.png"])
+    df = pd.DataFrame([[1.0, 2.0]], columns=["nose_x", "nose_y"], index=["labeled-data/v1/img0.png"])
 
-    labels = _read_written(tmp_path, frame)
+    labels = _read_written(tmp_path, df)
 
     assert labels.keypoints is None
     assert labels.frames == (("labeled-data", "v1", "img0.png"),)
@@ -157,7 +169,7 @@ def test_a_file_without_a_model_names_itself_and_the_reason(tmp_path: Path) -> N
 
 
 def test_the_package_exports_the_long_model() -> None:
-    from dlc_octopus.io.labeled_data.long.model import LabeledData as Model
+    from dlccore.io.labeled_data.long.model import LabeledData as Model
 
     assert LabeledData is Model
 

@@ -1,10 +1,22 @@
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
 import importlib
 from pathlib import Path, PurePath
 
 import pandas as pd
 import pytest
-from dlc_octopus.io.labeled_data import Keypoint, LabeledData, read_labeled_data
-from dlc_octopus.io.labeled_data.checks.file import (
+
+from dlccore.io.labeled_data import Keypoint, LabeledData, read_labeled_data
+from dlccore.io.labeled_data.checks.file import (
     frame_absorbed_into_index_names,
     frames_of_other_depth,
     frames_with_unnamed_parts,
@@ -16,14 +28,14 @@ from dlc_octopus.io.labeled_data.checks.file import (
     row_index_is_unrecognised,
     unread_h5_keys,
 )
-from dlc_octopus.io.labeled_data.checks.model import (
+from dlccore.io.labeled_data.checks.model import (
     keypoints_with_empty_individual,
     likelihood_in_human_labels,
     missing_keypoints,
 )
-from dlc_octopus.io.labeled_data.wide.h5 import H5KeySelectionOutcome, select_h5_key
-from dlc_octopus.io.labeled_data.wide.header import LabeledDataHeader, classify_labeled_data_header
-from dlc_octopus.io.labeled_data.wide.row_index import LabeledDataRowIndex, classify_labeled_data_row_index
+from dlccore.io.labeled_data.wide.h5 import H5KeySelectionOutcome, select_h5_key
+from dlccore.io.labeled_data.wide.header import LabeledDataHeader, classify_labeled_data_header
+from dlccore.io.labeled_data.wide.row_index import LabeledDataRowIndex, classify_labeled_data_row_index
 
 FIXTURES_DIR = Path(__file__).parents[1] / "fixtures" / "labeled_data"
 SINGLE_ANIMAL_LEVELS = ["scorer", "bodyparts", "coords"]
@@ -241,8 +253,8 @@ def test_index_names_that_spell_no_three_part_frame_are_not_found(names: tuple[o
 
 
 def test_checks_are_split_into_file_and_model_facts() -> None:
-    importlib.import_module("dlc_octopus.io.labeled_data.checks.file")
-    importlib.import_module("dlc_octopus.io.labeled_data.checks.model")
+    importlib.import_module("dlccore.io.labeled_data.checks.file")
+    importlib.import_module("dlccore.io.labeled_data.checks.model")
 
 
 def test_a_keypoint_whose_individual_is_named_empty_is_found() -> None:

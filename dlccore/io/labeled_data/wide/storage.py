@@ -1,3 +1,14 @@
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
 """Labels stored wide, as DeepLabCut writes them in H5 and CSV: the table, its classification, and the read."""
 
 from __future__ import annotations
@@ -12,14 +23,15 @@ from pathlib import Path
 from typing import TYPE_CHECKING, cast
 
 import pandas as pd
-from dlc_octopus.io.errors import FileChangedError
-from dlc_octopus.io.file_stat import FileStat
-from dlc_octopus.io.labeled_data.model import FramePath, Keypoint
-from dlc_octopus.io.labeled_data.wide.header import LabeledDataHeader, LabeledDataHeaderShape
-from dlc_octopus.io.labeled_data.wide.row_index import LabeledDataRowIndex, RowIndexShape, frame_part_as_text
-from dlc_octopus.io.labeled_data.wide.table import LabeledDataRead, classify_labeled_data_read
-from dlc_octopus.io.stamp import WriterStamp
-from dlc_octopus.io.suffixes import (
+
+from dlccore.io.errors import FileChangedError
+from dlccore.io.file_stat import FileStat
+from dlccore.io.labeled_data.model import FramePath, Keypoint
+from dlccore.io.labeled_data.wide.header import LabeledDataHeader, LabeledDataHeaderShape
+from dlccore.io.labeled_data.wide.row_index import LabeledDataRowIndex, RowIndexShape, frame_part_as_text
+from dlccore.io.labeled_data.wide.table import LabeledDataRead, classify_labeled_data_read
+from dlccore.io.stamp import WriterStamp
+from dlccore.io.suffixes import (
     CSV_SUFFIX,
     H5_SUFFIX,
     LABELED_DATA_TABLE_SUFFIXES,
@@ -27,8 +39,8 @@ from dlc_octopus.io.suffixes import (
 )
 
 if TYPE_CHECKING:
-    from dlc_octopus.io.labeled_data.long.model import LabeledData
-    from dlc_octopus.io.labeled_data.wide.h5 import H5KeySelection
+    from dlccore.io.labeled_data.long.model import LabeledData
+    from dlccore.io.labeled_data.wide.h5 import H5KeySelection
 
 
 @dataclass(frozen=True, eq=False)
@@ -85,13 +97,13 @@ def wide_suffix(path: Path) -> str | None:
 
 
 def _read_h5(path: Path) -> LabeledDataRead:
-    from dlc_octopus.io.labeled_data.wide.h5 import read_labeled_data_h5
+    from dlccore.io.labeled_data.wide.h5 import read_labeled_data_h5
 
     return read_labeled_data_h5(path)
 
 
 def _read_csv(path: Path) -> LabeledDataRead:
-    from dlc_octopus.io.labeled_data.wide.csv import read_labeled_data_csv
+    from dlccore.io.labeled_data.wide.csv import read_labeled_data_csv
 
     return read_labeled_data_csv(path)
 
@@ -100,7 +112,7 @@ _READERS: dict[str, Callable[[Path], LabeledDataRead]] = {H5_SUFFIX: _read_h5, C
 
 
 def read_wide_labeled_data(path: Path) -> WideLabeledDataStorage:
-    """Read a wide labeled-data H5 or CSV file and classify its header and row index.
+    """Read a wide labeled-data H5 or CSV file and classify the header and row index.
 
     Args:
         path: A ``CollectedData_*`` or ``machinelabels*`` file whose suffix equals ``.h5`` or ``.csv`` ignoring case.
@@ -130,7 +142,7 @@ def read_wide_labeled_data(path: Path) -> WideLabeledDataStorage:
     )
 
 
-WRITER_NAME = "dlc_octopus.io.labeled_data"
+WRITER_NAME = "dlccore.io.labeled_data"
 
 
 def write_wide_labeled_data(labels: LabeledData, path: Path, *, replaces: FileStat | None) -> FileStat:
@@ -163,10 +175,10 @@ def write_wide_labeled_data(labels: LabeledData, path: Path, *, replaces: FileSt
         UserWarning: Once both files are in place, for each frame the CSV twin reads back without.
     """
 
-    from dlc_octopus.io.labeled_data.checks.file import frames_lost_to_csv, unread_h5_keys
-    from dlc_octopus.io.labeled_data.checks.model import keypoints_with_empty_individual, likelihood_in_human_labels
-    from dlc_octopus.io.labeled_data.wide.csv import write_labeled_data_csv
-    from dlc_octopus.io.labeled_data.wide.h5 import select_h5_key, write_labeled_data_h5
+    from dlccore.io.labeled_data.checks.file import frames_lost_to_csv, unread_h5_keys
+    from dlccore.io.labeled_data.checks.model import keypoints_with_empty_individual, likelihood_in_human_labels
+    from dlccore.io.labeled_data.wide.csv import write_labeled_data_csv
+    from dlccore.io.labeled_data.wide.h5 import select_h5_key, write_labeled_data_h5
 
     if suffix_in(path, frozenset({H5_SUFFIX})) is None:
         raise ValueError(f"{path}: the labeled-data writer writes an .h5 file and its .csv twin; got {path.suffix!r}.")
@@ -182,14 +194,14 @@ def write_wide_labeled_data(labels: LabeledData, path: Path, *, replaces: FileSt
     if replaces is not None and path.exists() and (dropped := unread_h5_keys(select_h5_key(path))):
         raise ValueError(f"{path}: holds keys {list(dropped)} besides the one read; a write would drop them.")
 
-    frame = labels.to_wide_df()
+    df = labels.to_wide_df()
     temporaries: list[Path] = []
 
     try:
         temporaries.append(temporary_h5 := _reserve_temporary(path, H5_SUFFIX))
         temporaries.append(temporary_csv := _reserve_temporary(path, CSV_SUFFIX))
-        write_labeled_data_h5(frame, temporary_h5, WriterStamp.current(WRITER_NAME))
-        write_labeled_data_csv(frame, temporary_csv)
+        write_labeled_data_h5(df, temporary_h5, WriterStamp.current(WRITER_NAME))
+        write_labeled_data_csv(df, temporary_csv)
         _check_unchanged(path, replaces)
         _keep_mode(path, temporary_h5)
         _keep_mode(csv_twin(path), temporary_csv)
@@ -199,7 +211,7 @@ def write_wide_labeled_data(labels: LabeledData, path: Path, *, replaces: FileSt
         for temporary in temporaries:
             temporary.unlink(missing_ok=True)
 
-    for entry in frames_lost_to_csv(frame):
+    for entry in frames_lost_to_csv(df):
         warnings.warn(
             f"{csv_twin(path)}: frame {entry} has no values and comes first, so this CSV reads back without it; "
             f"{path.name} keeps it.",

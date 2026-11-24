@@ -1,10 +1,22 @@
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
 from dataclasses import fields, replace
 from pathlib import Path
 
 import numpy as np
 import pandas as pd
 import pytest
-from dlc_octopus.io.labeled_data import BodypartScope, Keypoint, LabeledData, LabeledDataArrays, read_labeled_data
+
+from dlccore.io.labeled_data import BodypartScope, Keypoint, LabeledData, LabeledDataArrays, read_labeled_data
 
 FIXTURES_DIR = Path(__file__).parents[2] / "fixtures" / "labeled_data"
 FIXTURES = sorted(path.name for path in FIXTURES_DIR.glob("*") if path.suffix in {".h5", ".csv"})

@@ -1,11 +1,23 @@
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
 from pathlib import Path
 
 import numpy as np
 import pandas as pd
 import pytest
-from dlc_octopus.io.labeled_data.long.model import LabeledData
-from dlc_octopus.io.labeled_data.wide.storage import read_wide_labeled_data
-from dlc_octopus.io.labeled_data.wide.to_long import wide_frame_to_long, wide_to_long
+
+from dlccore.io.labeled_data.long.model import LabeledData
+from dlccore.io.labeled_data.wide.storage import read_wide_labeled_data
+from dlccore.io.labeled_data.wide.to_long import wide_df_to_long, wide_to_long
 
 FIXTURES_DIR = Path(__file__).parents[2] / "fixtures" / "labeled_data"
 FIXTURES = sorted(path.name for path in FIXTURES_DIR.glob("*") if path.suffix in {".h5", ".csv"})
@@ -15,8 +27,8 @@ MULTI_ANIMAL_LEVELS = ["scorer", "individuals", "bodyparts", "coords"]
 
 def _long(columns: list[tuple[str, ...]], rows: list[list[object]], index: object, names: list[str]) -> LabeledData:
     # Built in memory: what is under test is the conversion, not a container.
-    frame = pd.DataFrame(rows, columns=pd.MultiIndex.from_tuples(columns, names=names), index=index)
-    return wide_frame_to_long(frame)
+    df = pd.DataFrame(rows, columns=pd.MultiIndex.from_tuples(columns, names=names), index=index)
+    return wide_df_to_long(df)
 
 
 def _single_animal(rows: list[list[object]], index: object, coords: tuple[str, ...] = ("x", "y")) -> LabeledData:
@@ -100,12 +112,12 @@ def test_an_integer_frame_part_becomes_text() -> None:
 def test_storage_frames_and_the_long_model_agree_on_an_integer_frame_part(tmp_path: Path) -> None:
     # Both read frame parts through frame_part_as_text: one policy, so the two can never disagree on a frame.
     index = pd.MultiIndex.from_tuples([("labeled-data", 2019, "img0.png")])
-    frame = pd.DataFrame(
+    df = pd.DataFrame(
         [[1.0, 2.0]],
         index=index,
         columns=pd.MultiIndex.from_tuples([("Sc", "nose", "x"), ("Sc", "nose", "y")], names=SINGLE_ANIMAL_LEVELS),
     )
-    frame.to_hdf(tmp_path / "CollectedData_Sc.h5", key="df_with_missing", mode="w")
+    df.to_hdf(tmp_path / "CollectedData_Sc.h5", key="df_with_missing", mode="w")
     storage = read_wide_labeled_data(tmp_path / "CollectedData_Sc.h5")
 
     long = wide_to_long(storage.dataframe, storage.header, storage.row_index).to_long_df()

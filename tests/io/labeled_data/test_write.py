@@ -1,3 +1,14 @@
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
 import os
 import pickle
 import stat
@@ -10,11 +21,12 @@ import numpy as np
 import pandas as pd
 import pytest
 import tables
-from dlc_octopus.io import FileChangedError, FileStat
-from dlc_octopus.io.labeled_data import LabeledData, read_labeled_data, write_labeled_data
-from dlc_octopus.io.labeled_data.checks.file import frames_lost_to_csv
-from dlc_octopus.io.labeled_data.wide.storage import csv_twin
-from dlc_octopus.io.stamp import WRITER_KEY, WRITER_VERSION_KEY, WriterStamp
+
+from dlccore.io import FileChangedError, FileStat
+from dlccore.io.labeled_data import LabeledData, read_labeled_data, write_labeled_data
+from dlccore.io.labeled_data.checks.file import frames_lost_to_csv
+from dlccore.io.labeled_data.wide.storage import csv_twin
+from dlccore.io.stamp import WRITER_KEY, WRITER_VERSION_KEY, WriterStamp
 
 FIXTURES_DIR = Path(__file__).parents[1] / "fixtures" / "labeled_data"
 FIXTURES = sorted(path.name for path in FIXTURES_DIR.glob("*") if path.suffix in {".h5", ".csv"})
@@ -80,12 +92,12 @@ def _without_values(table: LabeledData, frame: int) -> LabeledData:
 @pytest.mark.parametrize("empty", [None, 0, 1], ids=["none", "first", "second"])
 def test_frames_lost_to_csv_are_the_frames_pandas_reads_back_without(tmp_path: Path, empty: int | None) -> None:
     table = _table(FIXTURES_DIR / "single_animal_human.h5")
-    frame = (table if empty is None else _without_values(table, empty)).to_wide_df()
-    frame.to_csv(tmp_path / "labels.csv")
+    df = (table if empty is None else _without_values(table, empty)).to_wide_df()
+    df.to_csv(tmp_path / "labels.csv")
 
     back = pd.read_csv(tmp_path / "labels.csv", index_col=[0, 1, 2], header=[0, 1, 2])
 
-    assert list(frames_lost_to_csv(frame)) == [entry for entry in frame.index if entry not in back.index]
+    assert list(frames_lost_to_csv(df)) == [entry for entry in df.index if entry not in back.index]
 
 
 def test_a_first_frame_without_values_is_kept_in_the_h5_with_a_warning_that_the_csv_twin_loses_it(
@@ -135,7 +147,7 @@ def test_a_written_file_carries_the_writer_stamp_and_a_fixture_does_not(tmp_path
     stored = read_labeled_data(path)
     fixture = read_labeled_data(FIXTURES_DIR / "single_animal_human.h5")
 
-    assert stored.writer_stamp == WriterStamp("dlc_octopus.io.labeled_data", version("dlc-octopus"))
+    assert stored.writer_stamp == WriterStamp("dlccore.io.labeled_data", version("dlccore"))
     assert fixture.writer_stamp is None
     assert (stored.writer_stamp_error, fixture.writer_stamp_error) == (None, None)
 
@@ -143,7 +155,7 @@ def test_a_written_file_carries_the_writer_stamp_and_a_fixture_does_not(tmp_path
 def test_the_stamp_is_stored_as_plain_strings_never_as_a_pickle(tmp_path: Path) -> None:
     path = tmp_path / "CollectedData_Sc.h5"
     write_labeled_data(_table(FIXTURES_DIR / "single_animal_human.h5"), path, replaces=None)
-    stamp = WriterStamp.current("dlc_octopus.io.labeled_data")
+    stamp = WriterStamp.current("dlccore.io.labeled_data")
 
     raw = path.read_bytes()
     with tables.open_file(str(path)) as h5:
@@ -362,7 +374,7 @@ def test_files_beside_the_target_survive_a_write(tmp_path: Path) -> None:
 
 
 def test_reading_records_the_stat_taken_before_the_read(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    from dlc_octopus.io.labeled_data.wide import storage
+    from dlccore.io.labeled_data.wide import storage
 
     path = tmp_path / "CollectedData_Sc.h5"
     path.write_bytes((FIXTURES_DIR / "single_animal_human.h5").read_bytes())

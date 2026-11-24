@@ -1,12 +1,24 @@
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
 from pathlib import Path
 
 import numpy as np
 import pandas as pd
 import pytest
-from dlc_octopus.io.labeled_data.long.model import LabeledData
-from dlc_octopus.io.labeled_data.wide.from_long import long_to_wide
-from dlc_octopus.io.labeled_data.wide.storage import read_wide_labeled_data
-from dlc_octopus.io.labeled_data.wide.to_long import wide_frame_to_long, wide_to_long
+
+from dlccore.io.labeled_data.long.model import LabeledData
+from dlccore.io.labeled_data.wide.from_long import long_to_wide
+from dlccore.io.labeled_data.wide.storage import read_wide_labeled_data
+from dlccore.io.labeled_data.wide.to_long import wide_df_to_long, wide_to_long
 
 FIXTURES_DIR = Path(__file__).parents[2] / "fixtures" / "labeled_data"
 FIXTURES = sorted(path.name for path in FIXTURES_DIR.glob("*") if path.suffix in {".h5", ".csv"})
@@ -16,8 +28,8 @@ PARTS = pd.MultiIndex.from_tuples([("labeled-data", "s1", "img0.png"), ("labeled
 
 
 def _labels(columns: list[tuple[str, ...]], rows: list[list[float]], index: object, names: list[str]) -> LabeledData:
-    frame = pd.DataFrame(rows, columns=pd.MultiIndex.from_tuples(columns, names=names), index=index)
-    return wide_frame_to_long(frame)
+    df = pd.DataFrame(rows, columns=pd.MultiIndex.from_tuples(columns, names=names), index=index)
+    return wide_df_to_long(df)
 
 
 def _single_animal_columns(coords: tuple[str, ...] = ("x", "y")) -> list[tuple[str, ...]]:
@@ -35,7 +47,7 @@ def test_every_fixture_round_trips_through_wide(name: str) -> None:
     long = wide_to_long(storage.dataframe, storage.header, storage.row_index)
 
     wide = long_to_wide(long)
-    pd.testing.assert_frame_equal(wide_frame_to_long(wide).to_long_df(), long.to_long_df())
+    pd.testing.assert_frame_equal(wide_df_to_long(wide).to_long_df(), long.to_long_df())
 
 
 def test_the_wide_table_is_deeplabcuts_current_form() -> None:
