@@ -25,7 +25,7 @@ import yaml
 
 def load_config(filename: str) -> list[dict]:
     """Load the list of header entries from a NOTICE.yml file."""
-    with open(filename) as fh:
+    with open(filename, encoding="utf-8") as fh:
         return yaml.safe_load(fh)
 
 
