@@ -1,3 +1,14 @@
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
 """``LabeledData`` as read-only arrays: axis 0 is the frame, axis 1 the keypoint."""
 
 from __future__ import annotations
@@ -7,16 +18,18 @@ from typing import TYPE_CHECKING
 
 import numpy as np
 
-from dlc_octopus.io.labeled_data.long.model import FRAME_COLUMNS, keypoints_of
-from dlc_octopus.io.labeled_data.model import LIKELIHOOD_COORD, POSITION_COORDS, FramePath, Keypoint
+from dlccore.io.labeled_data.long.model import FRAME_COLUMNS, keypoints_of
+from dlccore.io.labeled_data.model import LIKELIHOOD_COORD, POSITION_COORDS, FramePath, Keypoint
 
 if TYPE_CHECKING:
-    from dlc_octopus.io.labeled_data.long.model import LabeledData
+    from dlccore.io.labeled_data.long.model import LabeledData
+
+# TODO: 3D support, NPZ export
 
 
 @dataclass(frozen=True, eq=False)
 class LabeledDataArrays:
-    """Every keypoint in every frame, as arrays: axis 0 is the frame, axis 1 the keypoint.
+    """Canonical array view of labeled data as [frames, keypoints].
 
     Values are as stored, with no interpretation beyond "a coordinate pair is present". Compared and hashed by
     identity, since arrays have no single truth value.

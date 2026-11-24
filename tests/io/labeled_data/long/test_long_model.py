@@ -1,3 +1,14 @@
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
 import re
 from collections.abc import Callable
 from dataclasses import FrozenInstanceError
@@ -6,7 +17,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from dlc_octopus.io.labeled_data.long.model import LABELED_DATA_LONG_VERSION, LabeledData
+from dlccore.io.labeled_data.long.model import LABELED_DATA_LONG_VERSION, LabeledData
 
 TEXT_COLUMNS = ("folder", "dataset", "image", "scorer", "individual", "bodypart")
 # What each long-format version holds, multi-animal with likelihood: columns in order, with their dtypes.
@@ -82,7 +93,7 @@ def test_the_table_cannot_be_changed_through_its_view_or_its_attributes() -> Non
 
     assert labels.to_long_df().loc[0, "x"] == 1.0
     with pytest.raises(FrozenInstanceError):
-        labels._frame = _long()  # type: ignore[misc]
+        labels._df = _long()  # type: ignore[misc]
 
 
 def test_constructing_directly_checks_the_contract_too() -> None:
