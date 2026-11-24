@@ -1,4 +1,19 @@
-"""A classified wide table as ``LabeledData``: columns taken by classified position, never by level values."""
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
+"""Conversion of a wide DataFrame to ``LabeledData``.
+
+Values are taken from the column positions the header classification found, never looked up by level values, so
+duplicated or reordered columns cannot pick up the wrong values.
+"""
 
 from __future__ import annotations
 
@@ -7,7 +22,7 @@ from typing import cast
 import numpy as np
 import pandas as pd
 
-from dlc_octopus.io.labeled_data.checks.file import (
+from dlccore.io.labeled_data.checks.file import (
     frames_of_other_depth,
     frames_with_unnamed_parts,
     has_no_frames,
@@ -17,36 +32,41 @@ from dlc_octopus.io.labeled_data.checks.file import (
     non_numeric_columns,
     row_index_is_unrecognised,
 )
-from dlc_octopus.io.labeled_data.long.model import (
+from dlccore.io.labeled_data.long.model import (
     FRAME_COLUMNS,
     LabeledData,
     identity_values,
 )
-from dlc_octopus.io.labeled_data.model import LIKELIHOOD_COORD, POSITION_COORDS
-from dlc_octopus.io.labeled_data.wide.header import LabeledDataHeader, LabeledDataHeaderShape
-from dlc_octopus.io.labeled_data.wide.row_index import LabeledDataRowIndex, frame_part_as_text
-from dlc_octopus.io.labeled_data.wide.table import classify_wide_frame
+from dlccore.io.labeled_data.model import LIKELIHOOD_COORD, POSITION_COORDS
+from dlccore.io.labeled_data.wide.header import LabeledDataHeader, LabeledDataHeaderShape
+from dlccore.io.labeled_data.wide.row_index import LabeledDataRowIndex, frame_part_as_text
+from dlccore.io.labeled_data.wide.table import classify_wide_df
 
 
 def wide_to_long(
-    dataframe: pd.DataFrame,
+    df: pd.DataFrame,
     header: LabeledDataHeader,
     row_index: LabeledDataRowIndex,
 ) -> LabeledData:
-    """Convert a classified wide table to the long model, one row per frame and keypoint, values as stored.
+    """Convert a wide DataFrame, already classified, to ``LabeledData``: one row per frame and keypoint.
 
-    An integer frame part, such as a dataset folder named by a number, becomes text, as DeepLabCut's
-    ``guarantee_multiindex_rows`` makes it; the raw row index keeps the integer.
+    Values are copied as stored. A frame path part stored as an integer (e.g. a folder named ``2019``) becomes
+    text, as DeepLabCut's ``guarantee_multiindex_rows`` does; ``row_index`` itself is not changed.
 
     Args:
-        dataframe: The table as read.
-        header: Its classified header.
-        row_index: Its classified row index.
+        df: The wide DataFrame as read.
+        header: The classified header of ``df``.
+        row_index: The classified row index of ``df``.
 
     Raises:
-        ValueError: Reports an unrecognised header or row index, no frames, a frame that is not three parts
-            or with a part that is neither text nor an integer, coordinates other than ``x``, ``y``
-            and optionally ``likelihood``, a likelihood on some keypoints only, or a non-numeric value column.
+        ValueError: On the first of these problems found:
+
+            - Invalid header or row index;
+            - No rows;
+            - A frame path is not three parts, or has a part that is neither text nor an integer;
+            - A keypoint's coordinates are not ``x``, ``y`` and optionally ``likelihood``;
+            - Some keypoints have a likelihood and others do not;
+            - A value column is not numeric.
     """
 
     frames = _frame_parts(row_index)
@@ -54,7 +74,7 @@ def wide_to_long(
     if header_is_unrecognised(header):
         raise ValueError(f"Header levels {list(header.level_names)} are not a header DeepLabCut writes.")
 
-    positions = _value_positions(dataframe, header)
+    positions = _value_positions(df, header)
 
     n_frames, n_keypoints = len(frames), len(positions)
     keypoints = [columns.keypoint for columns in header.keypoints]
@@ -62,7 +82,7 @@ def wide_to_long(
 
     def values(coordinate: str) -> np.ndarray:
         # Frame-major, matching the row order below.
-        return dataframe.iloc[:, [position[coordinate] for position in positions]].to_numpy(dtype=float).reshape(-1)
+        return df.iloc[:, [position[coordinate] for position in positions]].to_numpy(dtype=float).reshape(-1)
 
     long = {name: _expanded([frame[i] for frame in frames], repeat=n_keypoints) for i, name in enumerate(FRAME_COLUMNS)}
     long |= {
@@ -78,18 +98,18 @@ def wide_to_long(
     return LabeledData.from_long_df(pd.DataFrame(long))
 
 
-def wide_frame_to_long(frame: pd.DataFrame) -> LabeledData:
-    """Classify a wide table built in memory, then convert it as ``wide_to_long`` does.
+def wide_df_to_long(df: pd.DataFrame) -> LabeledData:
+    """Classify a wide DataFrame's header and row index, then convert it with ``wide_to_long``.
 
     Raises:
         ValueError: As ``wide_to_long``.
     """
 
-    header, row_index = classify_wide_frame(frame)
-    return wide_to_long(frame, header, row_index)
+    header, row_index = classify_wide_df(df)
+    return wide_to_long(df, header, row_index)
 
 
-def _value_positions(dataframe: pd.DataFrame, header: LabeledDataHeader) -> list[dict[str, int]]:
+def _value_positions(df: pd.DataFrame, header: LabeledDataHeader) -> list[dict[str, int]]:
     """Return each keypoint's column position per coordinate, in header order, or raise naming the first check found."""
 
     if unrecognised := keypoints_with_unrecognised_coords(header):
@@ -103,7 +123,7 @@ def _value_positions(dataframe: pd.DataFrame, header: LabeledDataHeader) -> list
         raise ValueError(
             f"Some keypoints store a likelihood and others do not: {stores} does, {lacking[0].keypoint} does not."
         )
-    if not_numeric := non_numeric_columns(dataframe):
+    if not_numeric := non_numeric_columns(df):
         raise ValueError(f"Value columns {list(not_numeric)} are not numeric.")
 
     return [dict(zip(columns.coords, columns.positions, strict=True)) for columns in header.keypoints]

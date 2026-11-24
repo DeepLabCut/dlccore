@@ -1,6 +1,18 @@
-"""Facts about a labeled-data file as stored: its keys, header, row index, values, and what its CSV copy keeps.
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
 
-Each check takes one of ``LabeledDataFile``'s facts, or the table ``to_raw_wide_df()`` returns.
+"""Checks on a labeled-data file as stored: H5 keys, header, row index and values.
+
+Each check takes one part of a read (the H5 key selection, the classified header or row index, or the wide
+DataFrame) and returns empty, ``None`` or ``False`` when there is nothing to report.
 """
 
 from __future__ import annotations
@@ -9,10 +21,10 @@ from typing import TYPE_CHECKING
 
 import pandas as pd
 
-from dlc_octopus.io.labeled_data.long.model import FRAME_COLUMNS
-from dlc_octopus.io.labeled_data.model import LIKELIHOOD_COORD, POSITION_COORDS
-from dlc_octopus.io.labeled_data.wide.header import KeypointColumns, LabeledDataHeader, LabeledDataHeaderShape
-from dlc_octopus.io.labeled_data.wide.row_index import (
+from dlccore.io.labeled_data.long.model import FRAME_COLUMNS
+from dlccore.io.labeled_data.model import LIKELIHOOD_COORD, POSITION_COORDS
+from dlccore.io.labeled_data.wide.header import KeypointColumns, LabeledDataHeader, LabeledDataHeaderShape
+from dlccore.io.labeled_data.wide.row_index import (
     LabeledDataRowIndex,
     RowIndexShape,
     frame_part_as_text,
@@ -20,15 +32,22 @@ from dlc_octopus.io.labeled_data.wide.row_index import (
 )
 
 if TYPE_CHECKING:
-    from dlc_octopus.io.labeled_data.wide.h5 import H5KeySelection
+    from dlccore.io.labeled_data.wide.h5 import H5KeySelection
 
 _COORDINATES = frozenset({*POSITION_COORDS, LIKELIHOOD_COORD})
 
 
 def unread_h5_keys(selection: H5KeySelection | None) -> tuple[str, ...]:
-    """The keys found but not read, in the file's order: non-empty exactly when the outcome is ``MULTI_KEY``."""
+    """Return the keys of a multi-key H5 file that could not be read.
 
-    from dlc_octopus.io.labeled_data.wide.h5 import H5KeySelectionOutcome
+    Args:
+        selection: The key selection of an H5 read; ``None`` for a file that is not H5.
+
+    Returns:
+        The unread keys, in the file's order. Empty unless the file holds several keys.
+    """
+
+    from dlccore.io.labeled_data.wide.h5 import H5KeySelectionOutcome
 
     if selection is None or selection.outcome is not H5KeySelectionOutcome.MULTI_KEY:
         return ()
@@ -36,17 +55,31 @@ def unread_h5_keys(selection: H5KeySelection | None) -> tuple[str, ...]:
 
 
 def legacy_h5_key(selection: H5KeySelection | None) -> str | None:
-    """The file's one key, when it is a key older DeepLabCut releases wrote; ``None`` otherwise."""
+    """Return the file's only key if it is a legacy key, such as napari-deeplabcut's ``keypoints``.
 
-    from dlc_octopus.io.labeled_data.wide.h5 import H5KeySelectionOutcome
+    Args:
+        selection: The key selection of an H5 read; ``None`` for a file that is not H5.
+
+    Returns:
+        The key, or ``None`` if the file is not H5, holds another key, or holds several keys.
+    """
+
+    from dlccore.io.labeled_data.wide.h5 import H5KeySelectionOutcome
 
     return _single_key(selection, H5KeySelectionOutcome.SINGLE_LEGACY)
 
 
 def unknown_h5_key(selection: H5KeySelection | None) -> str | None:
-    """The file's one key, when no DeepLabCut release is known to write it; ``None`` otherwise."""
+    """Return the file's only key if no known writer uses it (it is not in ``H5_KEY_REGISTRY``).
 
-    from dlc_octopus.io.labeled_data.wide.h5 import H5KeySelectionOutcome
+    Args:
+        selection: The key selection of an H5 read; ``None`` for a file that is not H5.
+
+    Returns:
+        The key, or ``None`` if the file is not H5, holds a known key, or holds several keys.
+    """
+
+    from dlccore.io.labeled_data.wide.h5 import H5KeySelectionOutcome
 
     return _single_key(selection, H5KeySelectionOutcome.SINGLE_UNKNOWN)
 
@@ -56,13 +89,16 @@ def _single_key(selection: H5KeySelection | None, outcome: object) -> str | None
 
 
 def header_is_unrecognised(header: LabeledDataHeader) -> bool:
-    """Whether the header's level names are neither of the two DeepLabCut writes."""
+    """Return whether the header matches neither DeepLabCut layout (single- or multi-animal)."""
 
     return header.shape is LabeledDataHeaderShape.UNRECOGNISED
 
 
 def keypoints_with_unrecognised_coords(header: LabeledDataHeader) -> tuple[KeypointColumns, ...]:
-    """The keypoints whose coordinates are not exactly x, y and optionally likelihood, each once."""
+    """Return the keypoints whose coordinate columns are not ``x``, ``y`` and optionally ``likelihood``.
+
+    A keypoint is returned if it lacks ``x`` or ``y``, has any other coordinate, or repeats one.
+    """
 
     return tuple(
         columns
@@ -73,16 +109,19 @@ def keypoints_with_unrecognised_coords(header: LabeledDataHeader) -> tuple[Keypo
 
 
 def keypoints_without_the_likelihood_others_store(header: LabeledDataHeader) -> tuple[KeypointColumns, ...]:
-    """The keypoints storing no likelihood where another keypoint stores one; empty when all or none do."""
+    """Return the keypoints with no ``likelihood`` column when at least one other keypoint has one.
+
+    Empty when every keypoint has a likelihood (machine labels) or none does (human labels).
+    """
 
     without = tuple(columns for columns in header.keypoints if LIKELIHOOD_COORD not in columns.coords)
     return without if len(without) < len(header.keypoints) else ()
 
 
-def non_numeric_columns(table: pd.DataFrame) -> tuple[object, ...]:
-    """The column labels of a wide table whose values are not real numbers: text, bool or complex."""
+def non_numeric_columns(df: pd.DataFrame) -> tuple[object, ...]:
+    """Return the labels of the columns of a wide DataFrame holding text, bool or complex values."""
 
-    return tuple(label for label, column in table.items() if not _is_real(column))
+    return tuple(label for label, column in df.items() if not _is_real(column))
 
 
 def _is_real(column: pd.Series) -> bool:
@@ -94,25 +133,25 @@ def _is_real(column: pd.Series) -> bool:
 
 
 def has_no_frames(row_index: LabeledDataRowIndex) -> bool:
-    """Whether the table has no rows."""
+    """Return whether the row index has no rows."""
 
     return row_index.shape is RowIndexShape.EMPTY
 
 
 def row_index_is_unrecognised(row_index: LabeledDataRowIndex) -> bool:
-    """Whether the row index is neither path parts nor path strings."""
+    """Return whether the row index is neither a MultiIndex of path parts nor flat path strings."""
 
     return row_index.shape is RowIndexShape.UNRECOGNISED
 
 
 def frames_of_other_depth(row_index: LabeledDataRowIndex) -> tuple[int, ...]:
-    """The rows whose frame has other than the three parts the model holds."""
+    """Return the positions of the rows whose frame path is not three parts (folder, dataset, image)."""
 
     return tuple(row for row, frame in enumerate(row_index.frames) if len(frame) != len(FRAME_COLUMNS))
 
 
 def frames_with_unnamed_parts(row_index: LabeledDataRowIndex) -> tuple[int, ...]:
-    """The rows whose frame has a part that names nothing as ``frame_part_as_text`` reads it: not text or an integer."""
+    """Return the positions of the rows whose frame path has a part that is neither text nor an integer (e.g. NaN)."""
 
     return tuple(
         row for row, frame in enumerate(row_index.frames) if any(frame_part_as_text(part) is None for part in frame)
@@ -120,10 +159,14 @@ def frames_with_unnamed_parts(row_index: LabeledDataRowIndex) -> tuple[int, ...]
 
 
 def frame_absorbed_into_index_names(row_index: LabeledDataRowIndex) -> tuple[str, ...]:
-    """The frame the row index's level names spell, as pandas reads a CSV's first frame when it has no values.
+    """Return the frame path held in the row index's level names, if any.
 
-    DeepLabCut writes no index names, so names that spell a frame of the model's three parts are one; empty
-    otherwise. Split as a path when there is one name, as a flat CSV index stores it.
+    When a CSV's first frame has no values, pandas reads that row as the row index's names, so the frame's path ends
+    up there. DeepLabCut writes no index names, so names forming a three-part path are taken to be such a frame.
+
+    Returns:
+        The path's three parts; empty if the names are not all text or do not form a three-part path. A single name
+        is split as a path, as a flat CSV index stores it.
     """
 
     names = [name for name in row_index.names if isinstance(name, str)]
@@ -133,12 +176,16 @@ def frame_absorbed_into_index_names(row_index: LabeledDataRowIndex) -> tuple[str
     return parts if len(parts) == len(FRAME_COLUMNS) else ()
 
 
-def frames_lost_to_csv(frame: pd.DataFrame) -> tuple[object, ...]:
-    """The row-index entries of a wide ``frame`` that its CSV reads back without.
+def frames_lost_to_csv(df: pd.DataFrame) -> tuple[object, ...]:
+    """Return the row-index entry that writing a wide DataFrame to CSV would lose, if any.
 
-    pandas, and DeepLabCut's ``convertcsv2h5`` with it, read a first row without values as the row index's names.
+    If the first row has no values, pandas reads it back from the CSV as the row index's names, as DeepLabCut's
+    ``convertcsv2h5`` does, and the row is gone. ``frame_absorbed_into_index_names`` finds it in a CSV already read.
+
+    Returns:
+        The first row's entry if all its values are NaN; otherwise empty.
     """
 
-    if len(frame) and frame.iloc[0].isna().all():
-        return (frame.index[0],)
+    if len(df) and df.iloc[0].isna().all():
+        return (df.index[0],)
     return ()
