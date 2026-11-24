@@ -29,7 +29,7 @@ dependencies = [
   "typing-extensions",
 ]
 optional-dependencies.all = [ "dlccore[hdf5,video]" ]
-optional-dependencies.hdf5 = [ "tables>=3.10.1" ]
+optional-dependencies.hdf5 = [ "tables>=3.10.1", "typing-extensions>=4.7" ]
 optional-dependencies.video = [ "opencv-python-headless>=5" ]
 urls.Homepage = "https://github.com/DeepLabCut/dlccore"
 urls.Repository = "https://github.com/DeepLabCut/dlccore"
