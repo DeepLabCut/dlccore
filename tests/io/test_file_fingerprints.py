@@ -1,13 +1,25 @@
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
 import hashlib
 import os
 from collections.abc import Callable
 from pathlib import Path
 
 import pytest
-from dlc_octopus.io import fingerprints
-from dlc_octopus.io.errors import UnreadableFileError
-from dlc_octopus.io.file_stat import FileStat
-from dlc_octopus.io.fingerprints import FileFingerprintResult, fingerprint_file
+
+from dlccore.io import fingerprints
+from dlccore.io.errors import UnreadableFileError
+from dlccore.io.file_stat import FileStat
+from dlccore.io.fingerprints import FileFingerprintResult, fingerprint_file
 
 
 def test_a_file_fingerprint_is_the_sha256_and_size_of_the_full_bytes(tmp_path: Path) -> None:

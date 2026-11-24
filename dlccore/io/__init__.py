@@ -17,9 +17,12 @@ imported from its own module, so importing does not load dependencies.
 
 from dlccore.io.errors import FileChangedError, UnreadableFileError
 from dlccore.io.file_stat import FileStat
+from dlccore.io.fingerprints import FileFingerprintResult, fingerprint_file
 
 __all__ = [
     "FileChangedError",
+    "FileFingerprintResult",
     "FileStat",
     "UnreadableFileError",
+    "fingerprint_file",
 ]

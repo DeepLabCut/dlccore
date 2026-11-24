@@ -1,3 +1,14 @@
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
 """File fingerprints: SHA-256 of whole files."""
 
 from __future__ import annotations
@@ -8,8 +19,8 @@ import stat
 from dataclasses import dataclass
 from pathlib import Path
 
-from dlc_octopus.io.errors import UnreadableFileError
-from dlc_octopus.io.file_stat import FileStat
+from dlccore.io.errors import UnreadableFileError
+from dlccore.io.file_stat import FileStat
 
 _CHUNK_BYTES = 1 << 20
 
