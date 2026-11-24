@@ -1,13 +1,30 @@
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
+from __future__ import annotations
+
 import shutil
 import subprocess
 from pathlib import Path
+from typing import TYPE_CHECKING
 
-import cv2
 import numpy as np
 import pytest
-from deeplabcut.utils.auxfun_videos import VideoReader
 
-from dlc_octopus.io import Video
+cv2 = pytest.importorskip("cv2", reason="OpenCV comes with the optional 'video' extra")
+
+from dlccore.io.video import Video  # noqa: E402
+
+if TYPE_CHECKING:
+    from deeplabcut.utils.auxfun_videos import VideoReader
 
 N_FRAMES = 60
 WIDTH, HEIGHT = 128, 96
@@ -227,7 +244,8 @@ def test_read_frame_decodes_the_requested_frame(video_path: Path) -> None:
 
 def test_read_frame_equals_deeplabcut_opencv_extraction(video_path: Path) -> None:
     # DeepLabCut's extract_frames(opencv=True): set_to_frame, then read_frame(crop=True); it returns RGB.
-    reader = VideoReader(str(video_path))
+    auxfun_videos = pytest.importorskip("deeplabcut.utils.auxfun_videos")
+    reader = auxfun_videos.VideoReader(str(video_path))
     try:
         expected = [_extract_with_deeplabcut(reader, index) for index in ACCESS_ORDER]
     finally:

@@ -29,7 +29,7 @@ jobs:
           activate-environment: true
 
       - name: Install with pre-releases allowed
-        run: uv pip install --prerelease allow . "pytest>=8"
+        run: uv pip install --prerelease allow ".[all]" "pytest>=8"
 
       # `-o filterwarnings`, not `-W`: `-W` matches the module name exactly and would miss every submodule
       - name: Test
