@@ -71,6 +71,21 @@ class LabeledData:
 
         return cls(df)
 
+    @classmethod
+    def from_wide_df(cls, df: pd.DataFrame) -> LabeledData:
+        """Interpret a wide table as a read does: columns by classified position, frame parts as text.
+
+        Args:
+            df: A table in any wide form DeepLabCut reads, such as one from ``LabeledDataFile.to_raw_wide_df()``.
+
+        Raises:
+            ValueError: Naming why the table has no model, as ``LabeledDataFile.labeled_data`` does.
+        """
+
+        from dlc_octopus.io.labeled_data.wide.to_long import wide_frame_to_long
+
+        return wide_frame_to_long(df)
+
     @property
     def is_multi_animal(self) -> bool:
         return identity_columns(self._df) == MULTI_ANIMAL_KEYPOINT_COLUMNS
