@@ -1,4 +1,15 @@
-"""Frame paths of labeled data: DeepLabCut's row index, split into path components as stored."""
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
+"""DeepLabCut's labeled-data row index: each row's frame path, split into path components as stored."""
 
 from __future__ import annotations
 
@@ -9,7 +20,11 @@ from numbers import Integral
 
 
 class RowIndexShape(str, Enum):
-    """The stored row index: path components, path strings, no entries (whatever the index type), or unrecognised."""
+    """How a row index stores its frame paths.
+
+    ``PATH_PARTS``: a MultiIndex, one level per path component. ``FLAT_PATHS``: one path string per row.
+    ``EMPTY``: no rows, whatever the index type. ``UNRECOGNISED``: anything else.
+    """
 
     PATH_PARTS = "path_parts"
     FLAT_PATHS = "flat_paths"
@@ -19,14 +34,14 @@ class RowIndexShape(str, Enum):
 
 @dataclass(frozen=True)
 class LabeledDataRowIndex:
-    """A labeled-data row index.
+    """A labeled-data row index, classified.
 
     Attributes:
         shape: How the frame paths are stored.
-        names: The stored level names, unmodified; ``None`` for each unnamed level.
-        entries: The stored entries, unmodified.
-        frames: The path components of each entry, as stored; ragged depths stay ragged. Empty when ``shape``
-            is ``EMPTY`` or ``UNRECOGNISED``.
+        names: The level names as stored; ``None`` for each unnamed level.
+        entries: The entries as stored.
+        frames: Each entry's path components as stored. Entries of different depths keep their own length.
+            Empty when ``shape`` is ``EMPTY`` or ``UNRECOGNISED``.
     """
 
     shape: RowIndexShape
@@ -39,20 +54,25 @@ class LabeledDataRowIndex:
 def split_frame_path(entry: str) -> tuple[str, ...]:
     """Split a labeled-data row-index entry into its path components.
 
-    Splits; does not validate. Empty and repeated separators yield empty components rather than being dropped.
+    Does not validate: empty and repeated separators give empty components instead of being dropped.
 
     Args:
-        entry: A row-index entry, e.g. ``labeled-data/vid1/img1.png``. Either path separator is accepted.
+        entry: A row-index entry, e.g. ``labeled-data/vid1/img1.png``. Forward slashes and backslashes both separate.
     """
 
     return tuple(entry.replace("\\", "/").split("/"))
 
 
 def frame_part_as_text(part: object) -> str | None:
-    """Return a frame part as the name it stands for, or ``None`` when no name can be given without inventing one.
+    """Return a row-index part as the folder or file name it stands for.
 
-    Text is kept. An integer becomes its digits: pandas infers one for a folder named by a number, and DeepLabCut's
-    ``guarantee_multiindex_rows`` casts it back the same way. A float or bool would name a folder that never existed.
+    A string is returned unchanged. An integer is converted with ``str()``: when a video folder's name is a
+    number (e.g. ``labeled-data/123/``), pandas may read that level back as an integer, and DeepLabCut's
+    ``guarantee_multiindex_rows`` converts it to a string the same way.
+
+    Returns:
+        The name, or ``None`` for any other type. A float or bool cannot be turned back into the original
+        name (``1.0`` vs ``"1"``), so no guessing is involved.
     """
 
     if isinstance(part, str):
@@ -68,12 +88,12 @@ def classify_labeled_data_row_index(
     *,
     is_multi_index: bool,
 ) -> LabeledDataRowIndex:
-    """Classify a row index by how its frame paths are stored, splitting path strings without normalising them.
+    """Classify a row index by how it stores frame paths. Path strings are split but not normalised.
 
     Args:
-        names: The row index's level names
-        entries: The row-index entries, in order; tuples for a MultiIndex
-        is_multi_index: Whether the entries came from a MultiIndex
+        names: The row index's level names.
+        entries: The row-index entries, in order; tuples for a MultiIndex.
+        is_multi_index: Whether the entries came from a MultiIndex.
     """
 
     names = tuple(names)

@@ -1,4 +1,15 @@
-"""DeepLabCut's wide labeled-data column header, classified by keypoint without loss."""
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
+"""DeepLabCut's wide labeled-data column header, grouped into keypoints without dropping any column."""
 
 from __future__ import annotations
 
@@ -6,14 +17,14 @@ from collections.abc import Iterable
 from dataclasses import dataclass
 from enum import Enum
 
-from dlc_octopus.io.labeled_data.model import Keypoint
+from dlccore.io.labeled_data.model import Keypoint
 
 SINGLE_ANIMAL_LEVELS = ("scorer", "bodyparts", "coords")
 MULTI_ANIMAL_LEVELS = ("scorer", "individuals", "bodyparts", "coords")
 
 
 class LabeledDataHeaderShape(str, Enum):
-    """The stored column levels"""
+    """Column layouts used by a header, if recognised."""
 
     SINGLE_ANIMAL = "single_animal"
     MULTI_ANIMAL = "multi_animal"
@@ -28,13 +39,13 @@ _HEADER_SHAPES: dict[tuple[str | None, ...], LabeledDataHeaderShape] = {
 
 @dataclass(frozen=True)
 class KeypointColumns:
-    """Where one keypoint sits in a wide header.
+    """The columns of one keypoint in a wide header.
 
     Attributes:
-        keypoint:Individual is ``None`` if no individuals level, and its scope is
-            ``UNIQUE`` exactly when the individual is ``"single"``.
-        coords: The coordinate of each column, in column order, duplicates kept.
-        positions: Each column's position in the header, aligned with ``coords``.
+        keypoint: The keypoint. The individual is ``None`` in a single-animal header, and the scope is
+            ``UNIQUE`` only when the individual is ``"single"``.
+        coords: The coordinate name of each column (e.g. ``"x"``), in column order, duplicates kept.
+        positions: Each column's index in the header, aligned with ``coords``.
     """
 
     keypoint: Keypoint
@@ -44,13 +55,13 @@ class KeypointColumns:
 
 @dataclass(frozen=True)
 class LabeledDataHeader:
-    """A labeled-data column header.
+    """A wide labeled-data column header, classified.
 
     Attributes:
-        level_names: The level names.
-        shape: Which header DeepLabCut writes these level names match.
-        keypoints: In order of first appearance; empty when ``shape`` is ``UNRECOGNISED``.
-        columns: The stored column tuples, kept only when ``shape`` is ``UNRECOGNISED``.
+        level_names: The header's level names, as stored.
+        shape: The DeepLabCut layout these level names match, or ``UNRECOGNISED``.
+        keypoints: The keypoints, in order of first appearance; empty when ``shape`` is ``UNRECOGNISED``.
+        columns: The raw column tuples, kept only when ``shape`` is ``UNRECOGNISED`` so that nothing is lost.
     """
 
     level_names: tuple[str | None, ...]
@@ -63,7 +74,7 @@ HEADER_DEPTHS: tuple[int, ...] = tuple(sorted({len(level_names) for level_names 
 
 
 def header_shape(level_names: Iterable[str | None]) -> LabeledDataHeaderShape:
-    """Return which header DeepLabCut writes these level names are, or ``UNRECOGNISED``."""
+    """Return the DeepLabCut layout these level names match, or ``UNRECOGNISED``."""
 
     return _HEADER_SHAPES.get(tuple(level_names), LabeledDataHeaderShape.UNRECOGNISED)
 
@@ -72,9 +83,10 @@ def classify_labeled_data_header(
     level_names: Iterable[str | None],
     columns: Iterable[tuple[str, ...]],
 ) -> LabeledDataHeader:
-    """Classify a column header by keypoint, read by name, never as a grid of distinct level values.
+    """Group a wide header's columns into keypoints.
+    Each column is read on its own and grouped by (scorer, individual, bodypart). The header is never expanded
+    from its per-level values (a MultiIndex's ``levels``), which would add keypoints that have no column.
 
-    Columns are grouped by (scorer, individual, bodypart).
     Reordered headers give the same keypoints at other positions, 
     any missing pair is omitted rather than padded, and duplicated columns are kept.
 
