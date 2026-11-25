@@ -1,3 +1,14 @@
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
 """Identity paths must stay project-relative.
 
 An anchored path is machine-local. `Path.resolve()` on Windows against a mapped
@@ -17,14 +28,14 @@ from pathlib import Path, PurePosixPath, PureWindowsPath
 import pytest
 from pydantic import ValidationError
 
-from dlc_octopus.schemas.base.core import reject_anchored_path
-from dlc_octopus.schemas.base.observations import NodeStatus, ObservedNode
-from dlc_octopus.schemas.base.probes import (
+from dlccore.project.schemas.base.core import reject_anchored_path
+from dlccore.project.schemas.base.observations import NodeStatus, ObservedNode
+from dlccore.project.schemas.base.probes import (
     FilesystemEntryKind,
     PathProbe,
     PathProbeStatus,
 )
-from dlc_octopus.schemas.base.resources import FileResourceKind, ProjectResource
+from dlccore.project.schemas.base.resources import FileResourceKind, ProjectResource
 
 _ANCHORED = [
     "Z:/shared/DLC/project",

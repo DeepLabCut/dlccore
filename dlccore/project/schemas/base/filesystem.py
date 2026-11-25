@@ -1,4 +1,13 @@
-# dlc_octopus/schemas/base/filesystem.py
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
 
 from __future__ import annotations
 
@@ -10,8 +19,8 @@ from types import MappingProxyType
 from pydantic import model_validator
 from typing_extensions import Self
 
-from dlc_octopus.schemas.base.core import FrozenModel, SchemaId
-from dlc_octopus.schemas.base.resources import (
+from dlccore.project.schemas.base.core import FrozenModel, SchemaId
+from dlccore.project.schemas.base.resources import (
     DirectoryResourceKind,
     FileResourceKind,
     ResourceManagement,
