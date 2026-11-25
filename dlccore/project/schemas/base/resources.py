@@ -11,7 +11,7 @@
 
 """Basic project resource types.
 
-This is vocabulary only.
+Vocabulary only.
 """
 
 from __future__ import annotations

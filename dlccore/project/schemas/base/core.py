@@ -82,13 +82,11 @@ def reject_anchored_path(
 
 
 ProjectRelativePath = Annotated[Path, AfterValidator(reject_anchored_path)]
-
-# Lowercase hex, as ``hashlib`` writes it: a consumer keying on it must not see one file twice.
 Sha256Hex = Annotated[str, StringConstraints(pattern=r"^[0-9a-f]{64}$")]
 
 
 def reject_non_segment(value: tuple[str | int, ...]) -> tuple[str | int, ...]:
-    r"""Reject instance segments that only a caller's mistake produces: empty, joined or anchored.
+    r"""Reject problematic instance segments: empty, joined or anchored.
 
     ``..`` is user data, reported by validation rather than refused here, as for
     ``ProjectRelativePath``. ``\`` and ``:`` are legal inside POSIX file names, so
@@ -108,7 +106,7 @@ def reject_non_segment(value: tuple[str | int, ...]) -> tuple[str | int, ...]:
     return value
 
 
-# Project-relative path segments, then a logical node's key as ints (a shuffle's 95, 2).
+# Project-relative path segments, then a logical node's key as ints (e.g. shuffle's 95, 2).
 LayoutInstance = Annotated[tuple[str | int, ...], AfterValidator(reject_non_segment)]
 
 
@@ -126,7 +124,7 @@ _SCHEMA_ID = re.compile(r"dlc(\.[a-z0-9_]+)+")
 
 
 def check_schema_id_format(value: str) -> str:
-    """Reject a malformed layout schema ID; whether it names a declared node is not checked here.
+    """Reject a malformed layout schema ID. Does not check if a declared node is named.
 
     Raises:
         ValueError: If the ID is not ``dlc`` followed by dot-separated lowercase segments.
