@@ -1,13 +1,22 @@
-# schemas/labeled_data.py
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
 
-from dlc_octopus.io.suffixes import H5_SUFFIX, HUMAN_LABELS_PREFIX, LABELED_DATA_TABLE_SUFFIXES
-from dlc_octopus.schemas.base.filesystem import (
+from dlccore.io.suffixes import H5_SUFFIX, HUMAN_LABELS_PREFIX, LABELED_DATA_TABLE_SUFFIXES
+from dlccore.project.schemas.base.filesystem import (
     DirectorySchema,
     FileSchema,
     NamePattern,
     RepeatedNodeSchema,
 )
-from dlc_octopus.schemas.base.resources import (
+from dlccore.project.schemas.base.resources import (
     DirectoryResourceKind,
     FileResourceKind,
     ResourceManagement,

@@ -1,14 +1,23 @@
-# schemas/project.py
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
 
-from dlc_octopus.schemas.base.filesystem import (
+from dlccore.project.schemas.base.filesystem import (
     DirectorySchema,
     FileSchema,
     NamePattern,
     index_layout,
 )
-from dlc_octopus.schemas.base.resources import DirectoryResourceKind, FileResourceKind
-from dlc_octopus.schemas.project_layout.labeled_data import LABELED_DATA
-from dlc_octopus.schemas.project_layout.videos import VIDEOS
+from dlccore.project.schemas.base.resources import DirectoryResourceKind, FileResourceKind
+from dlccore.project.schemas.project_layout.labeled_data import LABELED_DATA
+from dlccore.project.schemas.project_layout.videos import VIDEOS
 
 PROJECT_CONFIG = FileSchema(
     schema_id="dlc.project.config",

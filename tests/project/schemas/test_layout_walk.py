@@ -1,9 +1,20 @@
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
 from __future__ import annotations
 
 import pytest
 from pydantic import ValidationError
 
-from dlc_octopus.schemas.base.filesystem import (
+from dlccore.project.schemas.base.filesystem import (
     DirectorySchema,
     FileSchema,
     NamePattern,
@@ -12,9 +23,9 @@ from dlc_octopus.schemas.base.filesystem import (
     index_layout,
     walk_schema,
 )
-from dlc_octopus.schemas.base.resources import DirectoryResourceKind, FileResourceKind, ResourceManagement
-from dlc_octopus.schemas.project_layout.labeled_data import LABELED_FRAME
-from dlc_octopus.schemas.project_layout.project import PROJECT
+from dlccore.project.schemas.base.resources import DirectoryResourceKind, FileResourceKind, ResourceManagement
+from dlccore.project.schemas.project_layout.labeled_data import LABELED_FRAME
+from dlccore.project.schemas.project_layout.project import PROJECT
 
 
 def test_the_walk_flags_exactly_the_repeated_children() -> None:

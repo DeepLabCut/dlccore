@@ -1,13 +1,22 @@
-# dlc_octopus/schemas/project_layout/videos.py
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
 
-from dlc_octopus.io.suffixes import VIDEO_SUFFIXES
-from dlc_octopus.schemas.base.filesystem import (
+from dlccore.io.suffixes import VIDEO_SUFFIXES
+from dlccore.project.schemas.base.filesystem import (
     DirectorySchema,
     FileSchema,
     NamePattern,
     RepeatedNodeSchema,
 )
-from dlc_octopus.schemas.base.resources import DirectoryResourceKind, FileResourceKind
+from dlccore.project.schemas.base.resources import DirectoryResourceKind, FileResourceKind
 
 SOURCE_VIDEO = FileSchema(
     schema_id="dlc.videos.source_video",

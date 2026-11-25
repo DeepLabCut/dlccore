@@ -1,11 +1,22 @@
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
 from pathlib import Path
 
 import pytest
 
-from dlc_octopus.io.suffixes import LABELED_DATA_TABLE_SUFFIXES, VIDEO_SUFFIXES
-from dlc_octopus.schemas.base.filesystem import FileSchema
-from dlc_octopus.schemas.project_layout.labeled_data import HUMAN_LABELS, MACHINE_LABELS
-from dlc_octopus.schemas.project_layout.videos import SOURCE_VIDEO
+from dlccore.io.suffixes import LABELED_DATA_TABLE_SUFFIXES, VIDEO_SUFFIXES
+from dlccore.project.schemas.base.filesystem import FileSchema
+from dlccore.project.schemas.project_layout.labeled_data import HUMAN_LABELS, MACHINE_LABELS
+from dlccore.project.schemas.project_layout.videos import SOURCE_VIDEO
 
 
 @pytest.mark.parametrize(
