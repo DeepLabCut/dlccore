@@ -1,3 +1,14 @@
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
 """Basic project resource types.
 
 This is vocabulary only.
@@ -10,8 +21,8 @@ from enum import Enum
 from pydantic import model_validator
 from typing_extensions import Self
 
-from dlc_octopus.schemas.base.core import FrozenModel, ProjectRelativePath
-from dlc_octopus.schemas.base.symlinks import SymlinkObservation
+from dlccore.project.schemas.base.core import FrozenModel, ProjectRelativePath
+from dlccore.project.schemas.base.symlinks import SymlinkObservation
 
 
 class ResourceManagement(str, Enum):
