@@ -18,6 +18,7 @@ import pytest
 from pydantic import ValidationError
 
 from dlccore.project.schemas.base.finding_codes import (
+    ConfigFindingCode,
     FindingCode,
     Severity,
     StructureFindingCode,
@@ -201,7 +202,7 @@ def test_an_example_namespace_leaves_the_catalogue_after_its_test() -> None:
 def test_the_finding_code_catalogue_is_closed() -> None:
     """The catalogue is closed: adding a namespace is deliberate, so it fails here first."""
 
-    assert set(FindingCode.__subclasses__()) == {StructureFindingCode}
+    assert set(FindingCode.__subclasses__()) == {StructureFindingCode, ConfigFindingCode}
 
 
 def test_severity_has_three_rungs() -> None:

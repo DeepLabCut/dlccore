@@ -14,9 +14,11 @@ from collections.abc import Callable
 from importlib import metadata
 from pathlib import Path
 
+import numpy as np
 import pytest
 
 from dlccore.config import ProjectConfig
+from dlccore.config.utils import write_config
 from dlccore.project.schemas.base.finding_codes import FindingCode, Severity
 from dlccore.project.schemas.snapshots import PROJECT_SNAPSHOT_VERSION
 
@@ -176,6 +178,17 @@ def valid_project_config(
 
 
 @pytest.fixture
+def valid_config_data(
+    valid_project_config: ProjectConfig,
+) -> dict:
+    """Return valid serialized config data that tests may modify."""
+
+    return valid_project_config.to_dict(
+        normalize=True,
+    )
+
+
+@pytest.fixture
 def valid_project(
     tmp_path: Path,
     valid_project_config: ProjectConfig,
@@ -187,6 +200,28 @@ def valid_project(
 
     valid_project_config.to_yaml(
         tmp_path / "config.yaml",
+    )
+
+    return tmp_path
+
+
+@pytest.fixture
+def invalid_project(
+    tmp_path: Path,
+    valid_config_data: dict,
+) -> Path:
+    """Create a project with a canonically invalid config."""
+
+    (tmp_path / "videos").mkdir()
+    (tmp_path / "labeled-data").mkdir()
+
+    invalid_data = dict(valid_config_data)
+    # FIXME: invalid for the current config schema only; a value invalid at every config version would be sturdier.
+    invalid_data["pcutoff"] = np.nan
+
+    write_config(
+        tmp_path / "config.yaml",
+        invalid_data,
     )
 
     return tmp_path

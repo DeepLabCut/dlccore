@@ -1,4 +1,14 @@
-# dlc_octopus/discovery/config.py
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
 """Read a project's config file without interpreting or validating its content."""
 
 from __future__ import annotations
@@ -8,7 +18,7 @@ from enum import Enum
 from pathlib import Path
 from typing import Any
 
-from deeplabcut.core.config.utils import read_config_as_dict
+from dlccore.config.utils import read_config_as_dict
 
 
 class RawConfigReadStatus(str, Enum):
@@ -35,7 +45,7 @@ def discover_config_file(
 ) -> RawConfigRead:
     """Read a config file and record what was found, without validating it.
 
-    The existing DeepLabCut config reader performs YAML I/O. This function
+    ``dlccore.config`` performs the YAML I/O. This function
     does not migrate, validate, or interpret the loaded data beyond
     extracting the declared project path as written.
     """

@@ -1,12 +1,22 @@
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
 from __future__ import annotations
 
-from deeplabcut.core.config import ProjectConfig
-
-from dlc_octopus.schemas.base.core import FrozenModel
-from dlc_octopus.schemas.project_layout.config.observations import (
+from dlccore.config import ProjectConfig
+from dlccore.project.schemas.base.core import FrozenModel
+from dlccore.project.schemas.project_layout.config.observations import (
     ValidConfigObservation,
 )
-from dlc_octopus.schemas.snapshots import ProjectSnapshot
+from dlccore.project.schemas.snapshots import ProjectSnapshot
 
 
 class ValidationContext(FrozenModel):

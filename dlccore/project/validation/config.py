@@ -1,31 +1,41 @@
-# dlc_octopus/validation/config.py
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
 """Validate a project's config file against the canonical DLC schema."""
 
 from __future__ import annotations
 
 from pathlib import Path
 
-from deeplabcut.core.config import ProjectConfig
 from pydantic import JsonValue, ValidationError
 
-from dlc_octopus.discovery.config import (
+from dlccore.config import ProjectConfig
+from dlccore.project.discovery.config import (
     RawConfigRead,
     RawConfigReadStatus,
     discover_config_file,
 )
-from dlc_octopus.schemas.base.finding_codes import (
+from dlccore.project.schemas.base.finding_codes import (
     ConfigFindingCode,
 )
-from dlc_octopus.schemas.base.findings import (
+from dlccore.project.schemas.base.findings import (
     Finding,
 )
-from dlc_octopus.schemas.locations import one_per_project
-from dlc_octopus.schemas.project_layout.config.observations import (
+from dlccore.project.schemas.locations import one_per_project
+from dlccore.project.schemas.project_layout.config.observations import (
     ConfigObservation,
     FailedConfigObservation,
     ValidConfigObservation,
 )
-from dlc_octopus.schemas.project_layout.project import PROJECT_CONFIG
+from dlccore.project.schemas.project_layout.project import PROJECT_CONFIG
 
 
 def validate_project_config(
@@ -33,7 +43,7 @@ def validate_project_config(
 ) -> tuple[ConfigObservation, tuple[Finding, ...]]:
     """Read and validate a canonical DLC config without modifying it.
 
-    The existing DeepLabCut config reader performs YAML I/O.
+    ``dlccore.config`` performs the YAML I/O.
     ``ProjectConfig.from_dict`` performs validation against the canonical DLC schema.
 
     This function should not repair paths, modify the loaded model, or write
@@ -120,7 +130,7 @@ def _migration_findings(
     raw_config: dict,
     config_path: Path,
 ) -> tuple[Finding, ...]:
-    """Report a config whose declared version DeepLabCut migrated in memory while loading it.
+    """Report a config whose declared version the config schema migrated in memory while loading it.
 
     A missing ``config_version`` is version 0, as DeepLabCut reads it.
     """
@@ -153,7 +163,7 @@ def _no_keypoints_findings(
 ) -> tuple[Finding, ...]:
     """Report a loaded config that declares no keypoints, with the keypoint fields as written.
 
-    DeepLabCut normalises ``""``, ``[]`` and a missing key alike, so only the raw read tells them apart.
+    The config schema normalises ``""``, ``[]`` and a missing key alike, so only the raw read tells them apart.
     """
 
     fields = ("multianimalbodyparts", "uniquebodyparts") if config.multianimalproject else ("bodyparts",)
@@ -180,7 +190,7 @@ def _null_key_defaulted_findings(
     raw_config: dict,
     config_path: Path,
 ) -> tuple[Finding, ...]:
-    """Report each key written with no value that DeepLabCut loaded as its field's default.
+    """Report each key written with no value that the config schema loaded as its field's default.
 
     A field that accepts ``None`` keeps it, so it is not reported.
     """

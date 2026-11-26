@@ -1,3 +1,14 @@
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
 from __future__ import annotations
 
 import inspect
@@ -5,17 +16,17 @@ from pathlib import Path
 
 import numpy as np
 import pytest
-from deeplabcut.core.config import ProjectConfig, versioning
-from deeplabcut.core.config.utils import write_config
-from deeplabcut.core.config.versioning import CURRENT_CONFIG_VERSION
 
-from dlc_octopus.schemas.base.findings import Finding, Severity
-from dlc_octopus.schemas.project_layout.config.observations import (
+from dlccore.config import ProjectConfig, versioning
+from dlccore.config.utils import write_config
+from dlccore.config.versioning import CURRENT_CONFIG_VERSION
+from dlccore.project.schemas.base.findings import Finding, Severity
+from dlccore.project.schemas.project_layout.config.observations import (
     ConfigObservation,
     FailedConfigObservation,
     ValidConfigObservation,
 )
-from dlc_octopus.validation.config import validate_project_config
+from dlccore.project.validation.config import validate_project_config
 
 
 def test_validate_valid_project_config(

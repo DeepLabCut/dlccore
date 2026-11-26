@@ -121,14 +121,14 @@ class ConfigFindingCode(FindingCode):
     )
     CONFIG_VERSION_UPGRADED = (
         "CONFIG_VERSION_UPGRADED",
-        "The config declares an older config version; DeepLabCut migrated it in memory to the current one.",
+        "The config declares an older config version; the config schema migrated it in memory to the current one.",
         Severity.NOTE,
         ("declared_version", "loaded_version"),
     )
     CONFIG_VERSION_DOWNGRADED = (
         "CONFIG_VERSION_DOWNGRADED",
-        "The config declares a newer config version than this code reads; DeepLabCut migrated it down in memory, "
-        "which can drop fields.",
+        "The config declares a newer config version than this code reads; the config schema migrated it down in "
+        "memory, which can drop fields.",
         Severity.WARNING,
         ("declared_version", "loaded_version"),
     )
@@ -140,22 +140,9 @@ class ConfigFindingCode(FindingCode):
     )
     CONFIG_NULL_KEY_DEFAULTED = (
         "CONFIG_NULL_KEY_DEFAULTED",
-        "A config key is written with no value, so the DeepLabCut field default was used.",
+        "A config key is written with no value, so the config schema's field default was used.",
         Severity.NOTE,
         ("default",),
-    )
-    CONFIG_PROJECT_PATH_MISMATCH = (
-        "CONFIG_PROJECT_PATH_MISMATCH",
-        "The project path declared in config.yaml does not match the project root observed. A declared path "
-        "probed as missing may also be an unreachable network location or a path from another platform.",
-        Severity.NOTE,
-        ("declared_project_path", "observed_project_root", "declared_path_probe", "error_type", "error_message"),
-    )
-    CONFIG_PROJECT_PATH_NOT_ABSOLUTE = (
-        "CONFIG_PROJECT_PATH_NOT_ABSOLUTE",
-        "The project path in config.yaml is missing, empty or relative, and cannot be compared with the project root.",
-        Severity.NOTE,
-        ("declared_project_path",),
     )
 
 
