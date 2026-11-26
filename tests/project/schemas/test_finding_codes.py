@@ -12,6 +12,7 @@
 from __future__ import annotations
 
 import json
+import weakref
 
 import pytest
 from pydantic import ValidationError
@@ -19,25 +20,6 @@ from pydantic import ValidationError
 from dlccore.project.schemas.base.finding_codes import FindingCode, Severity, iter_finding_codes
 from dlccore.project.schemas.base.findings import Finding, Reach
 
-
-class ExampleFindingCode(FindingCode):
-    """Declared by these tests; each real namespace lands with the check that first emits it."""
-
-    TEST_NODE_WRONG_TYPE = (
-        "TEST_NODE_WRONG_TYPE",
-        "A project resource exists at the expected location but has the wrong filesystem type.",
-        Severity.ERROR,
-        ("resource_kind", "expected_type"),
-    )
-    TEST_NODE_UNREADABLE = (
-        "TEST_NODE_UNREADABLE",
-        "A project-layout node could not be read.",
-        Severity.ERROR,
-        ("resource_kind", "error_type", "error_message"),
-    )
-
-
-_UNREADABLE = ExampleFindingCode.TEST_NODE_UNREADABLE
 _SCHEMA_ID = "dlc.videos.source_video"
 
 
@@ -47,8 +29,8 @@ def _declared_evidence(code: FindingCode) -> dict[str, str]:
     return dict.fromkeys(code.evidence_keys, "placeholder")
 
 
-def test_finding_keeps_a_declared_code_as_its_enum_member() -> None:
-    code = ExampleFindingCode.TEST_NODE_WRONG_TYPE
+def test_finding_keeps_a_declared_code_as_its_enum_member(example_codes: type[FindingCode]) -> None:
+    code = example_codes.TEST_NODE_WRONG_TYPE
 
     finding = Finding(
         code=code,
@@ -61,8 +43,8 @@ def test_finding_keeps_a_declared_code_as_its_enum_member() -> None:
     assert finding.code == "TEST_NODE_WRONG_TYPE"
 
 
-def test_finding_code_renders_as_the_bare_code() -> None:
-    code = ExampleFindingCode.TEST_NODE_WRONG_TYPE
+def test_finding_code_renders_as_the_bare_code(example_codes: type[FindingCode]) -> None:
+    code = example_codes.TEST_NODE_WRONG_TYPE
 
     assert str(code) == "TEST_NODE_WRONG_TYPE"
     assert f"{code}" == "TEST_NODE_WRONG_TYPE"
@@ -78,57 +60,57 @@ def test_finding_rejects_an_undeclared_code() -> None:
         )
 
 
-def test_finding_severity_comes_from_its_code() -> None:
+def test_finding_severity_comes_from_its_code(example_codes: type[FindingCode]) -> None:
     finding = Finding(
-        code=_UNREADABLE,
+        code=example_codes.TEST_NODE_UNREADABLE,
         schema_id=_SCHEMA_ID,
         reach=Reach.ONE_PER_PROJECT,
-        evidence=_declared_evidence(_UNREADABLE),
+        evidence=_declared_evidence(example_codes.TEST_NODE_UNREADABLE),
     )
 
     assert finding.severity is Severity.ERROR
     assert finding.model_dump()["severity"] == Severity.ERROR
 
 
-def test_finding_ignores_a_caller_supplied_severity() -> None:
+def test_finding_ignores_a_caller_supplied_severity(example_codes: type[FindingCode]) -> None:
     finding = Finding(
-        code=_UNREADABLE,
+        code=example_codes.TEST_NODE_UNREADABLE,
         schema_id=_SCHEMA_ID,
         reach=Reach.ONE_PER_PROJECT,
         severity=Severity.NOTE,
-        evidence=_declared_evidence(_UNREADABLE),
+        evidence=_declared_evidence(example_codes.TEST_NODE_UNREADABLE),
     )
 
     assert finding.severity is Severity.ERROR
 
 
-def test_finding_requires_the_evidence_its_code_declares() -> None:
+def test_finding_requires_the_evidence_its_code_declares(example_codes: type[FindingCode]) -> None:
     with pytest.raises(ValidationError, match="requires evidence keys"):
         Finding(
-            code=_UNREADABLE,
+            code=example_codes.TEST_NODE_UNREADABLE,
             schema_id=_SCHEMA_ID,
             reach=Reach.ONE_PER_PROJECT,
         )
 
 
-def test_finding_reports_only_the_missing_evidence_keys() -> None:
-    partial = _declared_evidence(_UNREADABLE)
+def test_finding_reports_only_the_missing_evidence_keys(example_codes: type[FindingCode]) -> None:
+    partial = _declared_evidence(example_codes.TEST_NODE_UNREADABLE)
     del partial["error_message"]
 
     with pytest.raises(ValidationError, match=r"\('error_message',\)"):
         Finding(
-            code=_UNREADABLE,
+            code=example_codes.TEST_NODE_UNREADABLE,
             schema_id=_SCHEMA_ID,
             reach=Reach.ONE_PER_PROJECT,
             evidence=partial,
         )
 
 
-def test_finding_accepts_declared_evidence_that_was_not_observed() -> None:
-    evidence: dict[str, str | None] = dict.fromkeys(_UNREADABLE.evidence_keys, None)
+def test_finding_accepts_declared_evidence_that_was_not_observed(example_codes: type[FindingCode]) -> None:
+    evidence: dict[str, str | None] = dict.fromkeys(example_codes.TEST_NODE_UNREADABLE.evidence_keys, None)
 
     finding = Finding(
-        code=_UNREADABLE,
+        code=example_codes.TEST_NODE_UNREADABLE,
         schema_id=_SCHEMA_ID,
         reach=Reach.ONE_PER_PROJECT,
         evidence=evidence,
@@ -137,18 +119,18 @@ def test_finding_accepts_declared_evidence_that_was_not_observed() -> None:
     assert finding.evidence["error_message"] is None
 
 
-def test_finding_round_trips_through_serialized_form() -> None:
+def test_finding_round_trips_through_serialized_form(example_codes: type[FindingCode]) -> None:
     finding = Finding(
-        code=_UNREADABLE,
+        code=example_codes.TEST_NODE_UNREADABLE,
         schema_id=_SCHEMA_ID,
         reach=Reach.ONE_PER_PROJECT,
-        evidence=_declared_evidence(_UNREADABLE),
+        evidence=_declared_evidence(example_codes.TEST_NODE_UNREADABLE),
     )
 
     restored = Finding.model_validate(json.loads(finding.model_dump_json()))
 
     assert restored == finding
-    assert restored.code is _UNREADABLE
+    assert restored.code is example_codes.TEST_NODE_UNREADABLE
 
 
 def test_finding_rejects_an_undeclared_code_from_serialized_form() -> None:
@@ -171,12 +153,14 @@ def test_every_finding_code_declares_well_formed_evidence_keys(code: FindingCode
     assert all(key and key.islower() for key in code.evidence_keys)
 
 
+@pytest.mark.usefixtures("example_codes")
 def test_finding_code_values_are_unique_across_namespaces() -> None:
     codes = iter_finding_codes()
 
     assert len({code.value for code in codes}) == len(codes)
 
 
+@pytest.mark.usefixtures("example_codes")
 def test_iter_finding_codes_covers_every_namespace() -> None:
     namespaces = {type(code) for code in iter_finding_codes()}
 
@@ -194,13 +178,25 @@ def test_training_split_reconciliation_declares_a_finding_code() -> None:
     assert "TRAINING_SPLIT_TABLE_MISMATCH" in {code.value for code in iter_finding_codes()}
 
 
+_example_namespace: list[weakref.ref[type[FindingCode]]] = []
+
+
+def test_an_example_namespace_is_in_the_catalogue_during_its_test(example_codes: type[FindingCode]) -> None:
+    _example_namespace.append(weakref.ref(example_codes))
+
+    assert example_codes in FindingCode.__subclasses__()
+
+
+def test_an_example_namespace_leaves_the_catalogue_after_its_test() -> None:
+    # Control for the closed-catalogue test below: the previous test's namespace is gone, not exempted.
+    assert _example_namespace
+    assert _example_namespace[0]() is None
+
+
 def test_the_finding_code_catalogue_is_closed() -> None:
-    """Adding a namespace is deliberate, so it fails here first. Namespaces declared by tests are outside it."""
+    """The catalogue is closed: adding a namespace is deliberate, so it fails here first."""
 
-    namespaces = set(FindingCode.__subclasses__())
-
-    assert ExampleFindingCode in namespaces
-    assert {namespace for namespace in namespaces if namespace.__module__.startswith("dlccore.")} == set()
+    assert set(FindingCode.__subclasses__()) == set()
 
 
 def test_severity_has_three_rungs() -> None:
@@ -218,11 +214,17 @@ def test_instance_is_a_finding_field() -> None:
     assert "instance" in Finding.model_fields
 
 
-def test_a_finding_states_its_reach() -> None:
-    evidence = _declared_evidence(_UNREADABLE)
+def test_a_finding_states_its_reach(example_codes: type[FindingCode]) -> None:
+    evidence = _declared_evidence(example_codes.TEST_NODE_UNREADABLE)
 
     def finding(reach: Reach, instance: tuple[str, ...]) -> Finding:
-        return Finding(code=_UNREADABLE, schema_id=_SCHEMA_ID, reach=reach, instance=instance, evidence=evidence)
+        return Finding(
+            code=example_codes.TEST_NODE_UNREADABLE,
+            schema_id=_SCHEMA_ID,
+            reach=reach,
+            instance=instance,
+            evidence=evidence,
+        )
 
     assert {member.name for member in Reach} == {"ONE_PER_PROJECT", "ONE_OF", "ALL_OF", "UNROOTED"}
 
@@ -247,5 +249,6 @@ def test_a_finding_states_its_reach() -> None:
     strict=True,
     raises=AssertionError,
 )
+@pytest.mark.usefixtures("example_codes")
 def test_a_released_code_cannot_disappear_without_a_successor() -> None:
     assert all(hasattr(code, "supersedes") for code in iter_finding_codes())

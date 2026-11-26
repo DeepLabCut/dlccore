@@ -18,50 +18,48 @@ import pytest
 from pydantic import ValidationError
 
 from dlccore.project.schemas.base.core import instance_from_path
-from dlccore.project.schemas.base.finding_codes import FindingCode, Severity
+from dlccore.project.schemas.base.finding_codes import FindingCode
 from dlccore.project.schemas.base.findings import Finding, Reach
 
-
-class InstanceFindingCode(FindingCode):
-    """Declared by these tests; each real namespace lands with the check that first emits it."""
-
-    TEST_INSTANCE_NODE_UNREADABLE = (
-        "TEST_INSTANCE_NODE_UNREADABLE",
-        "A project-layout node could not be read.",
-        Severity.ERROR,
-        ("resource_kind", "error_type", "error_message"),
-    )
-
-
-_CODE = InstanceFindingCode.TEST_INSTANCE_NODE_UNREADABLE
-_EVIDENCE = dict.fromkeys(_CODE.evidence_keys, "placeholder")
 _SCHEMA_ID = "dlc.labeled_data.dataset"
 
 
-def test_a_finding_has_no_instance_by_default() -> None:
-    assert Finding(code=_CODE, schema_id=_SCHEMA_ID, reach=Reach.ONE_PER_PROJECT, evidence=_EVIDENCE).instance == ()
+@pytest.fixture
+def code(example_codes: type[FindingCode]) -> FindingCode:
+    return example_codes.TEST_NODE_UNREADABLE
 
 
-def test_an_instance_serializes_as_a_plain_list() -> None:
+@pytest.fixture
+def evidence(code: FindingCode) -> dict[str, str]:
+    return dict.fromkeys(code.evidence_keys, "placeholder")
+
+
+def test_a_finding_has_no_instance_by_default(code: FindingCode, evidence: dict[str, str]) -> None:
+    assert Finding(code=code, schema_id=_SCHEMA_ID, reach=Reach.ONE_PER_PROJECT, evidence=evidence).instance == ()
+
+
+def test_an_instance_serializes_as_a_plain_list(code: FindingCode, evidence: dict[str, str]) -> None:
     finding = Finding(
-        code=_CODE, schema_id=_SCHEMA_ID, reach=Reach.ONE_OF, instance=("labeled-data", "ds1"), evidence=_EVIDENCE
+        code=code, schema_id=_SCHEMA_ID, reach=Reach.ONE_OF, instance=("labeled-data", "ds1"), evidence=evidence
     )
 
     assert json.loads(finding.model_dump_json())["instance"] == ["labeled-data", "ds1"]
 
 
 @pytest.mark.parametrize("segment", ["", "labeled-data/ds1"], ids=["empty", "joined"])
-def test_an_instance_refuses_a_segment_only_a_caller_can_produce(segment: str) -> None:
+def test_an_instance_refuses_a_segment_only_a_caller_can_produce(
+    segment: str, code: FindingCode, evidence: dict[str, str]
+) -> None:
     with pytest.raises(ValidationError, match="project-relative path segment"):
         Finding(
-            code=_CODE, schema_id=_SCHEMA_ID, reach=Reach.ONE_OF, instance=("labeled-data", segment), evidence=_EVIDENCE
+            code=code, schema_id=_SCHEMA_ID, reach=Reach.ONE_OF, instance=("labeled-data", segment), evidence=evidence
         )
 
 
 @pytest.mark.parametrize("segment", ["..", "12:30.mp4", "a\\b.mp4"])
-def test_an_instance_keeps_user_data_segments(segment: str) -> None:
+def test_an_instance_keeps_user_data_segments(segment: str, code: FindingCode, evidence: dict[str, str]) -> None:
     assert Finding(
-        code=_CODE, schema_id=_SCHEMA_ID, reach=Reach.ONE_OF, instance=("videos", segment), evidence=_EVIDENCE
+        code=code, schema_id=_SCHEMA_ID, reach=Reach.ONE_OF, instance=("videos", segment), evidence=evidence
     ).instance == (
         "videos",
         segment,
@@ -73,9 +71,11 @@ def test_an_instance_keeps_user_data_segments(segment: str) -> None:
     [("C:\\", "x.mp4"), ("\\\\server\\share\\", "x.mp4"), ("C:rel", "x.mp4")],
     ids=["drive-root", "unc-share", "drive-relative"],
 )
-def test_an_instance_refuses_segments_that_carry_a_drive_or_root(instance: tuple[str, ...]) -> None:
+def test_an_instance_refuses_segments_that_carry_a_drive_or_root(
+    instance: tuple[str, ...], code: FindingCode, evidence: dict[str, str]
+) -> None:
     with pytest.raises(ValidationError, match="project-relative"):
-        Finding(code=_CODE, schema_id=_SCHEMA_ID, reach=Reach.ONE_OF, instance=instance, evidence=_EVIDENCE)
+        Finding(code=code, schema_id=_SCHEMA_ID, reach=Reach.ONE_OF, instance=instance, evidence=evidence)
 
 
 def test_instance_from_path_splits_a_project_relative_path() -> None:
