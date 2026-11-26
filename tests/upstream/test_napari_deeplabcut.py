@@ -117,7 +117,7 @@ def test_napari_deeplabcut_sees_one_moved_point_in_a_rewritten_file(tmp_path: Pa
 
 
 def _hdf_reads_by_shared_io(monkeypatch: pytest.MonkeyPatch, read: object) -> list[bool]:
-    """Call ``read`` and return, for each ``pd.read_hdf`` it makes, whether ``dlccore.project.io`` made it."""
+    """Call ``read`` and return, for each ``pd.read_hdf`` it makes, whether ``dlccore.io`` made it."""
 
     calls: list[bool] = []
     read_hdf = pd.read_hdf
