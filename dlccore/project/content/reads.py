@@ -1,3 +1,14 @@
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
 """What every data entry point shares: which observed files it reads, and how it reports one it could not."""
 
 from __future__ import annotations
@@ -5,13 +16,13 @@ from __future__ import annotations
 from collections.abc import Collection
 from dataclasses import dataclass
 
-from dlc_octopus.schemas.base.core import ProjectRelativePath, SchemaId
-from dlc_octopus.schemas.base.filesystem import LayoutIndex
-from dlc_octopus.schemas.base.findings import Finding
-from dlc_octopus.schemas.base.observations import NodeStatus, ObservedNode, walk_observed_nodes
-from dlc_octopus.schemas.locations import node_location
-from dlc_octopus.schemas.scope import Scope
-from dlc_octopus.schemas.snapshots import ProjectSnapshot
+from dlccore.project.schemas.base.core import ProjectRelativePath, SchemaId
+from dlccore.project.schemas.base.filesystem import LayoutIndex
+from dlccore.project.schemas.base.findings import Finding
+from dlccore.project.schemas.base.observations import NodeStatus, ObservedNode, walk_observed_nodes
+from dlccore.project.schemas.locations import node_location
+from dlccore.project.schemas.scope import Scope
+from dlccore.project.schemas.snapshots import ProjectSnapshot
 
 
 @dataclass(frozen=True)

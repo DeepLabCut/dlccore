@@ -12,14 +12,26 @@
 """Public entry points of ``dlccore.project``; consumer helpers are in ``api.helpers``. Re-exports only."""
 
 from dlccore.project.api import helpers
+from dlccore.project.content import (
+    FailedRead,
+    FileFingerprint,
+    ResourcesFileFingerprint,
+    compare_file_fingerprints,
+    resources_file_fingerprint,
+)
 from dlccore.project.inspection import inspect_project, project_name
 from dlccore.project.schemas.base.resources import FileResourceKind
 from dlccore.project.schemas.scope import findings_in_scope
 
 __all__ = [
+    "FailedRead",
+    "FileFingerprint",
     "FileResourceKind",
+    "ResourcesFileFingerprint",
+    "compare_file_fingerprints",
     "findings_in_scope",
     "helpers",
     "inspect_project",
     "project_name",
+    "resources_file_fingerprint",
 ]

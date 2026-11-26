@@ -1,3 +1,14 @@
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
 import hashlib
 from collections.abc import Callable
 from pathlib import Path
@@ -5,16 +16,16 @@ from pathlib import Path
 import pytest
 from pydantic import ValidationError
 
-from dlc_octopus.api import findings_in_scope, inspect_project
-from dlc_octopus.api.helpers import get_blocking_findings
-from dlc_octopus.content import FailedRead, FileFingerprint, compare_file_fingerprints, resources_file_fingerprint
-from dlc_octopus.schemas.base.finding_codes import FingerprintFindingCode, Severity, StructureFindingCode
-from dlc_octopus.schemas.base.findings import Reach
-from dlc_octopus.schemas.base.observations import NodeStatus
-from dlc_octopus.schemas.base.resources import FileResourceKind
-from dlc_octopus.schemas.project_layout.project import PROJECT_CONFIG
-from dlc_octopus.schemas.project_layout.videos import SOURCE_VIDEO, VIDEOS
-from dlc_octopus.schemas.scope import Scope
+from dlccore.project.api import findings_in_scope, inspect_project
+from dlccore.project.api.helpers import get_blocking_findings
+from dlccore.project.content import FailedRead, FileFingerprint, compare_file_fingerprints, resources_file_fingerprint
+from dlccore.project.schemas.base.finding_codes import FingerprintFindingCode, Severity, StructureFindingCode
+from dlccore.project.schemas.base.findings import Reach
+from dlccore.project.schemas.base.observations import NodeStatus
+from dlccore.project.schemas.base.resources import FileResourceKind
+from dlccore.project.schemas.project_layout.project import PROJECT_CONFIG
+from dlccore.project.schemas.project_layout.videos import SOURCE_VIDEO, VIDEOS
+from dlccore.project.schemas.scope import Scope
 
 FAILED = FingerprintFindingCode.FILE_FINGERPRINT_FAILED
 CHANGED = FingerprintFindingCode.FILE_FINGERPRINT_CHANGED
@@ -211,8 +222,8 @@ def test_a_byte_count_survives_a_json_round_trip() -> None:
 
 
 def test_the_public_api_reexports_file_fingerprinting() -> None:
-    import dlc_octopus.api as api
-    import dlc_octopus.content as content
+    import dlccore.project.api as api
+    import dlccore.project.content as content
 
     assert (
         api.resources_file_fingerprint,

@@ -1,4 +1,15 @@
-"""File fingerprints of a snapshot's file resources, requested from ``dlc_octopus.io`` and reported as findings."""
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
+"""File fingerprints of a snapshot's file resources, requested from ``dlccore.io`` and reported as findings."""
 
 from __future__ import annotations
 
@@ -9,18 +20,18 @@ from typing import Annotated
 
 from pydantic import Field
 
-from dlc_octopus.content.reads import FailedRead, covered, present_files_in_scope
-from dlc_octopus.io import UnreadableFileError, fingerprint_file
-from dlc_octopus.schemas.base.core import FrozenModel, ProjectRelativePath, SchemaId, Sha256Hex
-from dlc_octopus.schemas.base.filesystem import FileSchema, LayoutIndex
-from dlc_octopus.schemas.base.finding_codes import FingerprintFindingCode
-from dlc_octopus.schemas.base.findings import Finding
-from dlc_octopus.schemas.base.observations import NodeStatus, walk_observed_nodes
-from dlc_octopus.schemas.locations import node_location
-from dlc_octopus.schemas.project_layout.project import PROJECT_INDEX
-from dlc_octopus.schemas.scope import Scope
-from dlc_octopus.schemas.snapshots import ProjectSnapshot
-from dlc_octopus.validation.results import ValidationResult
+from dlccore.io import UnreadableFileError, fingerprint_file
+from dlccore.project.content.reads import FailedRead, covered, present_files_in_scope
+from dlccore.project.schemas.base.core import FrozenModel, ProjectRelativePath, SchemaId, Sha256Hex
+from dlccore.project.schemas.base.filesystem import FileSchema, LayoutIndex
+from dlccore.project.schemas.base.finding_codes import FingerprintFindingCode
+from dlccore.project.schemas.base.findings import Finding
+from dlccore.project.schemas.base.observations import NodeStatus, walk_observed_nodes
+from dlccore.project.schemas.locations import node_location
+from dlccore.project.schemas.project_layout.project import PROJECT_INDEX
+from dlccore.project.schemas.scope import Scope
+from dlccore.project.schemas.snapshots import ProjectSnapshot
+from dlccore.project.validation.results import ValidationResult
 
 
 class FileFingerprint(FrozenModel):
