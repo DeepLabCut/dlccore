@@ -1,14 +1,3 @@
-#
-# DeepLabCut Toolbox (deeplabcut.org)
-# © A. & M.W. Mathis Labs
-# https://github.com/DeepLabCut/dlccore
-#
-# Contributors:
-# https://github.com/DeepLabCut/dlccore/graphs/contributors
-#
-# Licensed under GNU Lesser General Public License v3.0
-#
-
 from __future__ import annotations
 
 from enum import Enum
@@ -18,28 +7,29 @@ from typing import TYPE_CHECKING, Literal
 from pydantic import model_validator
 from typing_extensions import Self
 
-from dlccore.project.errors import ConfigUnavailableError
-from dlccore.project.schemas.base.core import FrozenModel
-from dlccore.project.schemas.base.findings import (
+from dlc_octopus.errors import ConfigUnavailableError
+from dlc_octopus.schemas.base.core import FrozenModel
+from dlc_octopus.schemas.base.findings import (
     Finding,
     Reach,
 )
-from dlccore.project.schemas.base.observations import ObservedNode
-from dlccore.project.schemas.base.resources import (
+from dlc_octopus.schemas.base.observations import ObservedNode
+from dlc_octopus.schemas.base.resources import (
     ProjectResource,
     ResourceKind,
 )
-from dlccore.project.schemas.base.validation import ValidationCheck
-from dlccore.project.schemas.project_layout.config import (
+from dlc_octopus.schemas.base.validation import ValidationCheck
+from dlc_octopus.schemas.project_layout.config import (
     ConfigObservation,
     FailedConfigObservation,
     ValidConfigObservation,
 )
-from dlccore.project.schemas.utils import flatten_observed_project
+from dlc_octopus.schemas.utils import flatten_observed_project
 
 if TYPE_CHECKING:
-    from dlccore.config import ProjectConfig
-    from dlccore.project.validation.results import ValidationResult
+    from deeplabcut.core.config import ProjectConfig
+
+    from dlc_octopus.validation.results import ValidationResult
 
 # 0.x declares the snapshot format unstable: it changes with the vocabulary and carries
 # no compatibility promise. Bumping is owed once a consumer reads a snapshot back.
@@ -173,6 +163,24 @@ class ProjectSnapshot(FrozenModel):
             return ConfigState.INVALID
 
         return ConfigState.VALID
+
+    def render_tree(
+        self,
+        *,
+        show_schema_ids: bool = False,
+        show_unknown: bool = True,
+        max_children_per_kind: int | None = 50,
+    ) -> str:
+        """Render a tree view of the project snapshot."""
+
+        from dlc_octopus.visualization import render_project_tree
+
+        return render_project_tree(
+            project=self.project,
+            show_schema_ids=show_schema_ids,
+            show_unknown=show_unknown,
+            max_children_per_kind=max_children_per_kind,
+        )
 
     @property
     def config(self) -> ProjectConfig:
