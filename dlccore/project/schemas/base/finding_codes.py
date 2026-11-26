@@ -220,6 +220,23 @@ class ConfiguredVideoFindingCode(FindingCode):
     )
 
 
+class FingerprintFindingCode(FindingCode):
+    """Findings about file and frame fingerprints of requested project resources."""
+
+    FILE_FINGERPRINT_FAILED = (
+        "FILE_FINGERPRINT_FAILED",
+        "A requested resource could not be file-fingerprinted.",
+        Severity.ERROR,
+        ("resource_kind", "error_type", "error_message"),
+    )
+    FILE_FINGERPRINT_CHANGED = (
+        "FILE_FINGERPRINT_CHANGED",
+        "A resource's file fingerprint differs from the one recorded for it, or it was not fingerprinted.",
+        Severity.WARNING,
+        ("recorded_sha256", "observed_sha256"),
+    )
+
+
 def iter_finding_codes() -> tuple[FindingCode, ...]:
     """Return every declared finding code, namespace by namespace."""
 
