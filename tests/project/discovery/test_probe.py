@@ -1,3 +1,14 @@
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
 from __future__ import annotations
 
 import os
@@ -8,11 +19,11 @@ from pathlib import Path
 import pytest
 from pydantic import ValidationError
 
-from dlc_octopus.discovery.observer import ExpectedEntryKind, status_for_expected_entry
-from dlc_octopus.discovery.probe import probe_path
-from dlc_octopus.schemas.base.observations import NodeStatus
-from dlc_octopus.schemas.base.probes import FilesystemEntryKind, PathProbe, PathProbeStatus
-from dlc_octopus.schemas.base.symlinks import SymlinkObservation, SymlinkTargetKind
+from dlccore.project.discovery.observer import ExpectedEntryKind, status_for_expected_entry
+from dlccore.project.discovery.probe import probe_path
+from dlccore.project.schemas.base.observations import NodeStatus
+from dlccore.project.schemas.base.probes import FilesystemEntryKind, PathProbe, PathProbeStatus
+from dlccore.project.schemas.base.symlinks import SymlinkObservation, SymlinkTargetKind
 
 
 def test_probe_missing_path(tmp_path: Path) -> None:

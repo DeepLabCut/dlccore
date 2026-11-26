@@ -1,11 +1,22 @@
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
 from collections.abc import Iterator
 from pathlib import Path
 
 import pytest
 
-from dlc_octopus.discovery.observer import discover_project
-from dlc_octopus.schemas.base.resources import DirectoryResourceKind, FileResourceKind
-from dlc_octopus.schemas.utils import flatten_observed_project
+from dlccore.project.discovery.observer import discover_project
+from dlccore.project.schemas.base.resources import DirectoryResourceKind, FileResourceKind
+from dlccore.project.schemas.utils import flatten_observed_project
 
 
 def test_flatten_observed_project(tmp_path: Path) -> None:
