@@ -1,36 +1,26 @@
-#
-# DeepLabCut Toolbox (deeplabcut.org)
-# © A. & M.W. Mathis Labs
-# https://github.com/DeepLabCut/dlccore
-#
-# Contributors:
-# https://github.com/DeepLabCut/dlccore/graphs/contributors
-#
-# Licensed under GNU Lesser General Public License v3.0
-#
-
 from collections.abc import Iterator
 from pathlib import Path
 
 import pytest
 
-from dlccore.project.discovery.observer import discover_directory_node, discover_project
-from dlccore.project.schemas.base.filesystem import (
+from dlc_octopus.api import inspect_project
+from dlc_octopus.discovery.observer import discover_directory_node, discover_project
+from dlc_octopus.schemas.base.filesystem import (
     DirectorySchema,
     FileSchema,
     NamePattern,
     NodeSchema,
 )
-from dlccore.project.schemas.base.observations import (
+from dlc_octopus.schemas.base.observations import (
     NodeStatus,
 )
-from dlccore.project.schemas.base.probes import FilesystemEntryKind, PathProbeStatus
-from dlccore.project.schemas.base.resources import (
+from dlc_octopus.schemas.base.probes import FilesystemEntryKind, PathProbeStatus
+from dlc_octopus.schemas.base.resources import (
     DirectoryResourceKind,
     FileResourceKind,
     ResourceManagement,
 )
-from dlccore.project.schemas.project_layout.project import PROJECT
+from dlc_octopus.schemas.project_layout.project import PROJECT
 
 
 def test_discovered_directory_populates_renamed_fields(
@@ -359,3 +349,20 @@ def test_directory_traversal_failure_is_independent_of_entry_probe(
     assert videos_node.probe.status == PathProbeStatus.OBSERVED
     assert videos_node.probe.entry_kind == FilesystemEntryKind.DIRECTORY
     assert videos_node.probe.error_type is None
+
+
+@pytest.mark.xfail(
+    reason="on a case-insensitive filesystem, a layout directory spelled differently on disk is discovered twice: "
+    "as the layout node under the layout's spelling, and as an unclaimed directory under its own",
+    strict=True,
+    raises=AssertionError,
+)
+def test_a_differently_cased_layout_directory_is_one_resource(tmp_path: Path) -> None:
+    (tmp_path / "VIDEOS").mkdir()
+
+    if not (tmp_path / "videos").exists():
+        pytest.skip("case-sensitive filesystem: VIDEOS is simply another directory")
+
+    resources = inspect_project(tmp_path).resources
+
+    assert len([resource for resource in resources if str(resource.project_relative_path).lower() == "videos"]) == 1
