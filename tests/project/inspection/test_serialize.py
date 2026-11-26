@@ -1,3 +1,14 @@
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
 from __future__ import annotations
 
 import json
@@ -6,19 +17,19 @@ from pathlib import Path
 import pytest
 from pydantic import ValidationError
 
-from dlc_octopus.api import inspect_project
-from dlc_octopus.capabilities import get_project_manager_capabilities
-from dlc_octopus.discovery.probe import probe_path
-from dlc_octopus.schemas.base.probes import (
+from dlccore.project.api import inspect_project
+from dlccore.project.capabilities import get_project_manager_capabilities
+from dlccore.project.discovery.probe import probe_path
+from dlccore.project.schemas.base.probes import (
     FilesystemEntryKind,
     PathProbe,
     PathProbeStatus,
 )
-from dlc_octopus.schemas.base.resources import (
+from dlccore.project.schemas.base.resources import (
     ProjectResource,
     UnknownResourceKind,
 )
-from dlc_octopus.schemas.snapshots import (
+from dlccore.project.schemas.snapshots import (
     PROJECT_SNAPSHOT_VERSION,
     ProjectSnapshot,
 )
@@ -180,7 +191,7 @@ def test_an_unknown_resource_kind_round_trips(
         return real_probe_path(path)
 
     monkeypatch.setattr(
-        "dlc_octopus.discovery.observer.probe_path",
+        "dlccore.project.discovery.observer.probe_path",
         fake_probe_path,
     )
 

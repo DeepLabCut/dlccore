@@ -1,24 +1,35 @@
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
 from __future__ import annotations
 
-from dlc_octopus.schemas.base.filesystem import (
+from dlccore.project.schemas.base.filesystem import (
     NodeSchema,
     child_schemas,
     index_layout,
 )
-from dlc_octopus.schemas.capabilities import (
+from dlccore.project.schemas.capabilities import (
     BaselineValidationCapability,
     LayoutCapability,
     ProjectManagerCapabilities,
     ValidationCapability,
 )
-from dlc_octopus.schemas.project_layout.project import PROJECT
-from dlc_octopus.schemas.snapshots import (
+from dlccore.project.schemas.project_layout.project import PROJECT
+from dlccore.project.schemas.snapshots import (
     PROJECT_SNAPSHOT_VERSION,
 )
-from dlc_octopus.validation.baseline import (
+from dlccore.project.validation.baseline import (
     iter_baseline_check_registrations,
 )
-from dlc_octopus.validation.registry import (
+from dlccore.project.validation.registry import (
     iter_validator_registrations,
 )
 

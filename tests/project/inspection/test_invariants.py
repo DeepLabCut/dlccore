@@ -1,7 +1,18 @@
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
 from collections.abc import Callable
 from pathlib import Path
 
-from dlc_octopus.api import inspect_project
+from dlccore.project.api import inspect_project
 
 
 def test_inspect_project_does_not_modify_files(

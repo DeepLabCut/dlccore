@@ -1,16 +1,27 @@
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
 from pathlib import Path
 
 import pytest
 
-from dlc_octopus.api import inspect_project
-from dlc_octopus.schemas.base.finding_codes import ConfigFindingCode
-from dlc_octopus.schemas.base.resources import (
+from dlccore.project.api import inspect_project
+from dlccore.project.schemas.base.finding_codes import ConfigFindingCode
+from dlccore.project.schemas.base.resources import (
     DirectoryResourceKind,
 )
-from dlc_octopus.schemas.base.validation import (
+from dlccore.project.schemas.base.validation import (
     ValidationDepth,
 )
-from dlc_octopus.validation import (
+from dlccore.project.validation import (
     ProjectValidationRequest,
     ResourceValidationRequest,
 )
@@ -32,7 +43,7 @@ def test_unregistered_resource_validation_is_rejected(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     monkeypatch.setattr(
-        "dlc_octopus.validation.project.get_validator_registration",
+        "dlccore.project.validation.project.get_validator_registration",
         lambda _kind: None,
     )
 

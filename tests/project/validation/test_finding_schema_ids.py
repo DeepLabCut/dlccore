@@ -1,28 +1,39 @@
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
 from __future__ import annotations
 
 from collections.abc import Callable
 from pathlib import Path
 
 import pytest
-from deeplabcut.core.config.utils import write_config
 
-from dlc_octopus.api import inspect_project
-from dlc_octopus.discovery.probe import probe_path
-from dlc_octopus.schemas.base.filesystem import walk_schema
-from dlc_octopus.schemas.base.finding_codes import (
+from dlccore.config.utils import write_config
+from dlccore.project.api import inspect_project
+from dlccore.project.discovery.probe import probe_path
+from dlccore.project.schemas.base.filesystem import walk_schema
+from dlccore.project.schemas.base.finding_codes import (
     ConfigFindingCode,
     ConfiguredVideoFindingCode,
     StructureFindingCode,
 )
-from dlc_octopus.schemas.base.findings import Finding, Reach
-from dlc_octopus.schemas.base.probes import FilesystemEntryKind, PathProbe, PathProbeStatus
-from dlc_octopus.schemas.base.resources import DirectoryResourceKind
-from dlc_octopus.schemas.base.symlinks import SymlinkObservation, SymlinkTargetKind
-from dlc_octopus.schemas.base.validation import ValidationDepth
-from dlc_octopus.schemas.locations import all_of, one_of, one_per_project
-from dlc_octopus.schemas.project_layout.project import PROJECT, PROJECT_INDEX
-from dlc_octopus.schemas.snapshots import ProjectSnapshot
-from dlc_octopus.validation import ProjectValidationRequest, ResourceValidationRequest
+from dlccore.project.schemas.base.findings import Finding, Reach
+from dlccore.project.schemas.base.probes import FilesystemEntryKind, PathProbe, PathProbeStatus
+from dlccore.project.schemas.base.resources import DirectoryResourceKind
+from dlccore.project.schemas.base.symlinks import SymlinkObservation, SymlinkTargetKind
+from dlccore.project.schemas.base.validation import ValidationDepth
+from dlccore.project.schemas.locations import all_of, one_of, one_per_project
+from dlccore.project.schemas.project_layout.project import PROJECT, PROJECT_INDEX
+from dlccore.project.schemas.snapshots import ProjectSnapshot
+from dlccore.project.validation import ProjectValidationRequest, ResourceValidationRequest
 
 _DECLARED = frozenset(schema.schema_id for schema, _ in walk_schema(PROJECT))
 _NODES = PROJECT_INDEX.schemas
@@ -159,7 +170,7 @@ def test_a_finding_on_a_repeated_node_is_emitted_with_a_fitting_reach(
             ),
         )
 
-    monkeypatch.setattr("dlc_octopus.discovery.observer.probe_path", fake_probe_path)
+    monkeypatch.setattr("dlccore.project.discovery.observer.probe_path", fake_probe_path)
 
     findings = inspect_project(tmp_path).findings
 

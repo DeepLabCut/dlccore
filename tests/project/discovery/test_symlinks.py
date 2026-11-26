@@ -1,31 +1,42 @@
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
 from __future__ import annotations
 
 from collections.abc import Callable
 from pathlib import Path
 
 import pytest
-from deeplabcut.core.config import ProjectConfig
 
-from dlc_octopus.api import inspect_project
-from dlc_octopus.discovery.observer import (
+from dlccore.config import ProjectConfig
+from dlccore.project.api import inspect_project
+from dlccore.project.discovery.observer import (
     ExpectedEntryKind,
     classify_unclaimed_entry,
     status_for_expected_entry,
 )
-from dlc_octopus.discovery.probe import probe_path
-from dlc_octopus.schemas.base.observations import NodeStatus
-from dlc_octopus.schemas.base.probes import (
+from dlccore.project.discovery.probe import probe_path
+from dlccore.project.schemas.base.observations import NodeStatus
+from dlccore.project.schemas.base.probes import (
     FilesystemEntryKind,
     PathProbe,
     PathProbeStatus,
 )
-from dlc_octopus.schemas.base.resources import (
+from dlccore.project.schemas.base.resources import (
     DirectoryResourceKind,
     FileResourceKind,
     ResourceManagement,
     UnknownResourceKind,
 )
-from dlc_octopus.schemas.base.symlinks import (
+from dlccore.project.schemas.base.symlinks import (
     SymlinkObservation,
     SymlinkTargetKind,
 )
@@ -374,7 +385,7 @@ def test_an_unclaimed_entry_that_vanishes_is_not_reported_as_a_resource(
         return real_probe_path(path)
 
     monkeypatch.setattr(
-        "dlc_octopus.discovery.observer.probe_path",
+        "dlccore.project.discovery.observer.probe_path",
         fake_probe_path,
     )
 

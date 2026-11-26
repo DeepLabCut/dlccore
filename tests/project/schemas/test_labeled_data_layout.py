@@ -1,9 +1,20 @@
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
 from pathlib import Path
 
 import pytest
 
-from dlc_octopus.api import inspect_project
-from dlc_octopus.schemas.base.resources import FileResourceKind
+from dlccore.project.api import inspect_project
+from dlccore.project.schemas.base.resources import FileResourceKind
 
 
 def _kinds_in_a_dataset(project_root: Path, names: tuple[str, ...]) -> dict[str, FileResourceKind]:

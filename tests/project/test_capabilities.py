@@ -1,28 +1,39 @@
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
 from __future__ import annotations
 
 import pytest
 
-from dlc_octopus.capabilities import (
+from dlccore.project.capabilities import (
     get_project_manager_capabilities,
 )
-from dlc_octopus.schemas.base.resources import (
+from dlccore.project.schemas.base.resources import (
     DirectoryResourceKind,
 )
-from dlc_octopus.schemas.base.validation import (
+from dlccore.project.schemas.base.validation import (
     ValidationDepth,
 )
-from dlc_octopus.schemas.capabilities import LayoutCapability
-from dlc_octopus.schemas.snapshots import (
+from dlccore.project.schemas.capabilities import LayoutCapability
+from dlccore.project.schemas.snapshots import (
     PROJECT_SNAPSHOT_VERSION,
     ProjectSnapshot,
 )
-from dlc_octopus.validation.context import (
+from dlccore.project.validation.context import (
     ValidationContext,
 )
-from dlc_octopus.validation.registry import (
+from dlccore.project.validation.registry import (
     ValidatorRegistration,
 )
-from dlc_octopus.validation.results import (
+from dlccore.project.validation.results import (
     ValidationResult,
 )
 
@@ -83,7 +94,7 @@ def test_capabilities_derive_validation_depths_from_registry(
     )
 
     monkeypatch.setattr(
-        "dlc_octopus.capabilities.iter_validator_registrations",
+        "dlccore.project.capabilities.iter_validator_registrations",
         lambda: (
             (
                 DirectoryResourceKind.VIDEOS_DIRECTORY,
@@ -123,7 +134,7 @@ def _published_schema_ids(node: LayoutCapability) -> set[str]:
 @pytest.mark.xfail(
     reason="a training-dataset shuffle is a logical layout node with no resource kind, keyed by "
     "(train_percent, shuffle_index), so shuffle findings take it as their schema_id rather than their dataset; "
-    "due with Stack B's training-data work, which observes shuffles outside the tree today",
+    "due with the training-data work, which observes shuffles outside the tree today",
     strict=True,
     raises=AssertionError,
 )

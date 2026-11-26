@@ -1,3 +1,14 @@
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
 from __future__ import annotations
 
 import re
@@ -5,14 +16,14 @@ from pathlib import Path
 
 import pytest
 
-from dlc_octopus import api
-from dlc_octopus.api import helpers
-from dlc_octopus.schemas.base.filesystem import NodeSchema
-from dlc_octopus.schemas.base.finding_codes import StructureFindingCode
-from dlc_octopus.schemas.base.findings import Finding, Reach
-from dlc_octopus.schemas.project_layout.labeled_data import LABELED_DATASET, LABELED_FRAME
-from dlc_octopus.schemas.project_layout.project import PROJECT_CONFIG
-from dlc_octopus.schemas.project_layout.videos import VIDEOS
+from dlccore.project import api
+from dlccore.project.api import helpers
+from dlccore.project.schemas.base.filesystem import NodeSchema
+from dlccore.project.schemas.base.finding_codes import StructureFindingCode
+from dlccore.project.schemas.base.findings import Finding, Reach
+from dlccore.project.schemas.project_layout.labeled_data import LABELED_DATASET, LABELED_FRAME
+from dlccore.project.schemas.project_layout.project import PROJECT_CONFIG
+from dlccore.project.schemas.project_layout.videos import VIDEOS
 
 _DS1 = ("labeled-data", "ds1")
 

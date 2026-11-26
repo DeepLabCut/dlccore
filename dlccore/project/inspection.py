@@ -1,3 +1,14 @@
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
 """Inspect a DeepLabCut project into a snapshot, and read DeepLabCut's name for it."""
 
 from __future__ import annotations
@@ -6,12 +17,12 @@ import re
 from datetime import date
 from pathlib import Path
 
-from dlc_octopus.discovery.observer import discover_project
-from dlc_octopus.errors import ProjectValidationError, _blocking_findings
-from dlc_octopus.schemas.base.findings import Finding
-from dlc_octopus.schemas.snapshots import ProjectSnapshot
-from dlc_octopus.validation import ProjectValidationRequest, validate_project
-from dlc_octopus.validation.config import validate_project_config
+from dlccore.project.discovery.observer import discover_project
+from dlccore.project.errors import ProjectValidationError, _blocking_findings
+from dlccore.project.schemas.base.findings import Finding
+from dlccore.project.schemas.snapshots import ProjectSnapshot
+from dlccore.project.validation import ProjectValidationRequest, validate_project
+from dlccore.project.validation.config import validate_project_config
 
 # DeepLabCut's create_new_project: config ``date`` is the 3-letter month and unpadded day, e.g. "Oct30".
 _MONTHS = ("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")

@@ -1,12 +1,23 @@
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
 from __future__ import annotations
 
 from pathlib import Path
 
 import pytest
-from deeplabcut.core.config.utils import write_config
 
-from dlc_octopus import api
-from dlc_octopus.errors import ConfigUnavailableError
+from dlccore.config.utils import write_config
+from dlccore.project import api
+from dlccore.project.errors import ConfigUnavailableError
 
 # DeepLabCut's own example project: examples/openfield-Pranav-2018-10-30, config date "Oct30".
 TASK, SCORER, CONFIG_DATE = "openfield", "Pranav", "Oct30"

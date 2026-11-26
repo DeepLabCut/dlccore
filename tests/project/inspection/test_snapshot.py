@@ -1,22 +1,33 @@
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
 from collections.abc import Callable
 from pathlib import Path
 
 import pytest
 
-from dlc_octopus.api import inspect_project
-from dlc_octopus.schemas.base.observations import NodeStatus
-from dlc_octopus.schemas.base.resources import (
+from dlccore.project.api import inspect_project
+from dlccore.project.schemas.base.observations import NodeStatus
+from dlccore.project.schemas.base.resources import (
     DirectoryResourceKind,
     FileResourceKind,
     ProjectResource,
 )
-from dlc_octopus.schemas.base.validation import (
+from dlccore.project.schemas.base.validation import (
     ValidationCheck,
     ValidationCheckStatus,
     ValidationDepth,
 )
-from dlc_octopus.schemas.snapshots import ConfigState, ProjectSnapshot
-from dlc_octopus.validation.results import ValidationResult
+from dlccore.project.schemas.snapshots import ConfigState, ProjectSnapshot
+from dlccore.project.validation.results import ValidationResult
 
 
 def test_inspect_project_returns_expected_snapshot(

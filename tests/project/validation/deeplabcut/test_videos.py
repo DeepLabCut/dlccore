@@ -1,38 +1,49 @@
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
 from __future__ import annotations
 
 from collections.abc import Callable
 from pathlib import Path
 
 import pytest
-from deeplabcut.core.config.utils import (
+
+from dlccore.config.utils import (
     read_config_as_dict,
     write_config,
 )
-
-from dlc_octopus.api import inspect_project
-from dlc_octopus.discovery.probe import probe_path
-from dlc_octopus.schemas.base.findings import Reach, Severity
-from dlc_octopus.schemas.base.probes import (
+from dlccore.project.api import inspect_project
+from dlccore.project.discovery.probe import probe_path
+from dlccore.project.schemas.base.findings import Reach, Severity
+from dlccore.project.schemas.base.probes import (
     FilesystemEntryKind,
     PathProbe,
     PathProbeStatus,
 )
-from dlc_octopus.schemas.base.resources import (
+from dlccore.project.schemas.base.resources import (
     DirectoryResourceKind,
 )
-from dlc_octopus.schemas.base.symlinks import (
+from dlccore.project.schemas.base.symlinks import (
     SymlinkObservation,
     SymlinkTargetKind,
 )
-from dlc_octopus.schemas.base.validation import (
+from dlccore.project.schemas.base.validation import (
     ValidationCheckStatus,
     ValidationDepth,
 )
-from dlc_octopus.validation import (
+from dlccore.project.validation import (
     ProjectValidationRequest,
     ResourceValidationRequest,
 )
-from dlc_octopus.validation.deeplabcut import videos
+from dlccore.project.validation.deeplabcut import videos
 
 pytestmark = pytest.mark.data_validator("VIDEOS")
 
@@ -338,7 +349,7 @@ def test_a_broken_link_in_videos_is_reported_once(
     def fake_probe_path(path: Path) -> PathProbe:
         return broken(path) if path.name == link.name else real_probe_path(path)
 
-    monkeypatch.setattr("dlc_octopus.discovery.observer.probe_path", fake_probe_path)
+    monkeypatch.setattr("dlccore.project.discovery.observer.probe_path", fake_probe_path)
     monkeypatch.setattr(videos, "probe_path", fake_probe_path)
     set_configured_videos(valid_project, (link,))
 
@@ -377,7 +388,7 @@ def test_a_resolved_path_never_reaches_a_finding(
     real_resolve = Path.resolve
     resolved: list[Path] = []
 
-    def volume_guid_resolve(self: Path, strict: bool = False) -> Path:  # noqa: FBT001, FBT002 - Path.resolve's signature
+    def volume_guid_resolve(self: Path, strict: bool = False) -> Path:
         path = real_resolve(self, strict=strict)
         resolved.append(path)
 
@@ -663,7 +674,7 @@ def test_two_videos_resolving_to_one_file_are_reported_not_raised(
         return real_probe_path(path)
 
     monkeypatch.setattr(
-        "dlc_octopus.discovery.observer.probe_path",
+        "dlccore.project.discovery.observer.probe_path",
         fake_probe_path,
     )
 
@@ -712,7 +723,7 @@ def test_a_collision_reports_each_video_once_with_a_shared_key(
 
         return real_probe_path(path)
 
-    monkeypatch.setattr("dlc_octopus.discovery.observer.probe_path", fake_probe_path)
+    monkeypatch.setattr("dlccore.project.discovery.observer.probe_path", fake_probe_path)
     set_configured_videos(valid_project, (master,))
 
     snapshot = inspect_project(valid_project, validation=video_filename_request())
@@ -748,7 +759,7 @@ def test_three_videos_resolving_to_one_file_are_one_collision(
 
         return real_probe_path(path)
 
-    monkeypatch.setattr("dlc_octopus.discovery.observer.probe_path", fake_probe_path)
+    monkeypatch.setattr("dlccore.project.discovery.observer.probe_path", fake_probe_path)
     set_configured_videos(valid_project, (master,))
 
     snapshot = inspect_project(valid_project, validation=video_filename_request())

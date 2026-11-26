@@ -1,7 +1,18 @@
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
 from pathlib import Path
 
-from dlc_octopus.api import inspect_project
-from dlc_octopus.schemas.base.finding_codes import ConfigFindingCode, StructureFindingCode
+from dlccore.project.api import inspect_project
+from dlccore.project.schemas.base.finding_codes import ConfigFindingCode, StructureFindingCode
 
 
 def test_inspect_project_includes_missing_required_node_finding(

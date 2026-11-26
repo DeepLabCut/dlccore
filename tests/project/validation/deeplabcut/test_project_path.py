@@ -1,3 +1,14 @@
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
 from __future__ import annotations
 
 import ctypes
@@ -7,17 +18,17 @@ from collections.abc import Callable
 from pathlib import Path
 
 import pytest
-from deeplabcut.core.config.utils import read_config, write_config
 
-from dlc_octopus.api import inspect_project
-from dlc_octopus.schemas.base.finding_codes import ConfigFindingCode
-from dlc_octopus.schemas.base.findings import Severity
-from dlc_octopus.schemas.base.probes import PathProbe, PathProbeStatus
-from dlc_octopus.validation.context import (
+from dlccore.config.utils import write_config
+from dlccore.project.api import inspect_project
+from dlccore.project.schemas.base.finding_codes import ConfigFindingCode
+from dlccore.project.schemas.base.findings import Severity
+from dlccore.project.schemas.base.probes import PathProbe, PathProbeStatus
+from dlccore.project.validation.context import (
     build_validation_context,
 )
-from dlc_octopus.validation.deeplabcut import project_path as project_path_module
-from dlc_octopus.validation.deeplabcut.project_path import (
+from dlccore.project.validation.deeplabcut import project_path as project_path_module
+from dlccore.project.validation.deeplabcut.project_path import (
     validate_project_path,
 )
 
@@ -70,7 +81,7 @@ def test_inspecting_a_moved_project_leaves_its_config_untouched(
     tmp_path: Path,
     valid_config_data: dict,
 ) -> None:
-    """Octopus never repairs, although DeepLabCut's own reader rewrites this config on read."""
+    """Inspection never repairs, although DeepLabCut's own reader rewrites this config on read (tests/upstream)."""
 
     (tmp_path / "videos").mkdir()
     (tmp_path / "labeled-data").mkdir()
@@ -89,11 +100,6 @@ def test_inspecting_a_moved_project_leaves_its_config_untouched(
     inspect_project(tmp_path)
 
     assert config_path.read_bytes() == before
-
-    # Positive control: the scenario is one that DeepLabCut's reader repairs by writing.
-    read_config(config_path)
-
-    assert config_path.read_bytes() != before
 
 
 _ABSENT = object()

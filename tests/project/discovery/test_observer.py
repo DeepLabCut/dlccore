@@ -1,26 +1,37 @@
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
 from collections.abc import Iterator
 from pathlib import Path
 
 import pytest
 
-from dlc_octopus.api import inspect_project
-from dlc_octopus.discovery.observer import discover_directory_node, discover_project
-from dlc_octopus.schemas.base.filesystem import (
+from dlccore.project.api import inspect_project
+from dlccore.project.discovery.observer import discover_directory_node, discover_project
+from dlccore.project.schemas.base.filesystem import (
     DirectorySchema,
     FileSchema,
     NamePattern,
     NodeSchema,
 )
-from dlc_octopus.schemas.base.observations import (
+from dlccore.project.schemas.base.observations import (
     NodeStatus,
 )
-from dlc_octopus.schemas.base.probes import FilesystemEntryKind, PathProbeStatus
-from dlc_octopus.schemas.base.resources import (
+from dlccore.project.schemas.base.probes import FilesystemEntryKind, PathProbeStatus
+from dlccore.project.schemas.base.resources import (
     DirectoryResourceKind,
     FileResourceKind,
     ResourceManagement,
 )
-from dlc_octopus.schemas.project_layout.project import PROJECT
+from dlccore.project.schemas.project_layout.project import PROJECT
 
 
 def test_discovered_directory_populates_renamed_fields(

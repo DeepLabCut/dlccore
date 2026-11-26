@@ -1,6 +1,17 @@
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
 import pytest
 
-from dlc_octopus.validation.registry import (
+from dlccore.project.validation.registry import (
     iter_validator_registrations,
 )
 

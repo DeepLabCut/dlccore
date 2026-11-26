@@ -1,13 +1,24 @@
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
 from collections.abc import Callable
 from pathlib import Path
 
-from dlc_octopus.api import inspect_project
-from dlc_octopus.schemas.base.resources import (
+from dlccore.project.api import inspect_project
+from dlccore.project.schemas.base.resources import (
     FileResourceKind,
     ProjectResource,
     ResourceManagement,
 )
-from dlc_octopus.schemas.snapshots import ProjectSnapshot
+from dlccore.project.schemas.snapshots import ProjectSnapshot
 
 
 def test_napari_metadata_is_known_unmanaged(
