@@ -1,3 +1,14 @@
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
 """Where a path outside a known project sits in the layout, scanned upward from the path.
 
 The anchor holds only what is certain: a segment counts when the chain above it reaches a directory with an exact
@@ -10,11 +21,11 @@ from __future__ import annotations
 from dataclasses import dataclass
 from pathlib import Path
 
-from dlc_octopus.schemas.base.core import SchemaId
-from dlc_octopus.schemas.base.filesystem import FileSchema, LayoutIndex, NodeSchema
-from dlc_octopus.schemas.base.findings import Reach
-from dlc_octopus.schemas.locations import Location, node_location
-from dlc_octopus.schemas.project_layout.project import PROJECT_INDEX
+from dlccore.project.schemas.base.core import SchemaId
+from dlccore.project.schemas.base.filesystem import FileSchema, LayoutIndex, NodeSchema
+from dlccore.project.schemas.base.findings import Reach
+from dlccore.project.schemas.locations import Location, node_location
+from dlccore.project.schemas.project_layout.project import PROJECT_INDEX
 
 
 @dataclass(frozen=True)

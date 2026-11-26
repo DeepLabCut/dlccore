@@ -1,14 +1,25 @@
-"""What a consumer asks Octopus about: layout nodes, each within an instance prefix."""
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
+"""What a consumer asks about a project: layout nodes, each within an instance prefix."""
 
 from __future__ import annotations
 
 from dataclasses import dataclass
 
-from dlc_octopus.schemas.base.core import LayoutInstance, SchemaId
-from dlc_octopus.schemas.base.filesystem import FileSchema, LayoutIndex, NodeSchema
-from dlc_octopus.schemas.base.findings import Finding
-from dlc_octopus.schemas.project_layout.project import PROJECT_CONFIG, PROJECT_INDEX
-from dlc_octopus.schemas.snapshots import ProjectSnapshot
+from dlccore.project.schemas.base.core import LayoutInstance, SchemaId
+from dlccore.project.schemas.base.filesystem import FileSchema, LayoutIndex, NodeSchema
+from dlccore.project.schemas.base.findings import Finding
+from dlccore.project.schemas.project_layout.project import PROJECT_CONFIG, PROJECT_INDEX
+from dlccore.project.schemas.snapshots import ProjectSnapshot
 
 
 @dataclass(frozen=True, init=False)

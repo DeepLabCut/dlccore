@@ -1,3 +1,14 @@
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
 """Tests whose home is napari-deeplabcut. Imports ``napari_deeplabcut`` only."""
 
 import sys
@@ -7,9 +18,9 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from dlc_octopus.discovery.position import locate_in_layout
-from dlc_octopus.io.labeled_data import LabeledData, read_labeled_data, write_labeled_data
-from dlc_octopus.schemas.base.findings import Reach
+from dlccore.io.labeled_data import LabeledData, read_labeled_data, write_labeled_data
+from dlccore.project.discovery.position import locate_in_layout
+from dlccore.project.schemas.base.findings import Reach
 
 pytestmark = pytest.mark.destination("napari-deeplabcut")
 
@@ -35,7 +46,7 @@ def _napari_points(path: Path) -> list[Point]:
     )
 
 
-def _octopus_points(path: Path) -> list[Point]:
+def _dlccore_points(path: Path) -> list[Point]:
     """Our labeled points, mapped onto napari's conventions where they deliberately differ.
 
     Three mappings, each a difference rather than a disagreement: napari writes a missing individual as ``""``,
@@ -70,7 +81,7 @@ def test_every_h5_fixture_is_found() -> None:
 
 @pytest.mark.parametrize("filename", H5_FIXTURES)
 def test_napari_deeplabcut_reads_the_same_labeled_points(filename: str) -> None:
-    ours = _octopus_points(FIXTURES_DIR / filename)
+    ours = _dlccore_points(FIXTURES_DIR / filename)
 
     assert ours, "a fixture without labeled points would make the comparison vacuous"
     assert _napari_points(FIXTURES_DIR / filename) == ours
@@ -106,14 +117,14 @@ def test_napari_deeplabcut_sees_one_moved_point_in_a_rewritten_file(tmp_path: Pa
 
 
 def _hdf_reads_by_shared_io(monkeypatch: pytest.MonkeyPatch, read: object) -> list[bool]:
-    """Call ``read`` and return, for each ``pd.read_hdf`` it makes, whether ``dlc_octopus.io`` made it."""
+    """Call ``read`` and return, for each ``pd.read_hdf`` it makes, whether ``dlccore.project.io`` made it."""
 
     calls: list[bool] = []
     read_hdf = pd.read_hdf
 
     def spy(*args: object, **kwargs: object) -> object:
         frame = sys._getframe(1)
-        while frame is not None and not frame.f_globals.get("__name__", "").startswith("dlc_octopus.io."):
+        while frame is not None and not frame.f_globals.get("__name__", "").startswith("dlccore.io."):
             frame = frame.f_back
         calls.append(frame is not None)
         return read_hdf(*args, **kwargs)
@@ -124,7 +135,7 @@ def _hdf_reads_by_shared_io(monkeypatch: pytest.MonkeyPatch, read: object) -> li
 
 
 def test_the_shared_reader_is_recognised_as_shared(monkeypatch: pytest.MonkeyPatch) -> None:
-    from dlc_octopus.io.labeled_data.wide.h5 import read_labeled_data_h5
+    from dlccore.io.labeled_data.wide.h5 import read_labeled_data_h5
 
     calls = _hdf_reads_by_shared_io(monkeypatch, lambda: read_labeled_data_h5(FIXTURES_DIR / "single_animal_human.h5"))
 
@@ -133,7 +144,7 @@ def test_the_shared_reader_is_recognised_as_shared(monkeypatch: pytest.MonkeyPat
 
 @pytest.mark.xfail(
     reason="napari-deeplabcut reads labeled-data H5 files with pandas itself; adopting the shared labeled-data "
-    "I/O in dlc_octopus.io.labeled_data finishes when every read goes through it",
+    "I/O in dlccore.io.labeled_data finishes when every read goes through it",
     strict=True,
     raises=AssertionError,
 )
@@ -151,7 +162,7 @@ def test_napari_deeplabcut_reads_labeled_data_only_through_the_shared_reader(
 
 @pytest.mark.xfail(
     reason="napari-deeplabcut v0.4.0 takes a folder as a dataset when 'labeled-data' appears anywhere above it, in "
-    "any case; the layout places a dataset only under labeled-data itself (dlc_octopus.discovery.position). "
+    "any case; the layout places a dataset only under labeled-data itself (dlccore.project.discovery.position). "
     "Adopting the layout position in napari-deeplabcut makes them agree",
     strict=True,
     raises=AssertionError,
