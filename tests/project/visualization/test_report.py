@@ -1,16 +1,27 @@
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
 from __future__ import annotations
 
 from pathlib import Path
 
 import pytest
 
-from dlc_octopus.api import inspect_project
-from dlc_octopus.schemas.base.finding_codes import StructureFindingCode
-from dlc_octopus.schemas.base.findings import Finding, Reach
-from dlc_octopus.schemas.base.resources import DirectoryResourceKind
-from dlc_octopus.schemas.base.validation import ValidationDepth
-from dlc_octopus.validation import ProjectValidationRequest, ResourceValidationRequest
-from dlc_octopus.visualization import render_project_report
+from dlccore.project.api import inspect_project
+from dlccore.project.schemas.base.finding_codes import StructureFindingCode
+from dlccore.project.schemas.base.findings import Finding, Reach
+from dlccore.project.schemas.base.resources import DirectoryResourceKind
+from dlccore.project.schemas.base.validation import ValidationDepth
+from dlccore.project.validation import ProjectValidationRequest, ResourceValidationRequest
+from dlccore.project.visualization import render_project_report
 
 
 def test_render_project_report_shows_valid_project_summary(

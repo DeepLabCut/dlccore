@@ -1,12 +1,23 @@
-"""Render what this installation of Octopus recognises and can validate, for people."""
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
+"""Render what this installation of dlccore recognises and can validate, for people."""
 
 from __future__ import annotations
 
 from typing import Literal
 
-from dlc_octopus.schemas.base.resources import ResourceManagement
-from dlc_octopus.schemas.capabilities import LayoutCapability, ProjectManagerCapabilities
-from dlc_octopus.visualization.findings import _inline_code, _table_cell
+from dlccore.project.schemas.base.resources import ResourceManagement
+from dlccore.project.schemas.capabilities import LayoutCapability, ProjectManagerCapabilities
+from dlccore.project.visualization.findings import _inline_code, _table_cell
 
 CapabilitiesStyle = Literal["text", "markdown"]
 

@@ -1,18 +1,29 @@
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
 import pytest
 from pydantic import BaseModel
 
-from dlc_octopus.capabilities import get_project_manager_capabilities
-from dlc_octopus.schemas.base.filesystem import walk_schema
-from dlc_octopus.schemas.base.resources import DirectoryResourceKind, FileResourceKind, ResourceManagement
-from dlc_octopus.schemas.base.validation import ValidationDepth
-from dlc_octopus.schemas.capabilities import (
+from dlccore.project.capabilities import get_project_manager_capabilities
+from dlccore.project.schemas.base.filesystem import walk_schema
+from dlccore.project.schemas.base.resources import DirectoryResourceKind, FileResourceKind, ResourceManagement
+from dlccore.project.schemas.base.validation import ValidationDepth
+from dlccore.project.schemas.capabilities import (
     BaselineValidationCapability,
     LayoutCapability,
     ProjectManagerCapabilities,
     ValidationCapability,
 )
-from dlc_octopus.schemas.project_layout.project import PROJECT
-from dlc_octopus.visualization import render_capabilities
+from dlccore.project.schemas.project_layout.project import PROJECT
+from dlccore.project.visualization import render_capabilities
 
 
 def _layout(schema_id: str, *children: LayoutCapability, **fields: object) -> LayoutCapability:

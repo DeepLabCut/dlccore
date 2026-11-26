@@ -1,18 +1,29 @@
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
 from __future__ import annotations
 
 from collections import Counter
 
 from pydantic import JsonValue
 
-from dlc_octopus.schemas.base import ResourceManagement
-from dlc_octopus.schemas.base.findings import Finding
-from dlc_octopus.schemas.base.validation import ValidationCheckStatus
-from dlc_octopus.schemas.project_layout.config.observations import (
+from dlccore.project.schemas.base import ResourceManagement
+from dlccore.project.schemas.base.findings import Finding
+from dlccore.project.schemas.base.validation import ValidationCheckStatus
+from dlccore.project.schemas.project_layout.config.observations import (
     FailedConfigObservation,
     ValidConfigObservation,
 )
-from dlc_octopus.schemas.snapshots import ProjectSnapshot
-from dlc_octopus.visualization.tree import render_project_tree
+from dlccore.project.schemas.snapshots import ProjectSnapshot
+from dlccore.project.visualization.tree import render_project_tree
 
 
 def render_project_report(
