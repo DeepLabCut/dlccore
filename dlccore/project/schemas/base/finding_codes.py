@@ -237,6 +237,115 @@ class FingerprintFindingCode(FindingCode):
     )
 
 
+class LabeledDataFindingCode(FindingCode):
+    """Findings about the content of labeled-data files."""
+
+    LABELED_DATA_UNREADABLE = (
+        "LABELED_DATA_UNREADABLE",
+        "A labeled-data file could not be read.",
+        Severity.ERROR,
+        ("resource_kind", "error_type", "error_message"),
+    )
+    LABELED_DATA_H5_MULTI_KEY = (
+        "LABELED_DATA_H5_MULTI_KEY",
+        "An H5 labels file holds several tables; one was read by declared precedence and the others were not.",
+        Severity.ERROR,
+        ("keys_found", "selected_key"),
+    )
+    LABELED_DATA_H5_LEGACY_KEY = (
+        "LABELED_DATA_H5_LEGACY_KEY",
+        "An H5 labels file stores its table under a key older DeepLabCut releases wrote.",
+        Severity.WARNING,
+        ("key",),
+    )
+    LABELED_DATA_H5_UNKNOWN_KEY = (
+        "LABELED_DATA_H5_UNKNOWN_KEY",
+        "An H5 labels file stores its table under a key no DeepLabCut release is known to write.",
+        Severity.WARNING,
+        ("key",),
+    )
+    LABELED_DATA_HEADER_UNRECOGNISED = (
+        "LABELED_DATA_HEADER_UNRECOGNISED",
+        "A labels file's column levels are neither of the headers DeepLabCut writes, so no labels can be read from it.",
+        Severity.ERROR,
+        ("level_names",),
+    )
+    LABELED_DATA_COORDS_UNRECOGNISED = (
+        "LABELED_DATA_COORDS_UNRECOGNISED",
+        "Keypoints whose coordinates are not exactly x, y and optionally likelihood, so no labels can be read from "
+        "the file.",
+        Severity.ERROR,
+        ("keypoints",),
+    )
+    LABELED_DATA_LIKELIHOOD_PARTIAL = (
+        "LABELED_DATA_LIKELIHOOD_PARTIAL",
+        "Some keypoints store a likelihood and these do not, so no labels can be read from the file.",
+        Severity.ERROR,
+        ("keypoints",),
+    )
+    LABELED_DATA_VALUES_NOT_NUMERIC = (
+        "LABELED_DATA_VALUES_NOT_NUMERIC",
+        "Value columns hold something other than real numbers, so no labels can be read from the file.",
+        Severity.ERROR,
+        ("columns",),
+    )
+    LABELED_DATA_NO_FRAMES = (
+        "LABELED_DATA_NO_FRAMES",
+        "A labels file has a header and no frames, so it holds no labels.",
+        Severity.WARNING,
+        (),
+    )
+    LABELED_DATA_ROW_INDEX_UNRECOGNISED = (
+        "LABELED_DATA_ROW_INDEX_UNRECOGNISED",
+        "A labels file's row index is neither frame path parts nor path strings, so no labels can be read from it.",
+        Severity.ERROR,
+        ("first_entry",),
+    )
+    LABELED_DATA_FRAME_DEPTH = (
+        "LABELED_DATA_FRAME_DEPTH",
+        "Frames whose path has other than three parts, so no labels can be read from the file.",
+        Severity.ERROR,
+        ("row_count", "first_frame"),
+    )
+    LABELED_DATA_FRAME_PART_UNNAMED = (
+        "LABELED_DATA_FRAME_PART_UNNAMED",
+        "Frames with a path part that is neither text nor an integer, so no labels can be read from the file.",
+        Severity.ERROR,
+        ("row_count", "first_frame"),
+    )
+    LABELED_DATA_CSV_FRAME_ABSORBED = (
+        "LABELED_DATA_CSV_FRAME_ABSORBED",
+        "A CSV labels file's first frame has no values, so a CSV read takes it as the row index's names and the "
+        "file reads back without that frame.",
+        Severity.WARNING,
+        ("frame",),
+    )
+    LABELED_DATA_WRITER_STAMP_MALFORMED = (
+        "LABELED_DATA_WRITER_STAMP_MALFORMED",
+        "A labels file carries a writer stamp that could not be read.",
+        Severity.NOTE,
+        ("error_message",),
+    )
+    LABELED_DATA_HUMAN_LIKELIHOOD = (
+        "LABELED_DATA_HUMAN_LIKELIHOOD",
+        "Human labels store a likelihood, which ground truth never carries.",
+        Severity.WARNING,
+        (),
+    )
+    LABELED_DATA_KEYPOINT_MISSING = (
+        "LABELED_DATA_KEYPOINT_MISSING",
+        "Individuals lack a bodypart another individual of the same scorer has.",
+        Severity.WARNING,
+        ("missing",),
+    )
+    LABELED_DATA_INDIVIDUAL_EMPTY = (
+        "LABELED_DATA_INDIVIDUAL_EMPTY",
+        "Keypoints whose individual is named with an empty string, which names no individual.",
+        Severity.ERROR,
+        ("keypoints",),
+    )
+
+
 def iter_finding_codes() -> tuple[FindingCode, ...]:
     """Return every declared finding code, namespace by namespace."""
 
