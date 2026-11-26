@@ -1,13 +1,24 @@
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
 from __future__ import annotations
 
 from collections.abc import Callable
 
 import pytest
 
-from dlc_octopus import api, policy
-from dlc_octopus.policy import get_blocking_findings, unhandled
-from dlc_octopus.schemas.base.finding_codes import ConfigFindingCode, FindingCode
-from dlc_octopus.schemas.base.findings import Finding, Reach
+from dlccore.project import api, policy
+from dlccore.project.policy import get_blocking_findings, unhandled
+from dlccore.project.schemas.base.finding_codes import ConfigFindingCode, FindingCode
+from dlccore.project.schemas.base.findings import Finding, Reach
 
 ERROR = ConfigFindingCode.CONFIG_PARSE_FAILED
 WARNING = ConfigFindingCode.CONFIG_NO_KEYPOINTS

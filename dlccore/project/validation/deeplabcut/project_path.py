@@ -1,16 +1,27 @@
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
 from __future__ import annotations
 
 import os
 from pathlib import Path
 
-from dlc_octopus.discovery.probe import probe_path
-from dlc_octopus.schemas.base.core import is_absolute_path
-from dlc_octopus.schemas.base.finding_codes import ConfigFindingCode
-from dlc_octopus.schemas.base.findings import Finding
-from dlc_octopus.schemas.base.probes import PathProbeStatus
-from dlc_octopus.schemas.locations import one_per_project
-from dlc_octopus.schemas.project_layout.project import PROJECT_CONFIG
-from dlc_octopus.validation.context import ValidationContext
+from dlccore.project.discovery.probe import probe_path
+from dlccore.project.schemas.base.core import is_absolute_path
+from dlccore.project.schemas.base.finding_codes import ConfigFindingCode
+from dlccore.project.schemas.base.findings import Finding
+from dlccore.project.schemas.base.probes import PathProbeStatus
+from dlccore.project.schemas.locations import one_per_project
+from dlccore.project.schemas.project_layout.project import PROJECT_CONFIG
+from dlccore.project.validation.context import ValidationContext
 
 
 def validate_project_path(
