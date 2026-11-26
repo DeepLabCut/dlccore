@@ -1,8 +1,19 @@
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
 from __future__ import annotations
 
-from dlc_octopus.schemas.base.core import FrozenModel
-from dlc_octopus.schemas.base.findings import Finding
-from dlc_octopus.schemas.base.validation import ValidationCheck
+from dlccore.project.schemas.base.core import FrozenModel
+from dlccore.project.schemas.base.findings import Finding
+from dlccore.project.schemas.base.validation import ValidationCheck
 
 
 class ValidationResult(FrozenModel):

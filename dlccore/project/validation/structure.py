@@ -1,19 +1,30 @@
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
 from __future__ import annotations
 
 from pathlib import Path
 
-from dlc_octopus.schemas.base.filesystem import (
+from dlccore.project.schemas.base.filesystem import (
     DirectorySchema,
     LayoutIndex,
     NodeSchema,
 )
-from dlc_octopus.schemas.base.finding_codes import StructureFindingCode
-from dlc_octopus.schemas.base.findings import Finding
-from dlc_octopus.schemas.base.observations import NodeStatus, ObservedNode, walk_observed_nodes
-from dlc_octopus.schemas.base.resources import ResourceManagement
-from dlc_octopus.schemas.base.symlinks import SymlinkTargetKind
-from dlc_octopus.schemas.locations import Location, node_location
-from dlc_octopus.schemas.project_layout.project import PROJECT_INDEX
+from dlccore.project.schemas.base.finding_codes import StructureFindingCode
+from dlccore.project.schemas.base.findings import Finding
+from dlccore.project.schemas.base.observations import NodeStatus, ObservedNode, walk_observed_nodes
+from dlccore.project.schemas.base.resources import ResourceManagement
+from dlccore.project.schemas.base.symlinks import SymlinkTargetKind
+from dlccore.project.schemas.locations import Location, node_location
+from dlccore.project.schemas.project_layout.project import PROJECT_INDEX
 
 
 def validate_project_structure(

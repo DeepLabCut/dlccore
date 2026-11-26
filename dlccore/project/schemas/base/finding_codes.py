@@ -89,12 +89,6 @@ class StructureFindingCode(FindingCode):
         Severity.ERROR,
         ("resource_kind", "error_type", "error_message"),
     )
-    PROJECT_RESOURCE_PATH_COLLISION = (
-        "PROJECT_RESOURCE_PATH_COLLISION",
-        "This project resource resolves to the same filesystem path as another; each one is reported.",
-        Severity.ERROR,
-        ("resource_kind", "collision_path", "collision_group"),
-    )
 
 
 def iter_finding_codes() -> tuple[FindingCode, ...]:
