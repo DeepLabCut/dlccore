@@ -93,3 +93,10 @@ ini_options.filterwarnings = [
   # A categorical groupby must state observed=; the default changes in pandas 3.
   "error:The default of observed=False is deprecated:FutureWarning",
 ]
+ini_options.markers = [
+  "destination(repo): repository this test ultimately belongs to; a file carries exactly one",
+  """\
+  owed_before_release(reason, raises): prototype maintenance; a strict xfail expecting `raises` while the package and \
+  snapshot versions are both 0.x, a plain test once either leaves\
+  """,
+]

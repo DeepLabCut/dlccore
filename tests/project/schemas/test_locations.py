@@ -1,16 +1,27 @@
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
 from __future__ import annotations
 
 from pathlib import Path
 
 import pytest
 
-from dlc_octopus.schemas.base.filesystem import FileSchema, NamePattern
-from dlc_octopus.schemas.base.findings import Reach
-from dlc_octopus.schemas.base.resources import FileResourceKind
-from dlc_octopus.schemas.locations import all_of, node_location, one_of, one_per_project
-from dlc_octopus.schemas.project_layout.labeled_data import LABELED_DATASET, LABELED_FRAME, NAPARI_DLC_METADATA
-from dlc_octopus.schemas.project_layout.project import PROJECT_CONFIG
-from dlc_octopus.schemas.project_layout.videos import SOURCE_VIDEO
+from dlccore.project.schemas.base.filesystem import FileSchema, NamePattern
+from dlccore.project.schemas.base.findings import Reach
+from dlccore.project.schemas.base.resources import FileResourceKind
+from dlccore.project.schemas.locations import all_of, node_location, one_of, one_per_project
+from dlccore.project.schemas.project_layout.labeled_data import LABELED_DATASET, LABELED_FRAME, NAPARI_DLC_METADATA
+from dlccore.project.schemas.project_layout.project import PROJECT_CONFIG
+from dlccore.project.schemas.project_layout.videos import SOURCE_VIDEO
 
 
 def test_the_only_node_of_its_kind_is_one_per_project() -> None:

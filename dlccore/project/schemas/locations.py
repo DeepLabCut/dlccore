@@ -1,12 +1,23 @@
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
 from __future__ import annotations
 
 from pathlib import Path
 from typing import TypedDict
 
-from dlc_octopus.schemas.base.core import LayoutInstance, SchemaId, instance_from_path
-from dlc_octopus.schemas.base.filesystem import LayoutIndex, NodeSchema
-from dlc_octopus.schemas.base.findings import Reach
-from dlc_octopus.schemas.project_layout.project import PROJECT_INDEX
+from dlccore.project.schemas.base.core import LayoutInstance, SchemaId, instance_from_path
+from dlccore.project.schemas.base.filesystem import LayoutIndex, NodeSchema
+from dlccore.project.schemas.base.findings import Reach
+from dlccore.project.schemas.project_layout.project import PROJECT_INDEX
 
 
 class Location(TypedDict):

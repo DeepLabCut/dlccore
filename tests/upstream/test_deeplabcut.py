@@ -1,3 +1,14 @@
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
 """Tests whose home is DeepLabCut. Imports ``deeplabcut`` only."""
 
 import shutil
@@ -9,7 +20,7 @@ import pytest
 if TYPE_CHECKING:
     import pandas as pd
 
-    from dlc_octopus.io.labeled_data.wide.row_index import LabeledDataRowIndex
+    from dlccore.io.labeled_data.wide.row_index import LabeledDataRowIndex
 
 pytestmark = pytest.mark.destination("deeplabcut")
 
@@ -225,7 +236,7 @@ def test_split_frame_path_matches_guarantee_multiindex_rows(entries: list[str]) 
     pd = pytest.importorskip("pandas")
     conversioncode = pytest.importorskip("deeplabcut.utils.conversioncode")
 
-    from dlc_octopus.io.labeled_data.wide.row_index import split_frame_path
+    from dlccore.io.labeled_data.wide.row_index import split_frame_path
 
     frame = pd.DataFrame({"x": range(len(entries))}, index=entries)
     conversioncode.guarantee_multiindex_rows(frame)
@@ -261,8 +272,8 @@ def _convertcsv2h5(project_root: Path, csv_source: Path) -> "pd.DataFrame":
 
 
 def _read_and_classify_csv(path: Path) -> tuple["pd.DataFrame", "LabeledDataRowIndex"]:
-    from dlc_octopus.io.labeled_data.wide.csv import read_labeled_data_csv
-    from dlc_octopus.io.labeled_data.wide.table import classify_labeled_data_read
+    from dlccore.io.labeled_data.wide.csv import read_labeled_data_csv
+    from dlccore.io.labeled_data.wide.table import classify_labeled_data_read
 
     read = read_labeled_data_csv(path)
     _header, row_index = classify_labeled_data_read(read)
@@ -317,7 +328,7 @@ def _deeplabcut_read(path: Path) -> "pd.DataFrame":
 def _rewrite(source: Path, tmp_path: Path, *, move_one_point: bool = False) -> Path:
     import numpy as np
 
-    from dlc_octopus.io.labeled_data import LabeledData, read_labeled_data, write_labeled_data
+    from dlccore.io.labeled_data import LabeledData, read_labeled_data, write_labeled_data
 
     table = read_labeled_data(source).labeled_data
     if move_one_point:

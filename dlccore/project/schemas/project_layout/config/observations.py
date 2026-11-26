@@ -1,14 +1,23 @@
-# dlc_octopus/schemas/config.py
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
 
 from __future__ import annotations
 
 from pathlib import Path
 from typing import Any, Literal
 
-from deeplabcut.core.config import ProjectConfig
 from pydantic import Field
 
-from dlc_octopus.schemas.base.core import FrozenModel
+from dlccore.config import ProjectConfig
+from dlccore.project.schemas.base.core import FrozenModel
 
 
 class ValidConfigObservation(FrozenModel):
