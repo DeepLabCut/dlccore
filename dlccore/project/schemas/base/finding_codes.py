@@ -89,6 +89,12 @@ class StructureFindingCode(FindingCode):
         Severity.ERROR,
         ("resource_kind", "error_type", "error_message"),
     )
+    PROJECT_RESOURCE_PATH_COLLISION = (
+        "PROJECT_RESOURCE_PATH_COLLISION",
+        "This project resource resolves to the same filesystem path as another; each one is reported.",
+        Severity.ERROR,
+        ("resource_kind", "collision_path", "collision_group"),
+    )
 
 
 class ConfigFindingCode(FindingCode):
@@ -156,6 +162,61 @@ class ConfigFindingCode(FindingCode):
         "The project path in config.yaml is missing, empty or relative, and cannot be compared with the project root.",
         Severity.NOTE,
         ("declared_project_path",),
+    )
+
+
+class ConfiguredVideoFindingCode(FindingCode):
+    """Findings about video paths declared in ``config.yaml``."""
+
+    CONFIGURED_VIDEO_PATH_MISSING = (
+        "CONFIGURED_VIDEO_PATH_MISSING",
+        "The configured video path does not exist.",
+        Severity.ERROR,
+        (),
+    )
+    CONFIGURED_VIDEO_PATH_SYMLINK_TARGET_MISSING = (
+        "CONFIGURED_VIDEO_PATH_SYMLINK_TARGET_MISSING",
+        "The configured video path is a symlink whose target does not exist.",
+        Severity.ERROR,
+        ("raw_target", "absolute_target"),
+    )
+    CONFIGURED_VIDEO_PATH_UNREADABLE = (
+        "CONFIGURED_VIDEO_PATH_UNREADABLE",
+        "The configured video path could not be read.",
+        Severity.ERROR,
+        ("error_type", "error_message"),
+    )
+    CONFIGURED_VIDEO_PATH_NOT_FILE = (
+        "CONFIGURED_VIDEO_PATH_NOT_FILE",
+        "The configured video path exists but is not a file.",
+        Severity.ERROR,
+        (),
+    )
+    CONFIGURED_VIDEOS_UNDER_MISSING_ROOT = (
+        "CONFIGURED_VIDEOS_UNDER_MISSING_ROOT",
+        "Configured video paths end in videos/<name>, the video exists in this project, but the paths "
+        "themselves do not exist. Was the project moved or copied?",
+        Severity.WARNING,
+        ("declared_paths", "matched_paths"),
+    )
+    CONFIGURED_VIDEO_IN_OTHER_COPY = (
+        "CONFIGURED_VIDEO_IN_OTHER_COPY",
+        "The configured video path ends in videos/<name> and exists, but is a different file from this "
+        "project's video with the same name. DeepLabCut will read the configured one.",
+        Severity.WARNING,
+        ("matched_path",),
+    )
+    CONFIGURED_VIDEO_OUTSIDE_PROJECT = (
+        "CONFIGURED_VIDEO_OUTSIDE_PROJECT",
+        "The configured video path exists but is not in the project's videos directory.",
+        Severity.ERROR,
+        (),
+    )
+    VIDEO_NOT_IN_VIDEO_SETS = (
+        "VIDEO_NOT_IN_VIDEO_SETS",
+        "A video in the project's videos directory has no corresponding path in the configuration.",
+        Severity.NOTE,
+        ("resource_kind",),
     )
 
 
