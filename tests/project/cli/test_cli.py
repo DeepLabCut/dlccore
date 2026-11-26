@@ -1,9 +1,20 @@
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
 from importlib.metadata import version
 
 import pytest
 
-from dlc_octopus import cli
-from dlc_octopus.cli.ascii_logo import DISTRIBUTION
+from dlccore.project import cli
+from dlccore.project.cli.ascii_logo import DISTRIBUTION
 
 LINE = f"{DISTRIBUTION} {version(DISTRIBUTION)}"
 

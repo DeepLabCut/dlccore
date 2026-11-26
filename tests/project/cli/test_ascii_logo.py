@@ -1,6 +1,17 @@
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
 """The `--version` logo: an octopus whose arms each stand for one DeepLabCut library.
 
-An arm's keypoints are drawn only once that library, installed, declares a dependency on dlc-octopus. The head and the
+An arm's keypoints are drawn only once that library, installed, declares a dependency on dlccore. The head and the
 hub are always drawn.
 """
 
@@ -10,8 +21,8 @@ from pathlib import Path
 
 import pytest
 
-from dlc_octopus.cli import ascii_logo
-from dlc_octopus.cli.ascii_logo import (
+from dlccore.project.cli import ascii_logo
+from dlccore.project.cli.ascii_logo import (
     ADOPTERS,
     ALWAYS_SHOWN,
     ARM_LABELS,
@@ -34,7 +45,7 @@ _, DOWN_RIGHT, _, UP_RIGHT = EDGE_GLYPHS
 # Which library each arm stands for. Changing an arm's meaning means changing this table, on purpose.
 ARM_MEANINGS = {
     "arm-1": "napari-deeplabcut",
-    "arm-2": "dlc-scene (DataJoint schemas)",
+    "arm-2": "scene-pipelines[dlc]",
     "arm-3": "deeplabcut (core)",
     "arm-5": "deeplabcut[gui]",
     "arm-6": "deeplabcut-live",
@@ -81,28 +92,32 @@ def test_no_library_installed_lights_no_arm() -> None:
     assert adopting_arms(_installed()) == frozenset()
 
 
-def test_an_installed_library_that_does_not_depend_on_dlc_octopus_lights_no_arm() -> None:
-    assert adopting_arms(_installed(deeplabcut=["numpy", "dlc-octopus-extras"])) == frozenset()
+def test_an_installed_library_that_does_not_depend_on_dlccore_lights_no_arm() -> None:
+    assert adopting_arms(_installed(deeplabcut=["numpy", "dlccore-extras"])) == frozenset()
 
 
-@pytest.mark.parametrize("line", ["dlc-octopus", "DLC_Octopus>=0.1", "dlc.octopus ; python_version >= '3'"])
-def test_a_library_depending_on_dlc_octopus_lights_its_arm(line: str) -> None:
-    assert adopting_arms(_installed(**{"dlc-scene": [line]})) == {"arm-2"}
+@pytest.mark.parametrize("line", ["dlccore", "DLCCore>=0.1", "dlccore ; python_version >= '3'"])
+def test_a_library_depending_on_dlccore_lights_its_arm(line: str) -> None:
+    assert adopting_arms(_installed(**{"napari-deeplabcut": [line]})) == {"arm-1"}
+
+
+def test_a_dependency_under_the_dlc_extra_lights_the_scene_pipelines_arm() -> None:
+    assert adopting_arms(_installed(**{"scene-pipelines": ["dlccore ; extra == 'dlc'"]})) == {"arm-2"}
 
 
 def test_a_dependency_under_the_gui_extra_lights_only_the_gui_arm() -> None:
-    arms = adopting_arms(_installed(deeplabcut=["dlc-octopus ; extra == 'gui'"]))
+    arms = adopting_arms(_installed(deeplabcut=["dlccore ; extra == 'gui'"]))
 
     assert arms == {"arm-5"}
 
 
 def test_a_core_dependency_lights_both_core_and_gui_arms() -> None:
-    # A GUI install pulls in core's dependencies, so it uses dlc-octopus too.
-    assert adopting_arms(_installed(deeplabcut=["dlc-octopus"])) == {"arm-3", "arm-5"}
+    # A GUI install pulls in core's dependencies, so it uses dlccore too.
+    assert adopting_arms(_installed(deeplabcut=["dlccore"])) == {"arm-3", "arm-5"}
 
 
-def test_every_library_depending_on_dlc_octopus_lights_every_arm() -> None:
-    every = {name: ["dlc-octopus"] for name, _ in ADOPTERS.values()}
+def test_every_library_depending_on_dlccore_lights_every_arm() -> None:
+    every = {name: ["dlccore"] for name, _ in ADOPTERS.values()}
 
     assert adopting_arms(_installed(**every)) == set(ARM_MEANINGS)
 
@@ -125,7 +140,7 @@ def _banner(
     color: ascii_logo.ColorMode = "never",
     version_line: str | None = None,
 ) -> str:
-    """The banner on a simulated TTY of `width` columns, with `arms` adopting dlc-octopus."""
+    """The banner on a simulated TTY of `width` columns, with `arms` adopting dlccore."""
     monkeypatch.setattr(ascii_logo, "terminal_is_wide_enough", lambda *_: True)
     monkeypatch.setattr(ascii_logo, "get_terminal_width", lambda *_, **__: width)
     monkeypatch.setattr(ascii_logo, "_stdout_can_encode", lambda *_: unicode)
@@ -288,17 +303,17 @@ def test_the_title_is_drawn_until_switched_off(monkeypatch: pytest.MonkeyPatch) 
 
 
 def test_the_version_line_is_drawn_directly_under_the_copyright(monkeypatch: pytest.MonkeyPatch) -> None:
-    lines = _banner(monkeypatch, frozenset(), version_line="dlc-octopus 1.2.3").splitlines()
+    lines = _banner(monkeypatch, frozenset(), version_line="dlccore 1.2.3").splitlines()
 
-    assert [line.strip() for line in lines[-2:]] == [COPYRIGHT, "dlc-octopus 1.2.3"]
+    assert [line.strip() for line in lines[-2:]] == [COPYRIGHT, "dlccore 1.2.3"]
 
 
 def test_without_the_copyright_the_version_line_follows_a_blank_row(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(ascii_logo, "SHOW_COPYRIGHT", False)
 
-    lines = _banner(monkeypatch, frozenset(), version_line="dlc-octopus 1.2.3").splitlines()
+    lines = _banner(monkeypatch, frozenset(), version_line="dlccore 1.2.3").splitlines()
 
-    assert [line.strip() for line in lines[-2:]] == ["", "dlc-octopus 1.2.3"]
+    assert [line.strip() for line in lines[-2:]] == ["", "dlccore 1.2.3"]
 
 
 def test_the_copyright_is_the_last_line_until_switched_off(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -322,6 +337,5 @@ def test_the_title_leaves_the_logo_and_its_labels_untouched(monkeypatch: pytest.
     assert [line.strip() for line in titled[-len(TITLE_BOTTOM) :]] == [row.strip() for row in TITLE_BOTTOM]
 
 
-@pytest.mark.owed_before_release(reason="dlc-scene is a placeholder name and must not ship", raises=AssertionError)
 def test_no_arm_label_is_a_placeholder() -> None:
     assert not [text for text in ARM_LABELS.values() if text.startswith("[PH]")]

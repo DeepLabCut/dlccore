@@ -1,3 +1,14 @@
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
 """Command-line entry point for `dlc-octopus`."""
 
 from __future__ import annotations
@@ -5,7 +16,7 @@ from __future__ import annotations
 import argparse
 from importlib.metadata import version
 
-from dlc_octopus.cli.ascii_logo import DISTRIBUTION, logo_banner
+from dlccore.project.cli.ascii_logo import DISTRIBUTION, logo_banner
 
 
 def build_parser() -> argparse.ArgumentParser:

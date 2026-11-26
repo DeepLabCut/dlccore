@@ -1,3 +1,14 @@
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
 """Ported from DeepLabCut-live-GUI dlclivegui/assets/ascii_art.py by its sole author."""
 
 from __future__ import annotations
@@ -58,26 +69,26 @@ TITLE_BOTTOM = tuple(
    \/__/     \/__/               \/__/               \/__/     \/__/
 """.strip("\n").splitlines()
 )
-DISTRIBUTION = "dlc-octopus"
+DISTRIBUTION = "dlccore"
 ONLY_ADOPTING_ARMS = True
 """Draw an arm only once its library depends on `DISTRIBUTION`; False draws every arm."""
 HUB = "hub"
 CORE_ARM = "arm-4"
-"""dlccore's arm: the package Octopus ships in, not an adopter, so drawn like the head and hub."""
+"""dlccore's arm: the package itself, not an adopter, so drawn like the head and hub."""
 ALWAYS_SHOWN = frozenset({"head", HUB, CORE_ARM})
 """Keypoint groups drawn whatever is installed."""
 ADOPTERS = {
     "arm-1": ("napari-deeplabcut", None),
-    "arm-2": ("dlc-scene", None),
+    "arm-2": ("scene-pipelines", "dlc"),
     "arm-3": ("deeplabcut", None),
     "arm-5": ("deeplabcut", "gui"),
     "arm-6": ("deeplabcut-live", None),
     "arm-7": ("deeplabcut-live-gui", None),
 }
-"""Each arm's distribution and extra; the arm is drawn once that distribution, with that extra, requires dlc-octopus."""
+"""Each arm's distribution and extra; the arm is drawn once that distribution, with that extra, requires dlccore."""
 ARM_LABELS = {
     "arm-1": "napari-DLC",
-    "arm-2": "[PH] dlc-scene",
+    "arm-2": "SCENE-pipelines",
     "arm-3": "DLC",
     "arm-4": "dlccore",
     "arm-5": "DLC-GUI",
@@ -141,11 +152,8 @@ def terminal_is_wide_enough(min_width: int = 60) -> bool:
 
 
 def _resource_path(filename: str) -> Path:
-    """Return `filename` as shipped in the wheel, or from `res/` in a source checkout."""
-    packaged = resources.files(__package__) / filename
-    if packaged.is_file():
-        return Path(str(packaged))
-    return Path(__file__).resolve().parents[2] / "res" / filename
+    """Return `filename` as shipped with this package."""
+    return Path(str(resources.files(__package__) / filename))
 
 
 def logo_path() -> Path:
