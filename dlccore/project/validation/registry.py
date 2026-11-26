@@ -1,23 +1,34 @@
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
 from __future__ import annotations
 
 from collections.abc import Callable
 from dataclasses import dataclass
 
-from dlc_octopus.schemas.base.resources import (
+from dlccore.project.schemas.base.resources import (
     DirectoryResourceKind,
     ResourceKind,
 )
-from dlc_octopus.schemas.base.validation import (
+from dlccore.project.schemas.base.validation import (
     ValidationDepth,
 )
-from dlc_octopus.schemas.snapshots import ProjectSnapshot
-from dlc_octopus.validation.context import (
+from dlccore.project.schemas.snapshots import ProjectSnapshot
+from dlccore.project.validation.context import (
     ValidationContext,
 )
-from dlc_octopus.validation.deeplabcut.videos import (
+from dlccore.project.validation.deeplabcut.videos import (
     validate_videos,
 )
-from dlc_octopus.validation.results import (
+from dlccore.project.validation.results import (
     ValidationResult,
 )
 

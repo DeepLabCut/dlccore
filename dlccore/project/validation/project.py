@@ -1,17 +1,28 @@
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
 from __future__ import annotations
 
-from dlc_octopus.schemas.snapshots import ProjectSnapshot
-from dlc_octopus.validation.baseline import run_baseline_checks
-from dlc_octopus.validation.context import (
+from dlccore.project.schemas.snapshots import ProjectSnapshot
+from dlccore.project.validation.baseline import run_baseline_checks
+from dlccore.project.validation.context import (
     build_validation_context,
 )
-from dlc_octopus.validation.registry import (
+from dlccore.project.validation.registry import (
     get_validator_registration,
 )
-from dlc_octopus.validation.requests import (
+from dlccore.project.validation.requests import (
     ProjectValidationRequest,
 )
-from dlc_octopus.validation.results import ValidationResult
+from dlccore.project.validation.results import ValidationResult
 
 
 def validate_project(

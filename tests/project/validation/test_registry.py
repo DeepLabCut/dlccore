@@ -1,16 +1,27 @@
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
 from __future__ import annotations
 
 import pytest
 
-from dlc_octopus.schemas.base.resources import DirectoryResourceKind
-from dlc_octopus.schemas.base.validation import ValidationDepth
-from dlc_octopus.validation.registry import (
+from dlccore.project.schemas.base.resources import DirectoryResourceKind
+from dlccore.project.schemas.base.validation import ValidationDepth
+from dlccore.project.validation.registry import (
     ValidatorRegistration,
     get_validator_registration,
     index_registrations,
     iter_validator_registrations,
 )
-from dlc_octopus.validation.results import ValidationResult
+from dlccore.project.validation.results import ValidationResult
 
 
 def _never_dispatched(

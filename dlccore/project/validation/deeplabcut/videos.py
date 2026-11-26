@@ -1,3 +1,14 @@
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
 from __future__ import annotations
 
 import re
@@ -7,41 +18,41 @@ from pathlib import Path
 
 from pydantic import JsonValue
 
-from dlc_octopus.discovery.observer import ExpectedEntryKind, status_for_expected_entry
-from dlc_octopus.discovery.probe import probe_path
-from dlc_octopus.schemas.base.core import instance_from_path
-from dlc_octopus.schemas.base.finding_codes import (
+from dlccore.project.discovery.observer import ExpectedEntryKind, status_for_expected_entry
+from dlccore.project.discovery.probe import probe_path
+from dlccore.project.schemas.base.core import instance_from_path
+from dlccore.project.schemas.base.finding_codes import (
     ConfiguredVideoFindingCode,
     StructureFindingCode,
 )
-from dlc_octopus.schemas.base.findings import (
+from dlccore.project.schemas.base.findings import (
     Finding,
 )
-from dlc_octopus.schemas.base.observations import (
+from dlccore.project.schemas.base.observations import (
     NodeStatus,
     ObservedNode,
 )
-from dlc_octopus.schemas.base.probes import (
+from dlccore.project.schemas.base.probes import (
     PathProbe,
 )
-from dlc_octopus.schemas.base.resources import (
+from dlccore.project.schemas.base.resources import (
     DirectoryResourceKind,
     FileResourceKind,
 )
-from dlc_octopus.schemas.base.symlinks import (
+from dlccore.project.schemas.base.symlinks import (
     SymlinkTargetKind,
 )
-from dlc_octopus.schemas.base.validation import (
+from dlccore.project.schemas.base.validation import (
     ValidationCheck,
     ValidationCheckStatus,
     ValidationDepth,
 )
-from dlc_octopus.schemas.locations import one_of, one_per_project
-from dlc_octopus.schemas.project_layout.project import PROJECT_CONFIG
-from dlc_octopus.schemas.project_layout.videos import SOURCE_VIDEO
-from dlc_octopus.schemas.snapshots import ProjectSnapshot
-from dlc_octopus.validation.context import ValidationContext
-from dlc_octopus.validation.results import ValidationResult
+from dlccore.project.schemas.locations import one_of, one_per_project
+from dlccore.project.schemas.project_layout.project import PROJECT_CONFIG
+from dlccore.project.schemas.project_layout.videos import SOURCE_VIDEO
+from dlccore.project.schemas.snapshots import ProjectSnapshot
+from dlccore.project.validation.context import ValidationContext
+from dlccore.project.validation.results import ValidationResult
 
 
 @dataclass(frozen=True)
