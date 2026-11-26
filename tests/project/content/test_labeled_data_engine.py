@@ -1,3 +1,14 @@
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
 import inspect
 import shutil
 from collections.abc import Callable
@@ -6,22 +17,22 @@ from pathlib import Path
 import pandas as pd
 import pytest
 
-from dlc_octopus.api import findings_in_scope, inspect_project
-from dlc_octopus.content import read_project_labeled_data
-from dlc_octopus.content.labeled_data import file, model
-from dlc_octopus.content.labeled_data.report import NOT_REPORTED, Report
-from dlc_octopus.content.labeled_data.validate import validate_labeled_data_file
-from dlc_octopus.io.labeled_data import LabeledData, LabeledDataFile, read_labeled_data
-from dlc_octopus.io.labeled_data.checks import file as file_checks
-from dlc_octopus.io.labeled_data.checks import model as model_checks
-from dlc_octopus.schemas.base.finding_codes import LabeledDataFindingCode
-from dlc_octopus.schemas.base.finding_codes import LabeledDataFindingCode as Code
-from dlc_octopus.schemas.base.findings import Finding
-from dlc_octopus.schemas.locations import Location, node_location
-from dlc_octopus.schemas.project_layout.labeled_data import HUMAN_LABELS, LABELED_DATASET
-from dlc_octopus.schemas.scope import Scope
+from dlccore.io.labeled_data import LabeledData, LabeledDataFile, read_labeled_data
+from dlccore.io.labeled_data.checks import file as file_checks
+from dlccore.io.labeled_data.checks import model as model_checks
+from dlccore.project.api import findings_in_scope, inspect_project
+from dlccore.project.content import read_project_labeled_data
+from dlccore.project.content.labeled_data import file, model
+from dlccore.project.content.labeled_data.report import NOT_REPORTED, Report
+from dlccore.project.content.labeled_data.validate import validate_labeled_data_file
+from dlccore.project.schemas.base.finding_codes import LabeledDataFindingCode
+from dlccore.project.schemas.base.finding_codes import LabeledDataFindingCode as Code
+from dlccore.project.schemas.base.findings import Finding
+from dlccore.project.schemas.locations import Location, node_location
+from dlccore.project.schemas.project_layout.labeled_data import HUMAN_LABELS, LABELED_DATASET
+from dlccore.project.schemas.scope import Scope
 
-FIXTURES_DIR = Path(__file__).parents[1] / "io" / "fixtures" / "labeled_data"
+FIXTURES_DIR = Path(__file__).parents[2] / "io" / "fixtures" / "labeled_data"
 HUMAN_H5 = "CollectedData_test-scorer.h5"
 STAND_IN = LabeledDataFindingCode.LABELED_DATA_UNREADABLE  # any declared code no report emits
 

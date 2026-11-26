@@ -1,3 +1,14 @@
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
 import shutil
 from collections.abc import Callable
 from pathlib import Path
@@ -7,18 +18,18 @@ import pandas as pd
 import pytest
 import tables
 
-from dlc_octopus.api import findings_in_scope, inspect_project
-from dlc_octopus.content import ProjectLabeledData, read_project_labeled_data
-from dlc_octopus.io.labeled_data import LabeledData, read_labeled_data, write_labeled_data
-from dlc_octopus.io.stamp import WRITER_VERSION_KEY
-from dlc_octopus.schemas.base.finding_codes import LabeledDataFindingCode, Severity
-from dlc_octopus.schemas.base.findings import Reach
-from dlc_octopus.schemas.project_layout.labeled_data import HUMAN_LABELS, LABELED_DATASET
-from dlc_octopus.schemas.project_layout.videos import VIDEOS
-from dlc_octopus.schemas.scope import Scope
-from dlc_octopus.schemas.snapshots import ProjectSnapshot
+from dlccore.io.labeled_data import LabeledData, read_labeled_data, write_labeled_data
+from dlccore.io.stamp import WRITER_VERSION_KEY
+from dlccore.project.api import findings_in_scope, inspect_project
+from dlccore.project.content import ProjectLabeledData, read_project_labeled_data
+from dlccore.project.schemas.base.finding_codes import LabeledDataFindingCode, Severity
+from dlccore.project.schemas.base.findings import Reach
+from dlccore.project.schemas.project_layout.labeled_data import HUMAN_LABELS, LABELED_DATASET
+from dlccore.project.schemas.project_layout.videos import VIDEOS
+from dlccore.project.schemas.scope import Scope
+from dlccore.project.schemas.snapshots import ProjectSnapshot
 
-FIXTURES_DIR = Path(__file__).parents[1] / "io" / "fixtures" / "labeled_data"
+FIXTURES_DIR = Path(__file__).parents[2] / "io" / "fixtures" / "labeled_data"
 UNREADABLE = LabeledDataFindingCode.LABELED_DATA_UNREADABLE
 HUMAN_H5 = "CollectedData_test-scorer.h5"
 HUMAN_CSV = "CollectedData_test-scorer.csv"
@@ -156,8 +167,8 @@ def test_a_node_the_layout_does_not_declare_is_refused(valid_project: Path) -> N
 
 
 def test_the_public_api_reexports_labeled_data_reading() -> None:
-    import dlc_octopus.api as api
-    import dlc_octopus.content as content
+    import dlccore.project.api as api
+    import dlccore.project.content as content
 
     assert (api.read_project_labeled_data, api.ProjectLabeledData, api.LabeledDataEntry, api.FailedRead) == (
         content.read_project_labeled_data,

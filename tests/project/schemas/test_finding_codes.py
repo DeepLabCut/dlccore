@@ -22,6 +22,7 @@ from dlccore.project.schemas.base.finding_codes import (
     ConfiguredVideoFindingCode,
     FindingCode,
     FingerprintFindingCode,
+    LabeledDataFindingCode,
     Severity,
     StructureFindingCode,
     iter_finding_codes,
@@ -209,6 +210,7 @@ def test_the_finding_code_catalogue_is_closed() -> None:
         ConfigFindingCode,
         ConfiguredVideoFindingCode,
         FingerprintFindingCode,
+        LabeledDataFindingCode,
     }
 
 

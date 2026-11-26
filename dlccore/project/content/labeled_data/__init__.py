@@ -1,4 +1,15 @@
-"""Labeled-data files, of a snapshot or at a path, read through ``dlc_octopus.io`` with findings about each one."""
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
+"""Labeled-data files, of a snapshot or at a path, read through ``dlccore.io`` with findings about each one."""
 
 from __future__ import annotations
 
@@ -7,34 +18,34 @@ from pathlib import Path
 
 from pydantic import JsonValue
 
-from dlc_octopus.content.labeled_data.validate import validate_labeled_data_file
-from dlc_octopus.content.reads import FailedRead, present_files_in_scope
-from dlc_octopus.discovery.position import LayoutPosition, locate_in_layout
-from dlc_octopus.inspection import inspect_project
-from dlc_octopus.io import UnreadableFileError
-from dlc_octopus.io.labeled_data import LabeledDataFile, read_labeled_data
-from dlc_octopus.schemas.base.core import ProjectRelativePath, SchemaId
-from dlc_octopus.schemas.base.filesystem import LayoutIndex
-from dlc_octopus.schemas.base.finding_codes import LabeledDataFindingCode
-from dlc_octopus.schemas.base.findings import Finding
-from dlc_octopus.schemas.locations import Location, node_location
-from dlc_octopus.schemas.project_layout.labeled_data import HUMAN_LABELS, MACHINE_LABELS, MACHINE_LABELS_CSV
-from dlc_octopus.schemas.project_layout.project import PROJECT_INDEX
-from dlc_octopus.schemas.scope import Scope, findings_in_scope
-from dlc_octopus.schemas.snapshots import ProjectSnapshot
-from dlc_octopus.validation.results import ValidationResult
+from dlccore.io import UnreadableFileError
+from dlccore.io.labeled_data import LabeledDataFile, read_labeled_data
+from dlccore.project.content.labeled_data.validate import validate_labeled_data_file
+from dlccore.project.content.reads import FailedRead, present_files_in_scope
+from dlccore.project.discovery.position import LayoutPosition, locate_in_layout
+from dlccore.project.inspection import inspect_project
+from dlccore.project.schemas.base.core import ProjectRelativePath, SchemaId
+from dlccore.project.schemas.base.filesystem import LayoutIndex
+from dlccore.project.schemas.base.finding_codes import LabeledDataFindingCode
+from dlccore.project.schemas.base.findings import Finding
+from dlccore.project.schemas.locations import Location, node_location
+from dlccore.project.schemas.project_layout.labeled_data import HUMAN_LABELS, MACHINE_LABELS, MACHINE_LABELS_CSV
+from dlccore.project.schemas.project_layout.project import PROJECT_INDEX
+from dlccore.project.schemas.scope import Scope, findings_in_scope
+from dlccore.project.schemas.snapshots import ProjectSnapshot
+from dlccore.project.validation.results import ValidationResult
 
 _LABELS = frozenset({HUMAN_LABELS.schema_id, MACHINE_LABELS.schema_id, MACHINE_LABELS_CSV.schema_id})
 
 
 @dataclass(frozen=True)
 class LabeledDataEntry:
-    """One labels file read through Octopus, with its layout anchor.
+    """One labels file read through the project layer, with its layout anchor.
 
     Attributes:
         schema_id: The layout node of the file.
         project_relative_path: The path as the snapshot observed it.
-        data: The file as ``dlc_octopus.io`` read it.
+        data: The file as ``dlccore.io`` read it.
     """
 
     schema_id: SchemaId
@@ -64,7 +75,7 @@ class InspectedLabeledDataFile:
 
     Attributes:
         position: Where the path sits in the layout, as far as it is certain.
-        data: The file as ``dlc_octopus.io`` read it; ``None`` exactly when it could not be read.
+        data: The file as ``dlccore.io`` read it; ``None`` exactly when it could not be read.
         findings: Every finding in scope of the file, anchored at ``position.location``.
         snapshot: The project's snapshot, when ``position`` found a project root.
     """

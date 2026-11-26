@@ -1,13 +1,24 @@
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
 import shutil
 from pathlib import Path
 
 import pandas as pd
 
-from dlc_octopus.api import inspect_labeled_data_file
-from dlc_octopus.schemas.base.finding_codes import LabeledDataFindingCode as Code
-from dlc_octopus.schemas.base.findings import Reach
+from dlccore.project.api import inspect_labeled_data_file
+from dlccore.project.schemas.base.finding_codes import LabeledDataFindingCode as Code
+from dlccore.project.schemas.base.findings import Reach
 
-FIXTURES_DIR = Path(__file__).parents[1] / "io" / "fixtures" / "labeled_data"
+FIXTURES_DIR = Path(__file__).parents[2] / "io" / "fixtures" / "labeled_data"
 NAME = "CollectedData_test-scorer.h5"
 
 

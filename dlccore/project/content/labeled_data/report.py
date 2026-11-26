@@ -1,3 +1,14 @@
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
 """A report: which check it reads, which code it emits, and how. Every public check has one, or is not reported."""
 
 from __future__ import annotations
@@ -7,11 +18,11 @@ from dataclasses import dataclass
 
 from pydantic import JsonValue
 
-from dlc_octopus.io.labeled_data import LabeledDataFile
-from dlc_octopus.io.labeled_data.checks.file import frames_lost_to_csv
-from dlc_octopus.schemas.base.finding_codes import LabeledDataFindingCode
-from dlc_octopus.schemas.base.findings import Finding
-from dlc_octopus.schemas.locations import Location
+from dlccore.io.labeled_data import LabeledDataFile
+from dlccore.io.labeled_data.checks.file import frames_lost_to_csv
+from dlccore.project.schemas.base.finding_codes import LabeledDataFindingCode
+from dlccore.project.schemas.base.findings import Finding
+from dlccore.project.schemas.locations import Location
 
 
 @dataclass(frozen=True)
@@ -35,7 +46,7 @@ def finding(code: LabeledDataFindingCode, data: LabeledDataFile, at: Location, *
     return (Finding(code=code, **at, path=data.path, evidence=evidence),)
 
 
-# Checks a write acts on that Octopus never reports, because another check reports the same fact.
+# Checks a write acts on that the project layer never reports, because another check reports the same fact.
 NOT_REPORTED: frozenset[Callable[..., object]] = frozenset(
     {
         # The writer's prediction; a CSV that did lose its frame reports frame_absorbed_into_index_names.

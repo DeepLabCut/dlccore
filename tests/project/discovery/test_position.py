@@ -1,13 +1,24 @@
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
 from pathlib import Path
 
 import pytest
 
-from dlc_octopus.api import inspect_project
-from dlc_octopus.discovery.position import CandidateNode, locate_in_layout
-from dlc_octopus.schemas.base.finding_codes import LabeledDataFindingCode
-from dlc_octopus.schemas.base.findings import Finding, Reach
-from dlc_octopus.schemas.project_layout.labeled_data import HUMAN_LABELS, LABELED_DATASET
-from dlc_octopus.validation.results import ValidationResult
+from dlccore.project.api import inspect_project
+from dlccore.project.discovery.position import CandidateNode, locate_in_layout
+from dlccore.project.schemas.base.finding_codes import LabeledDataFindingCode
+from dlccore.project.schemas.base.findings import Finding, Reach
+from dlccore.project.schemas.project_layout.labeled_data import HUMAN_LABELS, LABELED_DATASET
+from dlccore.project.validation.results import ValidationResult
 
 NAME = "CollectedData_Sc.h5"
 INSTANCE = ("labeled-data", "Sample1", NAME)

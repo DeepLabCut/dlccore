@@ -1,12 +1,22 @@
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
 """Findings about a labeled-data file as stored, one report per code, each turning one check's fact into findings."""
 
 from __future__ import annotations
 
 from pydantic import JsonValue
 
-from dlc_octopus.content.labeled_data.report import Report, finding
-from dlc_octopus.io.labeled_data import Keypoint, LabeledDataFile
-from dlc_octopus.io.labeled_data.checks.file import (
+from dlccore.io.labeled_data import Keypoint, LabeledDataFile
+from dlccore.io.labeled_data.checks.file import (
     frame_absorbed_into_index_names,
     frames_of_other_depth,
     frames_with_unnamed_parts,
@@ -20,9 +30,10 @@ from dlc_octopus.io.labeled_data.checks.file import (
     unknown_h5_key,
     unread_h5_keys,
 )
-from dlc_octopus.schemas.base.finding_codes import LabeledDataFindingCode as Code
-from dlc_octopus.schemas.base.findings import Finding
-from dlc_octopus.schemas.locations import Location
+from dlccore.project.content.labeled_data.report import Report, finding
+from dlccore.project.schemas.base.finding_codes import LabeledDataFindingCode as Code
+from dlccore.project.schemas.base.findings import Finding
+from dlccore.project.schemas.locations import Location
 
 
 def keypoint_evidence(keypoint: Keypoint) -> dict[str, JsonValue]:
