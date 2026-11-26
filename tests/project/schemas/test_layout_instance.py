@@ -1,3 +1,14 @@
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
 from __future__ import annotations
 
 import json
@@ -6,11 +17,23 @@ from pathlib import Path
 import pytest
 from pydantic import ValidationError
 
-from dlc_octopus.schemas.base.core import instance_from_path
-from dlc_octopus.schemas.base.finding_codes import StructureFindingCode
-from dlc_octopus.schemas.base.findings import Finding, Reach
+from dlccore.project.schemas.base.core import instance_from_path
+from dlccore.project.schemas.base.finding_codes import FindingCode, Severity
+from dlccore.project.schemas.base.findings import Finding, Reach
 
-_CODE = StructureFindingCode.PROJECT_NODE_UNREADABLE
+
+class InstanceFindingCode(FindingCode):
+    """Declared by these tests; each real namespace lands with the check that first emits it."""
+
+    TEST_INSTANCE_NODE_UNREADABLE = (
+        "TEST_INSTANCE_NODE_UNREADABLE",
+        "A project-layout node could not be read.",
+        Severity.ERROR,
+        ("resource_kind", "error_type", "error_message"),
+    )
+
+
+_CODE = InstanceFindingCode.TEST_INSTANCE_NODE_UNREADABLE
 _EVIDENCE = dict.fromkeys(_CODE.evidence_keys, "placeholder")
 _SCHEMA_ID = "dlc.labeled_data.dataset"
 

@@ -1,14 +1,25 @@
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
 """Data validation-specific errors."""
 
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from dlc_octopus.schemas.base.findings import Severity
+from dlccore.project.schemas.base.findings import Severity
 
 if TYPE_CHECKING:
-    from dlc_octopus.schemas.base.findings import Finding
-    from dlc_octopus.schemas.snapshots import ProjectSnapshot
+    from dlccore.project.schemas.base.findings import Finding
+    from dlccore.project.schemas.snapshots import ProjectSnapshot
 
 
 class ConfigUnavailableError(RuntimeError):

@@ -1,4 +1,15 @@
-"""A consumer's policy over findings: Octopus's severity default, adjusted by the consumer's own finding codes.
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
+"""A consumer's policy over findings: the severity default, adjusted by the consumer's own finding codes.
 
 The codes are the consumer's decision; these helpers only apply them.
 """
@@ -7,9 +18,9 @@ from __future__ import annotations
 
 from collections.abc import Collection, Iterable
 
-from dlc_octopus.errors import BLOCKING_SEVERITIES
-from dlc_octopus.schemas.base.finding_codes import FindingCode
-from dlc_octopus.schemas.base.findings import Finding
+from dlccore.project.errors import BLOCKING_SEVERITIES
+from dlccore.project.schemas.base.finding_codes import FindingCode
+from dlccore.project.schemas.base.findings import Finding
 
 
 def get_blocking_findings(

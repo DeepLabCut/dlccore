@@ -1,4 +1,14 @@
-# schemas/base/findings.py
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
 """Simple diagnostic facts generated from walking through the project structure.
 
 These are the main enablers for downstream reporting, consumption by GUI/CLI/LLM agents,
@@ -10,16 +20,12 @@ from __future__ import annotations
 
 from enum import Enum
 from pathlib import Path
-from typing import TYPE_CHECKING
 
 from pydantic import Field, JsonValue, model_validator
 from typing_extensions import Self
 
-from dlc_octopus.schemas.base.core import FrozenModel, LayoutInstance, SchemaId
-from dlc_octopus.schemas.base.finding_codes import FindingCode, Severity, finding_code
-
-if TYPE_CHECKING:
-    from IPython.lib.pretty import RepresentationPrinter
+from dlccore.project.schemas.base.core import FrozenModel, LayoutInstance, SchemaId
+from dlccore.project.schemas.base.finding_codes import FindingCode, Severity, finding_code
 
 
 class Reach(str, Enum):
@@ -94,16 +100,3 @@ class Finding(FrozenModel):
             raise ValueError(f"Reach {self.reach.name} names one instance, but got none.")
 
         return self
-
-    # Display hooks only IPython and Jupyter call; repr, str and serialization stay pydantic's.
-    # Imported on call so that schemas never load visualization.
-
-    def _repr_pretty_(self, printer: RepresentationPrinter, cycle: bool) -> None:  # noqa: FBT001 - IPython's signature
-        from dlc_octopus.visualization.findings import render_finding
-
-        printer.text("Finding(...)" if cycle else render_finding(self))
-
-    def _repr_markdown_(self) -> str:
-        from dlc_octopus.visualization.findings import render_finding
-
-        return render_finding(self, style="markdown")

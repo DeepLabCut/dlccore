@@ -1,3 +1,14 @@
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
 from __future__ import annotations
 
 import json
@@ -5,19 +16,28 @@ import json
 import pytest
 from pydantic import ValidationError
 
-from dlc_octopus.schemas.base.finding_codes import (
-    ConfigFindingCode,
-    ConfiguredVideoFindingCode,
-    FindingCode,
-    FingerprintFindingCode,
-    LabeledDataFindingCode,
-    Severity,
-    StructureFindingCode,
-    iter_finding_codes,
-)
-from dlc_octopus.schemas.base.findings import Finding, Reach
+from dlccore.project.schemas.base.finding_codes import FindingCode, Severity, iter_finding_codes
+from dlccore.project.schemas.base.findings import Finding, Reach
 
-_UNREADABLE = StructureFindingCode.PROJECT_NODE_UNREADABLE
+
+class ExampleFindingCode(FindingCode):
+    """Declared by these tests; each real namespace lands with the check that first emits it."""
+
+    TEST_NODE_WRONG_TYPE = (
+        "TEST_NODE_WRONG_TYPE",
+        "A project resource exists at the expected location but has the wrong filesystem type.",
+        Severity.ERROR,
+        ("resource_kind", "expected_type"),
+    )
+    TEST_NODE_UNREADABLE = (
+        "TEST_NODE_UNREADABLE",
+        "A project-layout node could not be read.",
+        Severity.ERROR,
+        ("resource_kind", "error_type", "error_message"),
+    )
+
+
+_UNREADABLE = ExampleFindingCode.TEST_NODE_UNREADABLE
 _SCHEMA_ID = "dlc.videos.source_video"
 
 
@@ -28,7 +48,7 @@ def _declared_evidence(code: FindingCode) -> dict[str, str]:
 
 
 def test_finding_keeps_a_declared_code_as_its_enum_member() -> None:
-    code = StructureFindingCode.PROJECT_NODE_WRONG_TYPE
+    code = ExampleFindingCode.TEST_NODE_WRONG_TYPE
 
     finding = Finding(
         code=code,
@@ -38,15 +58,15 @@ def test_finding_keeps_a_declared_code_as_its_enum_member() -> None:
     )
 
     assert finding.code is code
-    assert finding.code == "PROJECT_NODE_WRONG_TYPE"
+    assert finding.code == "TEST_NODE_WRONG_TYPE"
 
 
 def test_finding_code_renders_as_the_bare_code() -> None:
-    code = StructureFindingCode.PROJECT_NODE_WRONG_TYPE
+    code = ExampleFindingCode.TEST_NODE_WRONG_TYPE
 
-    assert str(code) == "PROJECT_NODE_WRONG_TYPE"
-    assert f"{code}" == "PROJECT_NODE_WRONG_TYPE"
-    assert ", ".join([code]) == "PROJECT_NODE_WRONG_TYPE"
+    assert str(code) == "TEST_NODE_WRONG_TYPE"
+    assert f"{code}" == "TEST_NODE_WRONG_TYPE"
+    assert ", ".join([code]) == "TEST_NODE_WRONG_TYPE"
 
 
 def test_finding_rejects_an_undeclared_code() -> None:
@@ -175,15 +195,12 @@ def test_training_split_reconciliation_declares_a_finding_code() -> None:
 
 
 def test_the_finding_code_catalogue_is_closed() -> None:
-    """The catalogue is closed: adding a namespace is deliberate, so it fails here first."""
+    """Adding a namespace is deliberate, so it fails here first. Namespaces declared by tests are outside it."""
 
-    assert set(FindingCode.__subclasses__()) == {
-        StructureFindingCode,
-        ConfigFindingCode,
-        ConfiguredVideoFindingCode,
-        FingerprintFindingCode,
-        LabeledDataFindingCode,
-    }
+    namespaces = set(FindingCode.__subclasses__())
+
+    assert ExampleFindingCode in namespaces
+    assert {namespace for namespace in namespaces if namespace.__module__.startswith("dlccore.")} == set()
 
 
 def test_severity_has_three_rungs() -> None:
