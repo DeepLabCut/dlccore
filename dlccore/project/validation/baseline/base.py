@@ -1,11 +1,22 @@
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
 from __future__ import annotations
 
 from collections.abc import Callable
 from dataclasses import dataclass
 
-from dlc_octopus.schemas.base.findings import Finding
-from dlc_octopus.schemas.snapshots import ProjectSnapshot
-from dlc_octopus.validation.context import ValidationContext
+from dlccore.project.schemas.base.findings import Finding
+from dlccore.project.schemas.snapshots import ProjectSnapshot
+from dlccore.project.validation.context import ValidationContext
 
 BaselineValidator = Callable[
     [
