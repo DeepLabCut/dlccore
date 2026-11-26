@@ -1,3 +1,14 @@
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -5,9 +16,9 @@ from pathlib import Path
 import pytest
 from pydantic import BaseModel
 
-from dlc_octopus.schemas.base.finding_codes import ConfigFindingCode, StructureFindingCode, iter_finding_codes
-from dlc_octopus.schemas.base.findings import Finding, Reach
-from dlc_octopus.visualization import render_finding, render_finding_catalogue, render_findings_markdown
+from dlccore.project.schemas.base.finding_codes import ConfigFindingCode, StructureFindingCode, iter_finding_codes
+from dlccore.project.schemas.base.findings import Finding, Reach
+from dlccore.project.visualization import render_finding, render_finding_catalogue, render_findings_markdown
 
 NO_KEYPOINTS = "The config loads but declares no keypoints."
 SEP = chr(0x203A)  # between a file and a field in Markdown

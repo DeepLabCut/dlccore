@@ -1,18 +1,28 @@
-# schemas/base/observations.py
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
 from __future__ import annotations
 
 from enum import Enum
 from typing import TYPE_CHECKING
 
-from dlc_octopus.schemas.base.core import FrozenModel, ProjectRelativePath, SchemaId
-from dlc_octopus.schemas.base.probes import PathProbe
-from dlc_octopus.schemas.base.resources import (
+from dlccore.project.schemas.base.core import FrozenModel, ProjectRelativePath, SchemaId
+from dlccore.project.schemas.base.probes import PathProbe
+from dlccore.project.schemas.base.resources import (
     DirectoryResourceKind,
     FileResourceKind,
     ProjectResource,
     ResourceManagement,
 )
-from dlc_octopus.schemas.base.symlinks import (
+from dlccore.project.schemas.base.symlinks import (
     SymlinkObservation,
 )
 
@@ -76,13 +86,13 @@ class ObservedNode(FrozenModel):
     # Display hooks only IPython and Jupyter call; repr, str and serialization stay pydantic's.
     # Imported on call so that schemas never load visualization.
 
-    def _repr_pretty_(self, printer: RepresentationPrinter, cycle: bool) -> None:  # noqa: FBT001 - IPython's signature
-        from dlc_octopus.visualization.tree import render_project_tree
+    def _repr_pretty_(self, printer: RepresentationPrinter, cycle: bool) -> None:
+        from dlccore.project.visualization.tree import render_project_tree
 
         printer.text("ObservedNode(...)" if cycle else render_project_tree(self))
 
     def _repr_html_(self) -> str:
-        from dlc_octopus.visualization.tree import render_project_tree_html
+        from dlccore.project.visualization.tree import render_project_tree_html
 
         return render_project_tree_html(self)
 

@@ -1,3 +1,14 @@
+#
+# DeepLabCut Toolbox (deeplabcut.org)
+# © A. & M.W. Mathis Labs
+# https://github.com/DeepLabCut/dlccore
+#
+# Contributors:
+# https://github.com/DeepLabCut/dlccore/graphs/contributors
+#
+# Licensed under GNU Lesser General Public License v3.0
+#
+
 """Render findings for people: several lines, one line for logs, or Markdown for notebooks and issues."""
 
 from __future__ import annotations
@@ -7,8 +18,8 @@ from collections.abc import Iterable
 from pathlib import Path
 from typing import Literal
 
-from dlc_octopus.schemas.base.finding_codes import FindingCode, Severity, iter_finding_codes
-from dlc_octopus.schemas.base.findings import Finding
+from dlccore.project.schemas.base.finding_codes import FindingCode, Severity, iter_finding_codes
+from dlccore.project.schemas.base.findings import Finding
 
 FindingStyle = Literal["text", "compact", "markdown"]
 CatalogueStyle = Literal["text", "markdown"]
@@ -65,7 +76,7 @@ def render_finding(
 
 
 def render_finding_catalogue(*, style: CatalogueStyle = "text") -> str:
-    """Render every finding code Octopus can emit, one section per category, in catalogue order.
+    """Render every finding code the project layer can emit, one section per category, in catalogue order.
 
     Args:
         style: ``"text"``, or ``"markdown"`` with one table per category.
