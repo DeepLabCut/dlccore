@@ -11,6 +11,8 @@
 
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 from dlccore.project.schemas.base.core import FrozenModel, SchemaId
 from dlccore.project.schemas.base.resources import (
     ResourceKind,
@@ -19,6 +21,9 @@ from dlccore.project.schemas.base.resources import (
 from dlccore.project.schemas.base.validation import (
     ValidationDepth,
 )
+
+if TYPE_CHECKING:
+    from IPython.lib.pretty import RepresentationPrinter
 
 
 class LayoutCapability(FrozenModel):
@@ -54,3 +59,13 @@ class ProjectManagerCapabilities(FrozenModel):
     layout: LayoutCapability
     baseline_validations: tuple[BaselineValidationCapability, ...] = ()
     validations: tuple[ValidationCapability, ...] = ()
+
+    def _repr_pretty_(self, printer: RepresentationPrinter, cycle: bool) -> None:
+        from dlccore.project.visualization.capabilities import render_capabilities
+
+        printer.text("ProjectManagerCapabilities(...)" if cycle else render_capabilities(self))
+
+    def _repr_markdown_(self) -> str:
+        from dlccore.project.visualization.capabilities import render_capabilities
+
+        return render_capabilities(self, style="markdown")
