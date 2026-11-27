@@ -336,6 +336,7 @@ class TestProjectConfigVersioning:
 class TestFieldsPendingSchemaMigration:
     @pytest.mark.xfail(
         strict=True,
+        raises=AssertionError,
         reason=(
             "bboxes_pcutoff is a property until the schema version is bumped, "
             "see https://github.com/DeepLabCut/DeepLabCut/pull/3470"

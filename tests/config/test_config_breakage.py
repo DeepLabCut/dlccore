@@ -30,7 +30,8 @@ from dlccore.deprecation import DLCDeprecationWarning
 @pytest.mark.xfail(
     reason="This may make validation difficult and cause subtle issues "
     "if we start changing how functions such as append() operate."
-    " Avoiding lists in configs could be a better long-term solution."
+    " Avoiding lists in configs could be a better long-term solution.",
+    raises=pytest.fail.Exception,
 )
 def test_in_place_list_mutation_should_be_validated_like_assignment():
     """Appending to a config list changes config state without calling __setattr__.
@@ -49,7 +50,7 @@ def test_in_place_list_mutation_should_be_validated_like_assignment():
         cfg.TrainingFraction.append(1.5)
 
 
-@pytest.mark.xfail(reason="Not implemented yet")
+@pytest.mark.xfail(reason="Not implemented yet", raises=AssertionError)
 @pytest.mark.parametrize(
     ("field_name", "mutate"),
     [
@@ -257,6 +258,7 @@ def test_item_assignment_with_alias_should_warn_once_and_track_canonical_field()
         "model validators run on each assignment, so intermediate states "
         "like multianimalproject=True with bodyparts=[] are rejected."
     ),
+    raises=ValidationError,
 )
 def test_update_applies_cross_field_overrides_atomically():
     """Bulk update should validate the merged state, not each setattr in isolation."""
