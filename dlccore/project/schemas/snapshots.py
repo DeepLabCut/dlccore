@@ -174,6 +174,24 @@ class ProjectSnapshot(FrozenModel):
 
         return ConfigState.VALID
 
+    def render_tree(
+        self,
+        *,
+        show_schema_ids: bool = False,
+        show_unknown: bool = True,
+        max_children_per_kind: int | None = 50,
+    ) -> str:
+        """Render a tree view of the project snapshot."""
+
+        from dlccore.project.visualization import render_project_tree
+
+        return render_project_tree(
+            project=self.project,
+            show_schema_ids=show_schema_ids,
+            show_unknown=show_unknown,
+            max_children_per_kind=max_children_per_kind,
+        )
+
     @property
     def config(self) -> ProjectConfig:
         """Return canonical config data or fail explicitly."""

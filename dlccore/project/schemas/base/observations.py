@@ -12,6 +12,7 @@
 from __future__ import annotations
 
 from enum import Enum
+from typing import TYPE_CHECKING
 
 from dlccore.project.schemas.base.core import FrozenModel, ProjectRelativePath, SchemaId
 from dlccore.project.schemas.base.probes import PathProbe
@@ -24,6 +25,9 @@ from dlccore.project.schemas.base.resources import (
 from dlccore.project.schemas.base.symlinks import (
     SymlinkObservation,
 )
+
+if TYPE_CHECKING:
+    from IPython.lib.pretty import RepresentationPrinter
 
 
 class NodeStatus(str, Enum):
@@ -78,6 +82,19 @@ class ObservedNode(FrozenModel):
     def should_be_directory(self) -> bool:
         """Whether the project schema defines this node as a directory."""
         return isinstance(self.kind, DirectoryResourceKind)
+
+    # Display hooks only IPython and Jupyter call; repr, str and serialization stay pydantic's.
+    # Imported on call so that schemas never load visualization.
+
+    def _repr_pretty_(self, printer: RepresentationPrinter, cycle: bool) -> None:
+        from dlccore.project.visualization.tree import render_project_tree
+
+        printer.text("ObservedNode(...)" if cycle else render_project_tree(self))
+
+    def _repr_html_(self) -> str:
+        from dlccore.project.visualization.tree import render_project_tree_html
+
+        return render_project_tree_html(self)
 
 
 def walk_observed_nodes(node: ObservedNode) -> tuple[ObservedNode, ...]:

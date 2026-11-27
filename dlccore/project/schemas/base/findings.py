@@ -20,12 +20,16 @@ from __future__ import annotations
 
 from enum import Enum
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 from pydantic import Field, JsonValue, model_validator
 from typing_extensions import Self
 
 from dlccore.project.schemas.base.core import FrozenModel, LayoutInstance, SchemaId
 from dlccore.project.schemas.base.finding_codes import FindingCode, Severity, finding_code
+
+if TYPE_CHECKING:
+    from IPython.lib.pretty import RepresentationPrinter
 
 
 class Reach(str, Enum):
@@ -100,3 +104,16 @@ class Finding(FrozenModel):
             raise ValueError(f"Reach {self.reach.name} names one instance, but got none.")
 
         return self
+
+    # Display hooks only IPython and Jupyter call; repr, str and serialization stay pydantic's.
+    # Imported on call so that schemas never load visualization.
+
+    def _repr_pretty_(self, printer: RepresentationPrinter, cycle: bool) -> None:
+        from dlccore.project.visualization.findings import render_finding
+
+        printer.text("Finding(...)" if cycle else render_finding(self))
+
+    def _repr_markdown_(self) -> str:
+        from dlccore.project.visualization.findings import render_finding
+
+        return render_finding(self, style="markdown")
