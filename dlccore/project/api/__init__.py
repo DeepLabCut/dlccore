@@ -15,8 +15,13 @@ from dlccore.project.api import helpers
 from dlccore.project.content import (
     FailedRead,
     FileFingerprint,
+    InspectedLabeledDataFile,
+    LabeledDataEntry,
+    ProjectLabeledData,
     ResourcesFileFingerprint,
     compare_file_fingerprints,
+    inspect_labeled_data_file,
+    read_project_labeled_data,
     resources_file_fingerprint,
 )
 from dlccore.project.inspection import inspect_project, project_name
@@ -27,11 +32,16 @@ __all__ = [
     "FailedRead",
     "FileFingerprint",
     "FileResourceKind",
+    "InspectedLabeledDataFile",
+    "LabeledDataEntry",
+    "ProjectLabeledData",
     "ResourcesFileFingerprint",
     "compare_file_fingerprints",
     "findings_in_scope",
     "helpers",
+    "inspect_labeled_data_file",
     "inspect_project",
     "project_name",
+    "read_project_labeled_data",
     "resources_file_fingerprint",
 ]

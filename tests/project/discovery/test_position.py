@@ -13,9 +13,12 @@ from pathlib import Path
 
 import pytest
 
+from dlccore.project.api import inspect_project
 from dlccore.project.discovery.position import CandidateNode, locate_in_layout
-from dlccore.project.schemas.base.findings import Reach
+from dlccore.project.schemas.base.finding_codes import LabeledDataFindingCode
+from dlccore.project.schemas.base.findings import Finding, Reach
 from dlccore.project.schemas.project_layout.labeled_data import HUMAN_LABELS, LABELED_DATASET
+from dlccore.project.validation.results import ValidationResult
 
 NAME = "CollectedData_Sc.h5"
 INSTANCE = ("labeled-data", "Sample1", NAME)
@@ -53,3 +56,21 @@ def test_labeled_data_spelled_otherwise_is_not_trusted(tmp_path: Path) -> None:
 def test_a_name_no_file_node_matches_is_refused(tmp_path: Path) -> None:
     with pytest.raises(ValueError, match="matches 0 file nodes"):
         locate_in_layout(tmp_path / "labels.h5")
+
+
+def test_a_snapshot_refuses_an_unrooted_finding(valid_project: Path) -> None:
+    snapshot = inspect_project(valid_project)
+    evidence = {"resource_kind": "human_labels", "error_type": "OSError", "error_message": "unreadable"}
+    finding = Finding(
+        code=LabeledDataFindingCode.LABELED_DATA_UNREADABLE,
+        schema_id=HUMAN_LABELS.schema_id,
+        reach=Reach.UNROOTED,
+        instance=(NAME,),
+        evidence=evidence,
+    )
+
+    with pytest.raises(ValueError, match="UNROOTED"):
+        snapshot.with_validation_result(ValidationResult(findings=(finding,)))
+    # Control: the same finding anchored in the project is accepted.
+    rooted = finding.model_copy(update={"reach": Reach.ONE_OF, "instance": INSTANCE})
+    assert snapshot.with_validation_result(ValidationResult(findings=(rooted,))).findings[-1] == rooted
