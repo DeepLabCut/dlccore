@@ -33,9 +33,11 @@ optional-dependencies.hdf5 = [ "tables>=3.10.1", "typing-extensions>=4.7" ]
 optional-dependencies.video = [ "opencv-python-headless>=5" ]
 urls.Homepage = "https://github.com/DeepLabCut/dlccore"
 urls.Repository = "https://github.com/DeepLabCut/dlccore"
+scripts.dlc-octopus = "dlccore.project.cli:main"
 
 [tool.setuptools]
 packages.find.include = [ "dlccore*" ]
+package-data."dlccore.project.cli" = [ "logo.png", "logo_keypoints.json" ]
 
 [tool.setuptools_scm]
 
