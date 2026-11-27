@@ -144,6 +144,19 @@ class ConfigFindingCode(FindingCode):
         Severity.NOTE,
         ("default",),
     )
+    CONFIG_PROJECT_PATH_MISMATCH = (
+        "CONFIG_PROJECT_PATH_MISMATCH",
+        "The project path declared in config.yaml does not match the project root observed. A declared path "
+        "probed as missing may also be an unreachable network location or a path from another platform.",
+        Severity.NOTE,
+        ("declared_project_path", "observed_project_root", "declared_path_probe", "error_type", "error_message"),
+    )
+    CONFIG_PROJECT_PATH_NOT_ABSOLUTE = (
+        "CONFIG_PROJECT_PATH_NOT_ABSOLUTE",
+        "The project path in config.yaml is missing, empty or relative, and cannot be compared with the project root.",
+        Severity.NOTE,
+        ("declared_project_path",),
+    )
 
 
 def iter_finding_codes() -> tuple[FindingCode, ...]:
