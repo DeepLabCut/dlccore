@@ -53,7 +53,7 @@ jobs:
           activate-environment: true
 
       - name: Install the lowest version each dependency declares
-        run: uv pip install --resolution lowest-direct . "pytest>=8"
+        run: uv pip install --resolution lowest-direct ".[hdf5]" "pytest>=8"
 
       - name: Test
         run: pytest tests
