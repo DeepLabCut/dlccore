@@ -27,6 +27,8 @@ dependencies = [
   "ruamel-yaml>=0.16",
   "typing-extensions",
 ]
+optional-dependencies.all = [ "dlccore[video]" ]
+optional-dependencies.video = [ "opencv-python-headless>=5" ]
 urls.Homepage = "https://github.com/DeepLabCut/dlccore"
 urls.Repository = "https://github.com/DeepLabCut/dlccore"
 
