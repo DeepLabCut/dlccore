@@ -1,0 +1,33 @@
+name: Lockfile
+
+on:
+  pull_request:
+    paths:
+      - "pyproject.toml"
+      - "uv.lock"
+      - ".github/workflows/lockfile_check.yml"
+  push:
+    branches: [main]
+    paths:
+      - "pyproject.toml"
+      - "uv.lock"
+      - ".github/workflows/lockfile_check.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  uv-lockfile-check:
+    name: uv.lock is current
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: astral-sh/setup-uv@v7
+        with:
+          # The lockfile format follows the uv version; keep in sync with the one that wrote uv.lock
+          version: "0.13.10"
+
+      - name: Check lockfile
+        run: uv lock --check
