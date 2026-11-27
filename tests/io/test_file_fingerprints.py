@@ -81,7 +81,7 @@ def test_a_file_that_changes_while_read_has_no_file_fingerprint(
 ) -> None:
     path = tmp_path / "growing.h5"
     path.write_bytes(b"x")
-    signatures = iter([(1, 100, 7, 1), (1, 200, 7, 1)])
+    signatures = iter([FileStat(1, 100, 7, 1), FileStat(1, 200, 7, 1)])
     monkeypatch.setattr(fingerprints, "_signature", lambda _path: next(signatures))
 
     with pytest.raises(UnreadableFileError, match="changed while it was read"):
@@ -105,7 +105,7 @@ def test_a_file_removed_while_read_raises_from_the_original(tmp_path: Path, monk
     signature = fingerprints._signature
     calls = 0
 
-    def removed_after_the_read(target: Path) -> tuple[int, int, int, int] | None:
+    def removed_after_the_read(target: Path) -> FileStat | None:
         nonlocal calls
         calls += 1
         if calls == 2:
