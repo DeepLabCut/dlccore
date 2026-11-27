@@ -71,6 +71,21 @@ class LabeledData:
 
         return cls(df)
 
+    @classmethod
+    def from_wide_df(cls, df: pd.DataFrame) -> LabeledData:
+        """Build labels from a wide DataFrame, converting it as reading a file does.
+
+        Args:
+            df: A wide DataFrame in any layout DeepLabCut reads.
+
+        Raises:
+            ValueError: If ``df`` cannot be converted; see ``wide.to_long.wide_to_long`` for the cases.
+        """
+
+        from dlccore.io.labeled_data.wide.to_long import wide_df_to_long
+
+        return wide_df_to_long(df)
+
     @property
     def is_multi_animal(self) -> bool:
         return identity_columns(self._df) == MULTI_ANIMAL_KEYPOINT_COLUMNS
