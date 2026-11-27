@@ -17,7 +17,12 @@ import weakref
 import pytest
 from pydantic import ValidationError
 
-from dlccore.project.schemas.base.finding_codes import FindingCode, Severity, iter_finding_codes
+from dlccore.project.schemas.base.finding_codes import (
+    FindingCode,
+    Severity,
+    StructureFindingCode,
+    iter_finding_codes,
+)
 from dlccore.project.schemas.base.findings import Finding, Reach
 
 _SCHEMA_ID = "dlc.videos.source_video"
@@ -196,7 +201,7 @@ def test_an_example_namespace_leaves_the_catalogue_after_its_test() -> None:
 def test_the_finding_code_catalogue_is_closed() -> None:
     """The catalogue is closed: adding a namespace is deliberate, so it fails here first."""
 
-    assert set(FindingCode.__subclasses__()) == set()
+    assert set(FindingCode.__subclasses__()) == {StructureFindingCode}
 
 
 def test_severity_has_three_rungs() -> None:

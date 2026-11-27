@@ -56,6 +56,41 @@ class FindingCode(str, Enum):
         return member
 
 
+class StructureFindingCode(FindingCode):
+    """Findings about the project's schema-defined layout."""
+
+    PROJECT_REQUIRED_NODE_MISSING = (
+        "PROJECT_REQUIRED_NODE_MISSING",
+        "A required project-layout node is missing.",
+        Severity.ERROR,
+        ("resource_kind",),
+    )
+    PROJECT_SYMLINK_TARGET_MISSING = (
+        "PROJECT_SYMLINK_TARGET_MISSING",
+        "A project resource is a symlink whose target does not exist.",
+        Severity.ERROR,
+        ("resource_kind", "raw_target", "absolute_target"),
+    )
+    PROJECT_SYMLINK_TARGET_WRONG_TYPE = (
+        "PROJECT_SYMLINK_TARGET_WRONG_TYPE",
+        "The symbolic-link target has an unexpected filesystem type.",
+        Severity.ERROR,
+        ("resource_kind", "raw_target", "absolute_target", "target_kind"),
+    )
+    PROJECT_NODE_WRONG_TYPE = (
+        "PROJECT_NODE_WRONG_TYPE",
+        "A project resource exists at the expected location but has the wrong filesystem type.",
+        Severity.ERROR,
+        ("resource_kind", "expected_type"),
+    )
+    PROJECT_NODE_UNREADABLE = (
+        "PROJECT_NODE_UNREADABLE",
+        "A project-layout node could not be read.",
+        Severity.ERROR,
+        ("resource_kind", "error_type", "error_message"),
+    )
+
+
 def iter_finding_codes() -> tuple[FindingCode, ...]:
     """Return every declared finding code, namespace by namespace."""
 
