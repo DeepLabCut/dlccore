@@ -11,6 +11,9 @@
 
 """``dlccore.io``'s import boundaries: nothing from ``dlccore`` outside io, suffixes only the standard library, and
 no format module loaded until it is imported.
+
+``dlccore.project`` reaches io only through ``dlccore.project.content``, except for the layout, which imports the
+data in ``dlccore.io.suffixes``.
 """
 
 import ast
@@ -27,6 +30,9 @@ import dlccore
 PACKAGE_ROOT = Path(dlccore.__file__).parent
 IO = "dlccore.io"
 SUFFIXES = f"{IO}.suffixes"
+PROJECT = "dlccore.project"
+CONTENT = f"{PROJECT}.content"
+SCHEMAS = f"{PROJECT}.schemas"
 
 
 def _within(name: str, package: str) -> bool:
@@ -69,6 +75,50 @@ def test_io_imports_nothing_from_dlccore_outside_io() -> None:
     }
 
     assert {module: names for module, names in offending.items() if names} == {}
+
+
+def _may_import_from_io(module: str, name: str) -> bool:
+    """Content may import any of io; the layout may import its suffixes, which are data only."""
+
+    return _within(module, CONTENT) or (_within(module, SCHEMAS) and _within(name, SUFFIXES))
+
+
+def test_only_content_imports_io_and_the_layout_only_its_suffixes() -> None:
+    offending = {
+        module: sorted(name for name in imports if _within(name, IO) and not _may_import_from_io(module, name))
+        for module, imports in _package_modules()
+        if _within(module, PROJECT)
+    }
+
+    assert {module: names for module, names in offending.items() if names} == {}
+
+
+def test_the_layout_may_import_no_other_part_of_io() -> None:
+    # Control: the exception for suffixes must not let the layout import io's readers.
+    assert _may_import_from_io(f"{SCHEMAS}.project_layout.videos", SUFFIXES)
+    assert not _may_import_from_io(f"{SCHEMAS}.project_layout.videos", f"{IO}.labeled_data")
+    assert not _may_import_from_io(f"{PROJECT}.validation.structure", SUFFIXES)
+
+
+def test_the_scan_sees_the_layout_import_io_suffixes() -> None:
+    # Control: the layout does import suffixes, so the exception above is exercised.
+    assert SUFFIXES in dict(_package_modules())[f"{SCHEMAS}.project_layout.videos"]
+
+
+def _modules_spelling(literal: str) -> set[str]:
+    """Modules holding ``literal`` as a code constant; docstrings, which only mention it, are longer strings."""
+
+    return {
+        path.relative_to(PACKAGE_ROOT).as_posix()
+        for path in PACKAGE_ROOT.rglob("*.py")
+        for node in ast.walk(ast.parse(path.read_text(encoding="utf-8")))
+        if isinstance(node, ast.Constant) and node.value == literal
+    }
+
+
+def test_the_human_labels_prefix_is_spelled_once_in_io() -> None:
+    # The layout imports it from io.suffixes, so the project layer and the I/O layer can never claim different files.
+    assert _modules_spelling("CollectedData_") == {"io/suffixes.py"}
 
 
 def test_the_scan_reaches_io() -> None:
