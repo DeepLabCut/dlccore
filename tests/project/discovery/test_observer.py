@@ -14,6 +14,7 @@ from pathlib import Path
 
 import pytest
 
+from dlccore.project.api import inspect_project
 from dlccore.project.discovery.observer import discover_directory_node, discover_project
 from dlccore.project.schemas.base.filesystem import (
     DirectorySchema,
@@ -359,3 +360,20 @@ def test_directory_traversal_failure_is_independent_of_entry_probe(
     assert videos_node.probe.status == PathProbeStatus.OBSERVED
     assert videos_node.probe.entry_kind == FilesystemEntryKind.DIRECTORY
     assert videos_node.probe.error_type is None
+
+
+@pytest.mark.xfail(
+    reason="on a case-insensitive filesystem, a layout directory spelled differently on disk is discovered twice: "
+    "as the layout node under the layout's spelling, and as an unclaimed directory under its own",
+    strict=True,
+    raises=AssertionError,
+)
+def test_a_differently_cased_layout_directory_is_one_resource(tmp_path: Path) -> None:
+    (tmp_path / "VIDEOS").mkdir()
+
+    if not (tmp_path / "videos").exists():
+        pytest.skip("case-sensitive filesystem: VIDEOS is simply another directory")
+
+    resources = inspect_project(tmp_path).resources
+
+    assert len([resource for resource in resources if str(resource.project_relative_path).lower() == "videos"]) == 1

@@ -16,6 +16,8 @@ from pathlib import Path
 
 import pytest
 
+from dlccore.config import ProjectConfig
+from dlccore.project.api import inspect_project
 from dlccore.project.discovery.observer import (
     ExpectedEntryKind,
     classify_unclaimed_entry,
@@ -31,6 +33,7 @@ from dlccore.project.schemas.base.probes import (
 from dlccore.project.schemas.base.resources import (
     DirectoryResourceKind,
     FileResourceKind,
+    ResourceManagement,
     UnknownResourceKind,
 )
 from dlccore.project.schemas.base.symlinks import (
@@ -279,3 +282,191 @@ def test_mapping_functions_do_not_touch_the_filesystem(tmp_path: Path) -> None:
     assert status == NodeStatus.PRESENT
     assert kind is FileResourceKind.UNKNOWN_FILE
     assert symlink is None
+
+
+def test_inspection_preserves_valid_video_symlink(
+    valid_project: Path,
+    tmp_path: Path,
+    create_symlink_or_skip: Callable[..., None],
+) -> None:
+    target = tmp_path / "external.mp4"
+    target.touch()
+
+    link = valid_project / "videos" / "external.mp4"
+    create_symlink_or_skip(
+        link,
+        target,
+    )
+
+    snapshot = inspect_project(valid_project)
+    resource = snapshot.resource_at("videos/external.mp4")
+
+    assert resource is not None
+    assert resource.kind == FileResourceKind.SOURCE_VIDEO
+    assert resource.symlink is not None
+    assert resource.symlink.absolute_target == target.absolute()
+    assert resource.symlink.target_kind == SymlinkTargetKind.FILE
+
+
+def test_inspection_preserves_broken_video_symlink(
+    valid_project: Path,
+    tmp_path: Path,
+    create_symlink_or_skip: Callable[..., None],
+) -> None:
+    target = tmp_path / "missing.mp4"
+
+    link = valid_project / "videos" / "missing.mp4"
+    create_symlink_or_skip(
+        link,
+        target,
+    )
+
+    snapshot = inspect_project(valid_project)
+    resource = snapshot.resource_at("videos/missing.mp4")
+
+    assert resource is not None
+    assert resource.kind == FileResourceKind.SOURCE_VIDEO
+    assert resource.symlink is not None
+    assert resource.symlink.absolute_target == target.absolute()
+    assert resource.symlink.target_kind == SymlinkTargetKind.MISSING
+
+
+def test_inspection_retains_an_unclaimed_directory_symlink(
+    valid_project: Path,
+    tmp_path: Path,
+    create_symlink_or_skip: Callable[..., None],
+) -> None:
+    """End to end: a relocated project directory survives inspection as a resource.
+
+    The mapping is covered by constructed probes above, which run everywhere.
+    This covers the wiring - probe, unknown-child collection, ``ProjectResource``
+    construction and flattening - and needs a real link, so it skips on Windows.
+    """
+
+    target = tmp_path / "relocated"
+    target.mkdir()
+
+    link = valid_project / "training-datasets"
+    create_symlink_or_skip(
+        link,
+        target,
+        target_is_directory=True,
+    )
+
+    snapshot = inspect_project(valid_project)
+    resource = snapshot.resource_at("training-datasets")
+
+    assert resource is not None
+    assert resource.kind == DirectoryResourceKind.UNKNOWN_DIRECTORY
+    assert resource.management == ResourceManagement.UNDETERMINED
+    assert resource.symlink is not None
+    assert resource.symlink.absolute_target == target.absolute()
+    assert resource.symlink.target_kind == SymlinkTargetKind.DIRECTORY
+
+
+def test_an_unclaimed_entry_that_vanishes_is_not_reported_as_a_resource(
+    valid_project: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """``resources`` holds only entries with a filesystem entry, as claimed nodes do.
+
+    An entry can disappear between ``iterdir`` and the probe, and a resource for
+    something that no longer exists is a phantom row for any consumer.
+    """
+
+    (valid_project / "notes.txt").touch()
+
+    real_probe_path = probe_path
+
+    def fake_probe_path(path: Path) -> PathProbe:
+        if path.name == "notes.txt":
+            return PathProbe(status=PathProbeStatus.MISSING)
+
+        return real_probe_path(path)
+
+    monkeypatch.setattr(
+        "dlccore.project.discovery.observer.probe_path",
+        fake_probe_path,
+    )
+
+    snapshot = inspect_project(valid_project)
+
+    assert snapshot.resource_at("notes.txt") is None
+    assert snapshot.resource_at("config.yaml") is not None
+
+
+def test_a_symlinked_videos_directory_is_reported_not_raised(
+    tmp_path: Path,
+    create_symlink_or_skip: Callable[..., None],
+) -> None:
+    real_videos = tmp_path / "real_videos"
+    real_videos.mkdir()
+    project = tmp_path / "project"
+    project.mkdir()
+    create_symlink_or_skip(project / "videos", real_videos, target_is_directory=True)
+
+    snapshot = inspect_project(project)
+    resource = snapshot.resource_at("videos")
+
+    assert resource is not None
+    assert resource.kind == DirectoryResourceKind.VIDEOS_DIRECTORY
+    assert resource.symlink is not None
+    assert resource.symlink.target_kind == SymlinkTargetKind.DIRECTORY
+
+
+@pytest.mark.parametrize("given", ["root", "config"], ids=["root", "config_yaml"])
+def test_a_project_whose_root_is_a_symlink_is_inspected_through_it(
+    tmp_path: Path,
+    valid_project_config: ProjectConfig,
+    create_symlink_or_skip: Callable[..., None],
+    given: str,
+) -> None:
+    real = tmp_path / "real"
+    (real / "videos").mkdir(parents=True)
+    (real / "labeled-data").mkdir()
+    valid_project_config.to_yaml(real / "config.yaml")
+    link = tmp_path / "link"
+    create_symlink_or_skip(link, real, target_is_directory=True)
+
+    snapshot = inspect_project(link if given == "root" else link / "config.yaml")
+
+    assert snapshot.project_root == link.absolute()
+    assert snapshot.resource_at("videos") is not None
+    assert snapshot.config_state.value == "valid"
+
+
+def test_a_symlinked_dataset_is_traversed(
+    valid_project: Path,
+    tmp_path_factory: pytest.TempPathFactory,
+    create_symlink_or_skip: Callable[..., None],
+) -> None:
+    storage = tmp_path_factory.mktemp("storage") / "session-02"
+    storage.mkdir()
+    (storage / "img000.png").touch()
+    create_symlink_or_skip(valid_project / "labeled-data" / "session-02", storage, target_is_directory=True)
+
+    snapshot = inspect_project(valid_project)
+    dataset = snapshot.resource_at("labeled-data/session-02")
+
+    assert dataset is not None
+    assert dataset.kind == DirectoryResourceKind.LABELED_DATASET
+    assert dataset.symlink is not None
+    assert snapshot.resource_at("labeled-data/session-02/img000.png") is not None
+
+
+def test_a_directory_linked_to_its_own_ancestor_is_unreadable_not_entered(
+    valid_project: Path,
+    create_symlink_or_skip: Callable[..., None],
+) -> None:
+    (valid_project / "labeled-data").rmdir()
+    create_symlink_or_skip(valid_project / "labeled-data", valid_project, target_is_directory=True)
+
+    snapshot = inspect_project(valid_project)
+
+    (finding,) = (
+        finding
+        for finding in snapshot.findings
+        if finding.code == "PROJECT_NODE_UNREADABLE" and finding.schema_id == "dlc.labeled_data"
+    )
+    assert finding.evidence["error_type"] == "SymlinkLoop"
+    assert snapshot.resource_at("labeled-data/config.yaml") is None

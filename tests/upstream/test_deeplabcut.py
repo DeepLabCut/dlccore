@@ -396,3 +396,19 @@ def test_convertcsv2h5_reads_a_bodypart_containing_individuals_as_single_animal(
     pd.DataFrame([[0.0, 1.0, 2.0, 3.0]] * 3, index=index, columns=columns).to_csv(source)
 
     assert list(_convertcsv2h5(valid_project, source).columns) == list(columns)
+
+
+def test_reading_a_moved_project_rewrites_its_config(valid_project: Path) -> None:
+    """DeepLabCut's reader repairs a moved project by writing; dlccore's inspection of the same project does not."""
+
+    utils = pytest.importorskip("deeplabcut.core.config.utils")
+
+    config_path = valid_project / "config.yaml"
+    config = utils.read_config_as_dict(config_path)
+    config["project_path"] = str(valid_project / "declared-elsewhere")
+    utils.write_config(config_path, config)
+    before = config_path.read_bytes()
+
+    utils.read_config(config_path)
+
+    assert config_path.read_bytes() != before
