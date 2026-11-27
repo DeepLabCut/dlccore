@@ -91,6 +91,61 @@ class StructureFindingCode(FindingCode):
     )
 
 
+class ConfigFindingCode(FindingCode):
+    """Findings about reading, parsing and interpreting ``config.yaml``."""
+
+    CONFIG_READ_FAILED = (
+        "CONFIG_READ_FAILED",
+        "The config file could not be read.",
+        Severity.ERROR,
+        ("error_type", "error_message"),
+    )
+    CONFIG_PARSE_FAILED = (
+        "CONFIG_PARSE_FAILED",
+        "The config file could not be parsed.",
+        Severity.ERROR,
+        ("error_type", "error_message"),
+    )
+    CONFIG_VALIDATION_ERROR = (
+        "CONFIG_VALIDATION_ERROR",
+        "The config file failed canonical schema validation.",
+        Severity.ERROR,
+        ("error_type", "error_message"),
+    )
+    CONFIG_LOAD_FAILED = (
+        "CONFIG_LOAD_FAILED",
+        "The config file could not be loaded through the canonical schema, for a reason other than a field "
+        "failing validation, such as a config version with no migration path.",
+        Severity.ERROR,
+        ("error_type", "error_message"),
+    )
+    CONFIG_VERSION_UPGRADED = (
+        "CONFIG_VERSION_UPGRADED",
+        "The config declares an older config version; the config schema migrated it in memory to the current one.",
+        Severity.NOTE,
+        ("declared_version", "loaded_version"),
+    )
+    CONFIG_VERSION_DOWNGRADED = (
+        "CONFIG_VERSION_DOWNGRADED",
+        "The config declares a newer config version than this code reads; the config schema migrated it down in "
+        "memory, which can drop fields.",
+        Severity.WARNING,
+        ("declared_version", "loaded_version"),
+    )
+    CONFIG_NO_KEYPOINTS = (
+        "CONFIG_NO_KEYPOINTS",
+        "The config loads but declares no keypoints.",
+        Severity.WARNING,
+        ("multianimal_project", "declared"),
+    )
+    CONFIG_NULL_KEY_DEFAULTED = (
+        "CONFIG_NULL_KEY_DEFAULTED",
+        "A config key is written with no value, so the config schema's field default was used.",
+        Severity.NOTE,
+        ("default",),
+    )
+
+
 def iter_finding_codes() -> tuple[FindingCode, ...]:
     """Return every declared finding code, namespace by namespace."""
 
