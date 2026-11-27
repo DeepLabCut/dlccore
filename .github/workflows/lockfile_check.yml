@@ -27,7 +27,7 @@ jobs:
       - uses: astral-sh/setup-uv@v7
         with:
           # The lockfile format follows the uv version; keep in sync with the one that wrote uv.lock
-          version: "0.13.4"
+          version: "0.13.10"
 
       - name: Check lockfile
         run: uv lock --check
