@@ -13,6 +13,8 @@ from __future__ import annotations
 
 from dlccore.project.schemas.base.filesystem import walk_schema
 from dlccore.project.schemas.base.finding_codes import (
+    ConfigFindingCode,
+    ConfiguredVideoFindingCode,
     StructureFindingCode,
 )
 from dlccore.project.schemas.base.findings import Finding, Reach
@@ -25,6 +27,19 @@ _NODES = PROJECT_INDEX.schemas
 
 # Moving a code to another node changes every consumer's scope, so each non-structural code's
 # anchor is pinned here. Structure codes anchor at the node they are about.
+_PINNED_ANCHORS = {
+    **dict.fromkeys(ConfigFindingCode, "dlc.project.config"),
+    **dict.fromkeys(ConfiguredVideoFindingCode, "dlc.project.config"),
+    StructureFindingCode.PROJECT_RESOURCE_PATH_COLLISION: "dlc.videos.source_video",
+}
+
+
+def _moved_anchors(findings: tuple[Finding, ...]) -> set[tuple[str, str]]:
+    return {
+        (finding.code.value, finding.schema_id)
+        for finding in findings
+        if finding.code in _PINNED_ANCHORS and finding.schema_id != _PINNED_ANCHORS[finding.code]
+    }
 
 
 def _undeclared_schema_ids(findings: tuple[Finding, ...]) -> set[str]:
@@ -65,6 +80,18 @@ def test_an_undeclared_schema_id_is_detected() -> None:
     )
 
     assert _undeclared_schema_ids((planted,)) == {"dlc.not_declared_anywhere"}
+
+
+def test_a_moved_anchor_is_detected() -> None:
+    code = ConfigFindingCode.CONFIG_PROJECT_PATH_MISMATCH
+    moved = Finding(
+        code=code,
+        schema_id="dlc.project",
+        reach=Reach.ONE_PER_PROJECT,
+        evidence=dict.fromkeys(code.evidence_keys, "placeholder"),
+    )
+
+    assert _moved_anchors((moved,)) == {("CONFIG_PROJECT_PATH_MISMATCH", "dlc.project")}
 
 
 def test_a_reach_that_does_not_fit_the_layout_is_detected() -> None:
