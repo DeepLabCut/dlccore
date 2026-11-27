@@ -121,6 +121,11 @@ def test_the_human_labels_prefix_is_spelled_once_in_io() -> None:
     assert _modules_spelling("CollectedData_") == {"io/suffixes.py"}
 
 
+def test_the_scan_sees_content_import_io() -> None:
+    # Control: content does import io, so the scan must report it, or "only content imports io" proves nothing.
+    assert any(_within(name, IO) for name in dict(_package_modules())[f"{CONTENT}.fingerprints"])
+
+
 def test_the_scan_reaches_io() -> None:
     # Control: io's own __init__ imports its errors module, so an empty scan cannot pass the test above.
     assert f"{IO}.errors" in dict(_package_modules())[IO]
